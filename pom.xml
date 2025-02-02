@@ -48,6 +48,12 @@
                     <mainClass>no.ntnu.idatg2003.mappe10.Main</mainClass>
                 </configuration>
             </plugin>
+            <!-- Javadoc plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.11.2</version>
+            </plugin>
         </plugins>
     </build>
 </project>
