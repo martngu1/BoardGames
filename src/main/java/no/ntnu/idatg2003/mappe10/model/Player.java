@@ -35,8 +35,10 @@ public class Player {
    * @param steps the number of steps to move
    */
   public void move(int steps) {
-    for (int i = 0; i < steps; i++) {
+    int i = 0;
+    while (i < steps && (currentTile.getNextTile() != null)) {
       this.currentTile.leavePlayer(this);
+      i++;
     }
     currentTile.landPlayer(this);
   }

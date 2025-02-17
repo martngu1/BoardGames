@@ -25,6 +25,12 @@ class PlayerTest {
     testTile1.setNextTile(testTile2);
     testTile2.setNextTile(testTile3);
     testTile3.setNextTile(testTile4);
+    /*
+    Tiles:
+    -----------------
+    | 1 | 2 | 3 | 4 |
+    -----------------
+    */
   }
 
   @Test
@@ -34,4 +40,10 @@ class PlayerTest {
     assertEquals(testTile4.getTileId(), testPlayer.getCurrentTile().getTileId());
   }
 
+  @Test
+  void moveNoOutOfBound() {
+    testPlayer.placeOnTile(testTile2);
+    testPlayer.move(4);
+    assertEquals(testTile4.getTileId(), testPlayer.getCurrentTile().getTileId()); //Tile4 is the last tile
+  }
 }
