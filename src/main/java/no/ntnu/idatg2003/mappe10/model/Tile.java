@@ -68,6 +68,15 @@ public class Tile {
    * @return the id of the tile
    */
   public int getTileId() {
-    return tileId;
+    return this.tileId;
+  }
+
+  /**
+   * Returns the next tile.
+   *
+   * @return the next Tile object
+   */
+  public Tile getNextTile() {
+    return this.nextTile;
   }
 }
