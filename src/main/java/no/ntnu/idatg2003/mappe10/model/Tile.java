@@ -70,4 +70,8 @@ public class Tile {
   public int getTileId() {
     return tileId;
   }
+  public int getNextTileId(){
+    return nextTile.getTileId();
+  }
 }
+
