@@ -16,8 +16,10 @@ class PlayerTest {
   @BeforeEach
   void setUp() {
     BoardGame boardGame = new BoardGame();
+    boardGame.createBoard(); // Creates a board with 100 tiles to satisfy the Player constructor
     boardGame.createPlayerList();
     testPlayer = new Player("TestPlayer", boardGame); // BoardGame object is not needed for this test
+
     testTile1 = new Tile(1);
     testTile2 = new Tile(2);
     testTile3 = new Tile(3);
