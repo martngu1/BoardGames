@@ -30,19 +30,16 @@ public class Player {
   }
 
   /**
-   * Moves the player a given number of steps on the board. The player is moved to the next tile in
-   * the sequence of tiles on the board. When the player lands on the designated tile, the action of
-   * the tile is performed.
+   * Moves the player a given number of steps on the board.
    *
    * @param steps the number of steps to move
    */
   public void move(int steps) {
-    int i = 0;
-    while (i < steps && (currentTile.getNextTile() != null)) {
-      this.currentTile.leavePlayer(this);
-      i++;
+    Tile tileDummy = currentTile;
+    for (int i=0; i < steps; i++) {
+      tileDummy = tileDummy.getNextTile();
     }
-    currentTile.landPlayer(this);
+    this.placeOnTile(tileDummy);
   }
 
   /**
