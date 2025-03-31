@@ -24,18 +24,6 @@ public class Tile {
   }
 
   /**
-   * Performs the action of the tile when a player lands on it. If the tile has no action (null),
-   * nothing happens.
-   *
-   * @param player the player that lands on the tile
-   */
-  public void landPlayer(Player player) {
-    if (landAction != null) {
-      landAction.performAction(player);
-    }
-  }
-
-  /**
    * Places the player on the next tile of this tile.
    *
    * @param player the player to place on the next tile
@@ -68,6 +56,15 @@ public class Tile {
    * @return the id of the tile
    */
   public int getTileId() {
-    return tileId;
+    return this.tileId;
+  }
+
+  /**
+   * Returns the next tile.
+   *
+   * @return the next Tile object
+   */
+  public Tile getNextTile() {
+    return this.nextTile;
   }
 }

@@ -19,6 +19,7 @@ public class Player {
    */
   public Player(String name, BoardGame game) {
     this.name = name;
+    this.currentTile = game.getBoard().getFirstTile();
     game.addPlayer(this);
   }
 
@@ -30,17 +31,16 @@ public class Player {
   }
 
   /**
-   * Moves the player a given number of steps on the board. The player is moved to the next tile in
-   * the sequence of tiles on the board. When the player lands on the designated tile, the action of
-   * the tile is performed.
+   * Moves the player a given number of steps on the board.
    *
    * @param steps the number of steps to move
    */
   public void move(int steps) {
-    for (int i = 0; i < steps; i++) {
-      this.currentTile.leavePlayer(this);
+    Tile tileDummy = currentTile;
+    for (int i=0; i < steps && (tileDummy.getNextTile() != null); i++) {
+      tileDummy = tileDummy.getNextTile();
     }
-    currentTile.landPlayer(this);
+    this.placeOnTile(tileDummy);
   }
 
   /**
@@ -51,10 +51,21 @@ public class Player {
   public Tile getCurrentTile() {
     return currentTile;
   }
+
+  /**
+   * Returns the name of the player.
+   *
+   * @return the name of the player
+   */
   public String getName(){
     return name;
   }
 
+  /**
+   * Get the playing piece of the player.
+   *
+   * @return the playing piece of the player as a String
+   */
   public String getPlayingPiece(){
     return playingPiece;
   }

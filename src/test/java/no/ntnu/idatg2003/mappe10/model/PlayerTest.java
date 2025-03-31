@@ -16,7 +16,10 @@ class PlayerTest {
   @BeforeEach
   void setUp() {
     BoardGame boardGame = new BoardGame();
+    boardGame.createBoard(); // Creates a board with 100 tiles to satisfy the Player constructor
+    boardGame.createPlayerList();
     testPlayer = new Player("TestPlayer", boardGame); // BoardGame object is not needed for this test
+
     testTile1 = new Tile(1);
     testTile2 = new Tile(2);
     testTile3 = new Tile(3);
@@ -25,6 +28,12 @@ class PlayerTest {
     testTile1.setNextTile(testTile2);
     testTile2.setNextTile(testTile3);
     testTile3.setNextTile(testTile4);
+    /*
+    Tiles:
+    -----------------
+    | 1 | 2 | 3 | 4 |
+    -----------------
+    */
   }
 
   @Test
@@ -34,4 +43,10 @@ class PlayerTest {
     assertEquals(testTile4.getTileId(), testPlayer.getCurrentTile().getTileId());
   }
 
+  @Test
+  void moveNoOutOfBound() {
+    testPlayer.placeOnTile(testTile2);
+    testPlayer.move(4);
+    assertEquals(testTile4.getTileId(), testPlayer.getCurrentTile().getTileId()); //Tile4 is the last tile
+  }
 }

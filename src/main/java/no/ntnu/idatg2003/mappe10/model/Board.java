@@ -1,5 +1,6 @@
 package no.ntnu.idatg2003.mappe10.model;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -10,6 +11,10 @@ public class Board {
 
     private Map<Integer, Tile> tilesList;
 
+    public Board() {
+        tilesList = new HashMap<>();
+    }
+
     /**
      * Adds tiles to the Map tilesList with their own distinct tileID.
      * tileID : Tile
@@ -18,8 +23,31 @@ public class Board {
         tilesList.put(tile.getTileId(), tile);
     }
 
+    /**
+     * Returns the tile with the given tileID.
+     *
+     * @param tileId the id of the tile
+     * @return the tile with the given tileID
+     */
     public Tile getTile(int tileId){
-    return null;
+    return tilesList.get(tileId);
     }
 
+    /**
+     * Returns the last tile of the board
+     *
+     * @return the last tile of the board
+     */
+    public Tile getLastTile() {
+        return getTile(tilesList.size());
+    }
+
+    /**
+     * Returns the first tile of the board
+     *
+     * @return the first tile of the board
+     */
+    public Tile getFirstTile() {
+        return getTile(1);
+    }
 }
