@@ -7,7 +7,9 @@ package no.ntnu.idatg2003.mappe10.model;
 public class Player {
 
   private String name;
+  private String playingPiece;
   private Tile currentTile;
+
 
   /**
    * Creates a new player with the given name and adds the player to the board game.
@@ -50,6 +52,13 @@ public class Player {
    */
   public Tile getCurrentTile() {
     return currentTile;
+  }
+  public String getName(){
+    return name;
+  }
+
+  public String getPlayingPiece(){
+    return playingPiece;
   }
 
 }
