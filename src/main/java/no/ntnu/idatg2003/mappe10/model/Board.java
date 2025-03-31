@@ -33,4 +33,21 @@ public class Board {
     return tilesList.get(tileId);
     }
 
+    /**
+     * Returns the last tile of the board
+     *
+     * @return the last tile of the board
+     */
+    public Tile getLastTile() {
+        return getTile(tilesList.size());
+    }
+
+    /**
+     * Returns the first tile of the board
+     *
+     * @return the first tile of the board
+     */
+    public Tile getFirstTile() {
+        return getTile(1);
+    }
 }
