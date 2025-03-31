@@ -36,7 +36,7 @@ public class Player {
    */
   public void move(int steps) {
     Tile tileDummy = currentTile;
-    for (int i=0; i < steps; i++) {
+    for (int i=0; i < steps && (tileDummy.getNextTile() != null); i++) {
       tileDummy = tileDummy.getNextTile();
     }
     this.placeOnTile(tileDummy);
