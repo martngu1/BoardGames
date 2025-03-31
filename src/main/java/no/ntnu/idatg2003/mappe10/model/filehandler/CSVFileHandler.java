@@ -1,4 +1,7 @@
-package no.ntnu.idatg2003.mappe10.model;
+package no.ntnu.idatg2003.mappe10.model.filehandler;
+
+import no.ntnu.idatg2003.mappe10.model.BoardGame;
+import no.ntnu.idatg2003.mappe10.model.Player;
 
 import java.io.*;
 import java.util.ArrayList;

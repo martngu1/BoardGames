@@ -25,6 +25,9 @@ public class Board {
     public Map<Integer, Tile> getTilesList(){
         return tilesList;
     }
+    public void setTilesList(Map<Integer, Tile> tilesList){
+        this.tilesList = tilesList;
+    }
 
 
 }
