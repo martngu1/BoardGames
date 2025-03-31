@@ -67,4 +67,11 @@ public class Tile {
   public Tile getNextTile() {
     return this.nextTile;
   }
+  public int getNextTileId(){
+    return nextTile.getTileId();
+  }
+  public TileAction getLandAction(){
+    return landAction;
+  }
 }
+

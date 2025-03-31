@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class Board {
 
-    private Map<Integer, Tile> tilesList;
+    private Map<Integer, Tile> tilesList = new HashMap<>();
 
     public Board() {
         tilesList = new HashMap<>();
@@ -32,6 +32,13 @@ public class Board {
     public Tile getTile(int tileId){
     return tilesList.get(tileId);
     }
+    public Map<Integer, Tile> getTilesList(){
+        return tilesList;
+    }
+    public void setTilesList(Map<Integer, Tile> tilesList){
+        this.tilesList = tilesList;
+    }
+
 
     /**
      * Returns the last tile of the board

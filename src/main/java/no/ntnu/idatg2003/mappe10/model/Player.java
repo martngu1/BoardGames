@@ -69,6 +69,9 @@ public class Player {
   public String getPlayingPiece(){
     return playingPiece;
   }
+  public void setPlayingPiece(String playingPiece){
+    this.playingPiece = playingPiece;
+  }
 
 }
 
