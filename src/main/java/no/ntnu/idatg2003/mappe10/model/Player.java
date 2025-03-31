@@ -19,6 +19,7 @@ public class Player {
    */
   public Player(String name, BoardGame game) {
     this.name = name;
+    this.currentTile = game.getBoard().getFirstTile();
     game.addPlayer(this);
   }
 
@@ -50,10 +51,21 @@ public class Player {
   public Tile getCurrentTile() {
     return currentTile;
   }
+
+  /**
+   * Returns the name of the player.
+   *
+   * @return the name of the player
+   */
   public String getName(){
     return name;
   }
 
+  /**
+   * Get the playing piece of the player.
+   *
+   * @return the playing piece of the player as a String
+   */
   public String getPlayingPiece(){
     return playingPiece;
   }
