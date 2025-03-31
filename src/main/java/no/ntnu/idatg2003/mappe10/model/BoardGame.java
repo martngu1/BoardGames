@@ -1,10 +1,7 @@
 package no.ntnu.idatg2003.mappe10.model;
 
+import java.util.ArrayList;
 import java.util.List;
-
-/**
- * Represents a set of n individual die.
- */
 
 public class BoardGame {
     private Board board;
@@ -13,12 +10,27 @@ public class BoardGame {
     private Dice dice;
     private final int numberOfTiles = 100;
 
+    /**
+     * Creates a new player list. Old player list is overwritten.
+     */
+    public void createPlayerList(){
+        playerList = new ArrayList<>();
+    }
+
+    /**
+     * Adds a player to the board game.
+     *
+     * @param player the player to add
+     */
     public void addPlayer(Player player) {
         playerList.add(player);
     }
 
+    /**
+     * Creates a new board with the given number of tiles.
+     */
     public void createBoard(){
-        Board board = new Board();
+        board = new Board();
         Tile dummy = null;
         for (int i = numberOfTiles; i >= 1; i--){
             Tile tile = new Tile(i);
@@ -28,10 +40,19 @@ public class BoardGame {
         }
 
     }
-    public void createDice(){
-        dice = new Dice(2);
+
+    /**
+     * Creates a new dice with the given number of sides.
+     *
+     * @param numberOfDice the number of dice to create
+     */
+    public void createDice(int numberOfDice){
+        dice = new Dice(numberOfDice);
     }
 
+    /**
+     * Plays the game. Each player in the player list rolls the dice and moves the number of steps rolled.
+     */
     public void play(){
         for (Player player : playerList) {
             currentPlayer = player;
@@ -39,6 +60,12 @@ public class BoardGame {
             currentPlayer.move(diceRoll);
         }
     }
+
+    /**
+     * Returns the player that has won the game.
+     *
+     * @return the player that has won the game
+     */
     public Player getWinner(){
         return null;
     }
