@@ -1,6 +1,7 @@
 package no.ntnu.idatg2003.mappe10.model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class BoardGame {
@@ -93,6 +94,15 @@ public class BoardGame {
      */
     private boolean playerWon() {
         return currentPlayer.getCurrentTile().getTileId() == board.getLastTile().getTileId();
+    }
+
+    /**
+     * Returns the iterator of the playerList.
+     *
+     * @return the iterator of the playerList
+     */
+    public Iterator<Player> getPlayerListIterator() {
+        return playerList.iterator();
     }
 
     /**
