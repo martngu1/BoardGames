@@ -30,6 +30,9 @@ public class BoardGame {
 
     /**
      * Creates a new board with the given number of tiles.
+     * The tiles are initialized in a reverse order,
+     * so that the first tile is the last tile that is added to the board.
+     * E.g. 100 tiles are added in the order 100, 99, 98, ..., 1.
      */
     public void createBoard(){
         board = new Board();
