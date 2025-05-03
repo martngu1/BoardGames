@@ -32,10 +32,11 @@ public class BoardFileWriterGson implements BoardFileWriter {
         JsonObject boardJson = new JsonObject();
         JsonArray tilesJson = new JsonArray();
 
-        for (Tile tile : board.getTilesList().values()) {
+        board.getTilesList().values().forEach(tile -> {
             JsonObject tileJson = serializeTileObject(tile);
             tilesJson.add(tileJson);
-        }
+        });
+
         boardJson.add("tiles", tilesJson);
 
         try (Writer writer = new FileWriter(filePath)){

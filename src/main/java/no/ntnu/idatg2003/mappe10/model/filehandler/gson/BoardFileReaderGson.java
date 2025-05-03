@@ -36,12 +36,12 @@ public class BoardFileReaderGson implements BoardFileReader {
         try (Reader reader = new FileReader(filePath)) {
             JsonObject boardJson = JsonParser.parseReader(reader).getAsJsonObject();
             JsonArray tilesJson = boardJson.getAsJsonArray("tiles");
-
             Map<Integer, Tile> tilesList = new HashMap<>();
-            for (JsonElement tileElement : tilesJson){
+
+            tilesJson.forEach(tileElement -> {
                 Tile tileObject = deserializeJsonTileObject(tileElement, tilesList);
                 tilesList.put(tileObject.getTileId(), tileObject);
-            }
+            });
 
             Board board = new Board();
             board.setTilesList(tilesList);
