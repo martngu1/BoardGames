@@ -31,6 +31,7 @@ public class BoardFileReaderGson implements BoardFileReader {
      * @param filePath the path to the file where the board will be read from
      * @return the Board object read from the file
      */
+    @Override
     public Board readBoard(String filePath){
         try (Reader reader = new FileReader(filePath)) {
             JsonObject boardJson = JsonParser.parseReader(reader).getAsJsonObject();

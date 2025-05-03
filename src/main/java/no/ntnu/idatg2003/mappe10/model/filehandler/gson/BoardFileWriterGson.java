@@ -27,6 +27,7 @@ public class BoardFileWriterGson implements BoardFileWriter {
      * @param filePath the path to the file where the board will be written
      * @param board    the board to write
      */
+    @Override
     public void writeBoard(String filePath, Board board){
         JsonObject boardJson = new JsonObject();
         JsonArray tilesJson = new JsonArray();
