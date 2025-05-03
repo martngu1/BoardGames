@@ -1,4 +1,9 @@
-package no.ntnu.idatg2003.mappe10.model;
+package no.ntnu.idatg2003.mappe10.model.engine;
+
+import no.ntnu.idatg2003.mappe10.model.Board;
+import no.ntnu.idatg2003.mappe10.model.Dice;
+import no.ntnu.idatg2003.mappe10.model.Player;
+import no.ntnu.idatg2003.mappe10.model.Tile;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,7 +15,21 @@ public class BoardGame {
     private Player winner;
     private List<Player> playerList;
     private Dice dice;
-    private final int numberOfTiles = 100;
+
+    /**
+     * Initializes the game with the given number of dice and players.
+     *
+     * @param numberOfDice the number of dice to use
+     * @param players      the list of players
+     */
+    public void initializeGame(int numberOfDice, int numberOfTiles, List<Player> players) {
+        createPlayerList();
+        for (Player player : players) {
+            addPlayer(player);
+        }
+        createBoard(numberOfTiles);
+        createDice(numberOfDice);
+    }
 
     /**
      * Creates a new player list. Old player list is overwritten.
@@ -34,7 +53,7 @@ public class BoardGame {
      * so that the first tile is the last tile that is added to the board.
      * E.g. 100 tiles are added in the order 100, 99, 98, ..., 1.
      */
-    public void createBoard(){
+    public void createBoard(int numberOfTiles){
         board = new Board();
         Tile dummy = null;
         for (int i = numberOfTiles; i >= 1; i--){
