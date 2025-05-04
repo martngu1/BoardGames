@@ -4,6 +4,7 @@ import no.ntnu.idatg2003.mappe10.model.Board;
 import no.ntnu.idatg2003.mappe10.model.Dice;
 import no.ntnu.idatg2003.mappe10.model.Player;
 import no.ntnu.idatg2003.mappe10.model.Tile;
+import no.ntnu.idatg2003.mappe10.model.BoardGameObserver;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,6 +16,7 @@ public class BoardGame {
     private Player winner;
     private List<Player> playerList;
     private Dice dice;
+    private final List<BoardGameObserver> observers = new ArrayList<>();
 
     /**
      * Initializes the game with the given number of dice and players.
@@ -53,10 +55,10 @@ public class BoardGame {
      * so that the first tile is the last tile that is added to the board.
      * E.g. 100 tiles are added in the order 100, 99, 98, ..., 1.
      */
-    public void createBoard(int numberOfTiles){
+    public void createBoard(int numberOfTiles) {
         board = new Board();
         Tile dummy = null;
-        for (int i = numberOfTiles; i >= 1; i--){
+        for (int i = numberOfTiles; i >= 1; i--) {
             Tile tile = new Tile(i);
             tile.setNextTile(dummy);
             board.addTile(tile);
@@ -70,7 +72,7 @@ public class BoardGame {
      *
      * @param numberOfDice the number of dice to create
      */
-    public void createDice(int numberOfDice){
+    public void createDice(int numberOfDice) {
         dice = new Dice(numberOfDice);
     }
 
@@ -104,7 +106,7 @@ public class BoardGame {
                 return false;
             }
             System.out.println("Player: " + currentPlayer.getName() +
-                  " on tile " + currentPlayer.getCurrentTile().getTileId());
+                    " on tile " + currentPlayer.getCurrentTile().getTileId());
         }
         return true;
     }
@@ -119,20 +121,11 @@ public class BoardGame {
     }
 
     /**
-     * Returns the iterator of the playerList.
-     *
-     * @return the iterator of the playerList
-     */
-    public Iterator<Player> getPlayerListIterator() {
-        return playerList.iterator();
-    }
-
-    /**
      * Returns the player that has won the game.
      *
      * @return the player that has won the game
      */
-    public Player getWinner(){
+    public Player getWinner() {
         return winner;
     }
 
@@ -145,4 +138,28 @@ public class BoardGame {
         return board;
     }
 
+    public void registerObserver(BoardGameObserver observer) {
+        observers.add(observer);
+    }
+
+    public void removeObserver(BoardGameObserver observer) {
+        observers.remove(observer);
+    }
+
+    private void notifyObservers(String playerName, int newPosition) {
+        for (BoardGameObserver observer : observers) {
+            observer.updatePosition(playerName, newPosition);
+        }
+    }
+
+    public void movePlayer(int playerId, int newPosition) {
+        Player player = playerList.get(playerId);
+        Tile newTile = board.getTile(newPosition);
+        player.placeOnTile(newTile);
+        notifyObservers(player.getName(), newPosition);
+    }
 }
+
+
+
+
