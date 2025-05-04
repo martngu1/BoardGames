@@ -1,4 +1,6 @@
-package no.ntnu.idatg2003.mappe10.model;
+package no.ntnu.idatg2003.mappe10.model.board;
+
+import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 
 import java.util.HashMap;
 import java.util.Map;

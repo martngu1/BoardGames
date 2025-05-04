@@ -1,4 +1,6 @@
-package no.ntnu.idatg2003.mappe10.model;
+package no.ntnu.idatg2003.mappe10.model.tile;
+
+import no.ntnu.idatg2003.mappe10.model.player.Player;
 
 /**
  * Represents a tile on the board. Each tile has a unique id and a reference to the next tile. The

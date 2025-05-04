@@ -1,5 +1,6 @@
-package no.ntnu.idatg2003.mappe10.model;
+package no.ntnu.idatg2003.mappe10.model.board;
 
+import no.ntnu.idatg2003.mappe10.model.actions.LadderAction;
 import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
 import no.ntnu.idatg2003.mappe10.model.filehandler.gson.BoardFileReaderGson;
 

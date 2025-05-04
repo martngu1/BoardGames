@@ -1,10 +1,10 @@
 package no.ntnu.idatg2003.mappe10.model.engine;
 
-import no.ntnu.idatg2003.mappe10.model.Board;
-import no.ntnu.idatg2003.mappe10.model.Dice;
-import no.ntnu.idatg2003.mappe10.model.Player;
-import no.ntnu.idatg2003.mappe10.model.Tile;
-import no.ntnu.idatg2003.mappe10.model.BoardGameObserver;
+import no.ntnu.idatg2003.mappe10.model.board.Board;
+import no.ntnu.idatg2003.mappe10.model.dice.Dice;
+import no.ntnu.idatg2003.mappe10.model.player.Player;
+import no.ntnu.idatg2003.mappe10.model.tile.Tile;
+import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
 
 import java.util.ArrayList;
 import java.util.Iterator;

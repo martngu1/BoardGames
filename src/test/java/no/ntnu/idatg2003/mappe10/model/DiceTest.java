@@ -1,5 +1,6 @@
 package no.ntnu.idatg2003.mappe10.model;
 
+import no.ntnu.idatg2003.mappe10.model.dice.Dice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

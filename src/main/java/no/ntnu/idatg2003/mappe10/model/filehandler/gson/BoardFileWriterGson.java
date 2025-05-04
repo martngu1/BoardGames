@@ -4,9 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import no.ntnu.idatg2003.mappe10.model.Board;
-import no.ntnu.idatg2003.mappe10.model.LadderAction;
-import no.ntnu.idatg2003.mappe10.model.Tile;
+import no.ntnu.idatg2003.mappe10.model.board.Board;
+import no.ntnu.idatg2003.mappe10.model.actions.LadderAction;
+import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileWriter;
 
 import java.io.FileWriter;

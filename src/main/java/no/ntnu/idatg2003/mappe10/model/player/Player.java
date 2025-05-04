@@ -1,6 +1,7 @@
-package no.ntnu.idatg2003.mappe10.model;
+package no.ntnu.idatg2003.mappe10.model.player;
 
 import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
+import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 
 /**
  * Represents a player in a board game. A player has a name and a current tile.

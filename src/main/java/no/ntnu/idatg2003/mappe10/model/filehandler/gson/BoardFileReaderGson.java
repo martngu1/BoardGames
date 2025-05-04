@@ -4,13 +4,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import no.ntnu.idatg2003.mappe10.model.Board;
-import no.ntnu.idatg2003.mappe10.model.LadderAction;
-import no.ntnu.idatg2003.mappe10.model.Tile;
-import no.ntnu.idatg2003.mappe10.model.TileAction;
+import no.ntnu.idatg2003.mappe10.model.board.Board;
+import no.ntnu.idatg2003.mappe10.model.actions.LadderAction;
+import no.ntnu.idatg2003.mappe10.model.tile.Tile;
+import no.ntnu.idatg2003.mappe10.model.tile.TileAction;
 import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileReader;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
