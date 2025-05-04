@@ -84,6 +84,7 @@ public class BoardGame {
             currentPlayer = player;
             int diceRoll = dice.roll();
             currentPlayer.move(diceRoll);
+            notifyObservers(currentPlayer.getName(), currentPlayer.getCurrentTile().getTileId());
             if (playerWon()) {
                 winner = currentPlayer;
                 return false;
@@ -138,6 +139,15 @@ public class BoardGame {
         return board;
     }
 
+    /**
+     * Return the iterator for the player list.
+     *
+     * @return the iterator for the player list
+     */
+    public Iterator<Player> getPlayerListIterator() {
+        return playerList.iterator();
+    }
+
     public void registerObserver(BoardGameObserver observer) {
         observers.add(observer);
     }
@@ -150,13 +160,6 @@ public class BoardGame {
         for (BoardGameObserver observer : observers) {
             observer.updatePosition(playerName, newPosition);
         }
-    }
-
-    public void movePlayer(int playerId, int newPosition) {
-        Player player = playerList.get(playerId);
-        Tile newTile = board.getTile(newPosition);
-        player.placeOnTile(newTile);
-        notifyObservers(player.getName(), newPosition);
     }
 }
 
