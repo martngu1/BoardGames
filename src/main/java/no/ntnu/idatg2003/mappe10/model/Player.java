@@ -1,5 +1,7 @@
 package no.ntnu.idatg2003.mappe10.model;
 
+import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
+
 /**
  * Represents a player in a board game. A player has a name and a current tile.
  * TODO: Implement exception handling for invalid inputs.

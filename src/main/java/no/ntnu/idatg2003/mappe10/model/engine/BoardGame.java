@@ -1,6 +1,13 @@
-package no.ntnu.idatg2003.mappe10.model;
+package no.ntnu.idatg2003.mappe10.model.engine;
+
+import no.ntnu.idatg2003.mappe10.model.Board;
+import no.ntnu.idatg2003.mappe10.model.Dice;
+import no.ntnu.idatg2003.mappe10.model.Player;
+import no.ntnu.idatg2003.mappe10.model.Tile;
+import no.ntnu.idatg2003.mappe10.model.BoardGameObserver;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class BoardGame {
@@ -9,13 +16,27 @@ public class BoardGame {
     private Player winner;
     private List<Player> playerList;
     private Dice dice;
-    private int numberOfTiles;
     private final List<BoardGameObserver> observers = new ArrayList<>();
+
+    /**
+     * Initializes the game with the given number of dice and players.
+     *
+     * @param numberOfDice the number of dice to use
+     * @param players      the list of players
+     */
+    public void initializeGame(int numberOfDice, int numberOfTiles, List<Player> players) {
+        createPlayerList();
+        for (Player player : players) {
+            addPlayer(player);
+        }
+        createBoard(numberOfTiles);
+        createDice(numberOfDice);
+    }
 
     /**
      * Creates a new player list. Old player list is overwritten.
      */
-    public void createPlayerList() {
+    public void createPlayerList(){
         playerList = new ArrayList<>();
     }
 
@@ -30,6 +51,9 @@ public class BoardGame {
 
     /**
      * Creates a new board with the given number of tiles.
+     * The tiles are initialized in a reverse order,
+     * so that the first tile is the last tile that is added to the board.
+     * E.g. 100 tiles are added in the order 100, 99, 98, ..., 1.
      */
     public void createBoard(int numberOfTiles) {
         board = new Board();
@@ -60,6 +84,7 @@ public class BoardGame {
             currentPlayer = player;
             int diceRoll = dice.roll();
             currentPlayer.move(diceRoll);
+            notifyObservers(currentPlayer.getName(), currentPlayer.getCurrentTile().getTileId());
             if (playerWon()) {
                 winner = currentPlayer;
                 return false;
@@ -114,6 +139,15 @@ public class BoardGame {
         return board;
     }
 
+    /**
+     * Return the iterator for the player list.
+     *
+     * @return the iterator for the player list
+     */
+    public Iterator<Player> getPlayerListIterator() {
+        return playerList.iterator();
+    }
+
     public void registerObserver(BoardGameObserver observer) {
         observers.add(observer);
     }
@@ -126,13 +160,6 @@ public class BoardGame {
         for (BoardGameObserver observer : observers) {
             observer.updatePosition(playerName, newPosition);
         }
-    }
-
-    public void movePlayer(int playerId, int newPosition) {
-        Player player = playerList.get(playerId);
-        Tile newTile = board.getTile(newPosition);
-        player.placeOnTile(newTile);
-        notifyObservers(player.getName(), newPosition);
     }
 }
 

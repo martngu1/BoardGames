@@ -1,16 +1,16 @@
 package no.ntnu.idatg2003.mappe10.model;
 
-import no.ntnu.idatg2003.mappe10.model.filehandler.JSONFileHandler;
-
+import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
+import no.ntnu.idatg2003.mappe10.model.filehandler.gson.BoardFileReaderGson;
 
 
 public class BoardGameFactory {
 
-    private JSONFileHandler jsonFileHandler;
+    private BoardFileReaderGson gsonReader;
     private Board board;
 
     public BoardGameFactory() {
-        this.jsonFileHandler = new JSONFileHandler();
+        this.gsonReader = new BoardFileReaderGson();
     }
 
     public Board createBoard1() {
