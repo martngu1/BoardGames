@@ -6,7 +6,7 @@ import no.ntnu.idatg2003.mappe10.model.Player;
 public class BoardGameCL {
   public static void main(String[] args) {
     BoardGame boardGame = new BoardGame();
-    boardGame.createBoard();
+    boardGame.createBoard(100);
     boardGame.createDice(2);
     boardGame.createPlayerList();
 
