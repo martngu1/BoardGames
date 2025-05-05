@@ -10,9 +10,12 @@ import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 import no.ntnu.idatg2003.mappe10.model.tile.TileAction;
 import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileReader;
 
+import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +35,7 @@ public class BoardFileReaderGson implements BoardFileReader {
      */
     @Override
     public Board readBoard(String filePath){
-        try (Reader reader = new FileReader(filePath)) {
+        try (BufferedReader reader = Files.newBufferedReader(Path.of(filePath))) {
             JsonObject boardJson = JsonParser.parseReader(reader).getAsJsonObject();
             JsonArray tilesJson = boardJson.getAsJsonArray("tiles");
             Map<Integer, Tile> tilesList = new HashMap<>();
