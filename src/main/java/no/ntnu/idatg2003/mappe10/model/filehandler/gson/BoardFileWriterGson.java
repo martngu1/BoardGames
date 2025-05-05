@@ -1,17 +1,17 @@
 package no.ntnu.idatg2003.mappe10.model.filehandler.gson;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import no.ntnu.idatg2003.mappe10.model.board.Board;
-import no.ntnu.idatg2003.mappe10.model.actions.LadderAction;
+import no.ntnu.idatg2003.mappe10.model.tile.LadderAction;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileWriter;
 
+import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * This class is responsible for writing a board to a file in JSON format.
@@ -28,18 +28,21 @@ public class BoardFileWriterGson implements BoardFileWriter {
      * @param board    the board to write
      */
     @Override
-    public void writeBoard(String filePath, Board board){
+    public void writeBoard(String filePath, Board board) {
         JsonObject boardJson = new JsonObject();
         JsonArray tilesJson = new JsonArray();
-
         board.getTilesList().values().forEach(tile -> {
             JsonObject tileJson = serializeTileObject(tile);
             tilesJson.add(tileJson);
         });
+        JsonElement numberOfRows = new JsonPrimitive(board.getNumberOfRows());
+        JsonElement numberOfColumns = new JsonPrimitive(board.getNumberOfColumns());
 
+        boardJson.add("numberOfRows", numberOfRows);
+        boardJson.add("numberOfColumns", numberOfColumns);
         boardJson.add("tiles", tilesJson);
 
-        try (Writer writer = new FileWriter(filePath)){
+        try (BufferedWriter writer = Files.newBufferedWriter(Path.of(filePath))) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             gson.toJson(boardJson, writer);
         } catch (IOException e) {
@@ -56,7 +59,15 @@ public class BoardFileWriterGson implements BoardFileWriter {
     private JsonObject serializeTileObject(Tile tile) {
         JsonObject tileJson = new JsonObject();
         tileJson.addProperty("tileId", tile.getTileId());
-        tileJson.addProperty("nextTile", tile.getNextTileId());
+
+        if (tile.getNextTile() == null) {
+            tileJson.addProperty("nextTile", "null");
+        } else {
+            tileJson.addProperty("nextTile", tile.getNextTile().getTileId());
+        }
+
+        tileJson.addProperty("xCoordinate", tile.getXCoordinate());
+        tileJson.addProperty("yCoordinate", tile.getYCoordinate());
 
         if (tile.getLandAction() != null){
             JsonObject actionJson = new JsonObject();

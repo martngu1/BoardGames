@@ -8,13 +8,34 @@ import java.util.Map;
 /**
  * Represents a map with all the tiles used for the board.
  */
-
 public class Board {
+    private Map<Integer, Tile> tilesList;
+    private int numberOfRows;
+    private int numberOfColumns;
 
-    private Map<Integer, Tile> tilesList = new HashMap<>();
+    public Board(int numberOfTiles, int numberOfRows, int numberOfColumns) {
+        this.tilesList = new HashMap<>();
+        initBoard(numberOfTiles);
+        this.numberOfRows = numberOfRows;
+        this.numberOfColumns = numberOfColumns;
+    }
 
-    public Board() {
-        tilesList = new HashMap<>();
+    /**
+     * Initializes the board with the given number of tiles.
+     * The tiles are initialized in a reverse order,
+     * so that the first tile is the last tile that is added to the board.
+     * E.g. 100 tiles are added in the order 100, 99, 98, ..., 1.
+     *
+     * @param numberOfTiles the number of tiles to initialize
+     */
+    public void initBoard(int numberOfTiles) {
+        Tile dummy = null;
+        for (int i = numberOfTiles; i >= 1; i--) {
+            Tile tile = new Tile(i);
+            tile.setNextTile(dummy);
+            addTile(tile);
+            dummy = tile;
+        }
     }
 
     /**
@@ -31,13 +52,43 @@ public class Board {
      * @param tileId the id of the tile
      * @return the tile with the given tileID
      */
-    public Tile getTile(int tileId){
-    return tilesList.get(tileId);
+    public Tile getTile(int tileId) {
+        return tilesList.get(tileId);
     }
-    public Map<Integer, Tile> getTilesList(){
+
+    /**
+     * Returns the Map with all the tiles.
+     *
+     * @return the Map with all the tiles
+     */
+    public Map<Integer, Tile> getTilesList() {
         return tilesList;
     }
-    public void setTilesList(Map<Integer, Tile> tilesList){
+
+    /**
+     * Returns the number of rows in the board.
+     *
+     * @return the number of rows in the board
+     */
+    public int getNumberOfRows() {
+        return numberOfRows;
+    }
+
+    /**
+     * Returns the number of columns in the board.
+     *
+     * @return the number of columns in the board
+     */
+    public int getNumberOfColumns() {
+        return numberOfColumns;
+    }
+
+    /**
+     * Sets the Tile list Map as the given Map.
+     *
+     * @param tilesList the Map with all the tiles
+     */
+    public void setTilesList(Map<Integer, Tile> tilesList) {
         this.tilesList = tilesList;
     }
 

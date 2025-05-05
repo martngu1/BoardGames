@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import no.ntnu.idatg2003.mappe10.model.board.Board;
-import no.ntnu.idatg2003.mappe10.model.actions.LadderAction;
+import no.ntnu.idatg2003.mappe10.model.tile.LadderAction;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 import no.ntnu.idatg2003.mappe10.model.tile.TileAction;
 import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileReader;
@@ -42,7 +42,11 @@ public class BoardFileReaderGson implements BoardFileReader {
                 tilesList.put(tileObject.getTileId(), tileObject);
             });
 
-            Board board = new Board();
+            Board board = new Board(
+                  tilesList.size(),
+                  boardJson.get("numberOfRows").getAsInt(),
+                  boardJson.get("numberOfColumns").getAsInt()
+            );
             board.setTilesList(tilesList);
 
             return board;

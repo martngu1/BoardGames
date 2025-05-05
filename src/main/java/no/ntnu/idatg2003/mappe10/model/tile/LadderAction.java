@@ -1,7 +1,6 @@
-package no.ntnu.idatg2003.mappe10.model.actions;
+package no.ntnu.idatg2003.mappe10.model.tile;
 
 import no.ntnu.idatg2003.mappe10.model.player.Player;
-import no.ntnu.idatg2003.mappe10.model.tile.TileAction;
 
 public class LadderAction implements TileAction {
     private int destinationTileId;
