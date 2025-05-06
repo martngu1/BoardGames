@@ -1,10 +1,10 @@
 package no.ntnu.idatg2003.mappe10.model.engine;
 
-import no.ntnu.idatg2003.mappe10.model.Board;
-import no.ntnu.idatg2003.mappe10.model.Dice;
-import no.ntnu.idatg2003.mappe10.model.Player;
-import no.ntnu.idatg2003.mappe10.model.Tile;
-import no.ntnu.idatg2003.mappe10.model.BoardGameObserver;
+import no.ntnu.idatg2003.mappe10.model.board.Board;
+import no.ntnu.idatg2003.mappe10.model.dice.Dice;
+import no.ntnu.idatg2003.mappe10.model.player.Player;
+import no.ntnu.idatg2003.mappe10.model.tile.Tile;
+import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,9 +26,7 @@ public class BoardGame {
      */
     public void initializeGame(int numberOfDice, int numberOfTiles, List<Player> players) {
         createPlayerList();
-        for (Player player : players) {
-            addPlayer(player);
-        }
+        players.forEach(this::addPlayer);
         createBoard(numberOfTiles);
         createDice(numberOfDice);
     }
@@ -56,15 +54,7 @@ public class BoardGame {
      * E.g. 100 tiles are added in the order 100, 99, 98, ..., 1.
      */
     public void createBoard(int numberOfTiles) {
-        board = new Board();
-        Tile dummy = null;
-        for (int i = numberOfTiles; i >= 1; i--) {
-            Tile tile = new Tile(i);
-            tile.setNextTile(dummy);
-            board.addTile(tile);
-            dummy = tile;
-        }
-
+        board.initBoard(numberOfTiles);
     }
 
     /**
@@ -128,6 +118,15 @@ public class BoardGame {
      */
     public Player getWinner() {
         return winner;
+    }
+
+    /**
+     * Set the board of the BoardGame to a given Board object.
+     *
+     * @param board the Board object to load
+     */
+    public void loadBoard(Board board) {
+        this.board = board;
     }
 
     /**

@@ -1,7 +1,7 @@
 package no.ntnu.idatg2003.mappe10;
 
 import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
-import no.ntnu.idatg2003.mappe10.model.Player;
+import no.ntnu.idatg2003.mappe10.model.player.Player;
 
 import java.util.Iterator;
 import java.util.List;

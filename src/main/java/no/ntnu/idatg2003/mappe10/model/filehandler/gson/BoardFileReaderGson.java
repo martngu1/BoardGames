@@ -4,16 +4,18 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import no.ntnu.idatg2003.mappe10.model.Board;
-import no.ntnu.idatg2003.mappe10.model.LadderAction;
-import no.ntnu.idatg2003.mappe10.model.Tile;
-import no.ntnu.idatg2003.mappe10.model.TileAction;
+import no.ntnu.idatg2003.mappe10.model.board.Board;
+import no.ntnu.idatg2003.mappe10.model.tile.LadderAction;
+import no.ntnu.idatg2003.mappe10.model.tile.Tile;
+import no.ntnu.idatg2003.mappe10.model.tile.TileAction;
 import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileReader;
 
-import java.io.FileNotFoundException;
+import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +35,7 @@ public class BoardFileReaderGson implements BoardFileReader {
      */
     @Override
     public Board readBoard(String filePath){
-        try (Reader reader = new FileReader(filePath)) {
+        try (BufferedReader reader = Files.newBufferedReader(Path.of(filePath))) {
             JsonObject boardJson = JsonParser.parseReader(reader).getAsJsonObject();
             JsonArray tilesJson = boardJson.getAsJsonArray("tiles");
             Map<Integer, Tile> tilesList = new HashMap<>();
@@ -43,7 +45,11 @@ public class BoardFileReaderGson implements BoardFileReader {
                 tilesList.put(tileObject.getTileId(), tileObject);
             });
 
-            Board board = new Board();
+            Board board = new Board(
+                  tilesList.size(),
+                  boardJson.get("numberOfRows").getAsInt(),
+                  boardJson.get("numberOfColumns").getAsInt()
+            );
             board.setTilesList(tilesList);
 
             return board;
