@@ -1,17 +1,18 @@
 package no.ntnu.idatg2003.mappe10.model.engine;
 
 import no.ntnu.idatg2003.mappe10.model.board.Board;
+import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
 import no.ntnu.idatg2003.mappe10.model.dice.Dice;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class BoardGame {
   private Board board;
+  private Coordinate boardMax;
   private Player currentPlayer;
   private Player winner;
   private List<Player> playerList;
@@ -58,11 +59,12 @@ public class BoardGame {
   }
 
   /**
-   * Creates a new board with the given number of tiles, rows and columns.
+   * Creates a new board with the given number of tiles, numberOfRows and numberOfColumns.
    * Old board is overwritten.
    */
-  public void createBoard(int numberOfTiles, int rows, int columns) {
-    board = new Board(numberOfTiles, rows, columns);
+  public void createBoard(int numberOfTiles, int numberOfRows, int numberOfColumns) {
+    board = new Board(numberOfTiles, numberOfRows, numberOfColumns);
+    boardMax = new Coordinate(numberOfRows - 1, numberOfColumns - 1);
   }
 
   /**
@@ -104,8 +106,8 @@ public class BoardGame {
         System.out.println("The winner is: " + getWinner().getName());
         return false;
       }
-      System.out.println("Player: " + currentPlayer.getName() +
-          " on tile " + currentPlayer.getCurrentTile().getTileId());
+      System.out.println("Player: " + currentPlayer.getName()
+          + " on tile " + currentPlayer.getCurrentTile().getTileId());
     }
     return true;
   }
@@ -145,6 +147,20 @@ public class BoardGame {
   public Board getBoard() {
     return board;
   }
+
+  /**
+   * Returns the transformed coordinates from the board (r, c) to the canvas (x, y).
+   *
+   * @param rc the (r, c) coordinates to transform to (x, y)
+   * @return the (x, y) coordinates corresponding to the given (r, c) coordinates
+   */
+  public Coordinate transformBoardToCanvas(Coordinate rc, Coordinate canvasMax) {
+    return new Coordinate(
+        Math.round((float) canvasMax.getX0() / boardMax.getX1() * rc.getX1()),
+        Math.round(canvasMax.getX1() - ((float) canvasMax.getX1() / boardMax.getX0() * rc.getX0()))
+    );
+  }
+
 
   /**
    * Return the iterator for the player list.
