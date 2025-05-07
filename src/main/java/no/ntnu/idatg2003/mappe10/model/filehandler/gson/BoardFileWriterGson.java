@@ -7,9 +7,7 @@ import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileWriter;
 
 import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -66,8 +64,8 @@ public class BoardFileWriterGson implements BoardFileWriter {
             tileJson.addProperty("nextTile", tile.getNextTile().getTileId());
         }
 
-        tileJson.addProperty("xCoordinate", tile.getXCoordinate());
-        tileJson.addProperty("yCoordinate", tile.getYCoordinate());
+        tileJson.addProperty("row", tile.getBoardCoords().getX0());
+        tileJson.addProperty("column", tile.getBoardCoords().getX1());
 
         if (tile.getLandAction() != null){
             JsonObject actionJson = new JsonObject();

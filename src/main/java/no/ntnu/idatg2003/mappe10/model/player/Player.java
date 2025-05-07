@@ -22,7 +22,6 @@ public class Player {
    */
   public Player(String name, BoardGame game) {
     this.name = name;
-    this.currentTile = game.getBoard().getFirstTile();
     game.addPlayer(this);
   }
 

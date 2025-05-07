@@ -1,6 +1,6 @@
 package no.ntnu.idatg2003.mappe10.model.tile;
 
-import no.ntnu.idatg2003.mappe10.model.player.Player;
+import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
 
 /**
  * Represents a tile on the board. Each tile has a unique id and a reference to the next tile. The
@@ -11,8 +11,7 @@ public class Tile {
     private Tile nextTile;
     private final int tileId;
     private TileAction landAction;
-    private int xCoordinate;
-    private int yCoordinate;
+    private Coordinate boardCoords;
 
     /**
      * Creates a new tile with the given id.
@@ -26,8 +25,7 @@ public class Tile {
         this.tileId = tileId;
         this.nextTile = null;
         this.landAction = null;
-        this.xCoordinate = 0;
-        this.yCoordinate = 0;
+        this.boardCoords = null;
     }
 
     /**
@@ -42,10 +40,10 @@ public class Tile {
     /**
      * Sets the coordinates of the tile.
      *
-     * @param x the x coordinates of the tile
+     * @param r the row coordinates of the tile
      */
-    public void setXCoordinate(int x) {
-        this.xCoordinate = x;
+    public void setCoordinate(int r, int c) {
+        this.boardCoords = new Coordinate(r, c);
     }
 
     /**
@@ -53,27 +51,10 @@ public class Tile {
      *
      * @return the int x coordinates of the tile
      */
-    public int getXCoordinate() {
-        return this.xCoordinate;
+    public Coordinate getBoardCoords() {
+        return this.boardCoords;
     }
 
-    /**
-     * Sets the coordinates of the tile.
-     *
-     * @param y the y coordinates of the tile
-     */
-    public void setYCoordinate(int y) {
-        this.yCoordinate = y;
-    }
-
-    /**
-     * Returns the y coordinates of the tile.
-     *
-     * @return the int y coordinates of the tile
-     */
-    public int getYCoordinate() {
-        return this.yCoordinate;
-    }
 
     /**
      * Sets the action of the tile when a player lands on it.
