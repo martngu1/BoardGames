@@ -9,13 +9,12 @@ import java.util.List;
 public class BoardGameCL {
   public static void main(String[] args) {
     BoardGame boardGame = new BoardGame();
-    List<Player> players = List.of(
-        new Player("Player 1", boardGame),
-        new Player("Player 2", boardGame),
-        new Player("Player 3", boardGame),
-        new Player("Player 4", boardGame)
-    );
-    boardGame.initializeGame(2, 100, players);
+    boardGame.initializeGame(2, 100, 10, 10);
+    new Player("Player 1", boardGame);
+    new Player("Player 2", boardGame);
+    new Player("Player 3", boardGame);
+    new Player("Player 4", boardGame);
+    boardGame.placeAllPlayersOnTile(boardGame.getBoard().getFirstTile());
 
     System.out.println("Starting game...\n\nThe following players are playing the game:");
     Iterator<Player> iterator = boardGame.getPlayerListIterator();
