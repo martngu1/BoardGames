@@ -5,6 +5,8 @@ import no.ntnu.idatg2003.mappe10.model.player.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerTest {
@@ -15,8 +17,8 @@ class PlayerTest {
   @BeforeEach
   void setUp() {
     boardGame = new BoardGame();
-    boardGame.createBoard(4); // Creates a board with n tiles
     boardGame.createPlayerList();
+    boardGame.createBoard(4, 1, 4);
     testPlayer = new Player("TestPlayer", boardGame);
     /*
     Tiles:
