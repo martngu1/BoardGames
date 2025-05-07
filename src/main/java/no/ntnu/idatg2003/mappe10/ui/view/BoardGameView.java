@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -12,6 +13,7 @@ import javafx.stage.Stage;
 public class BoardGameView extends Application {
   private static final int WINDOW_WIDTH = 800;
   private static final int WINDOW_HEIGHT = 600;
+  private Canvas canvas;
 
   public static void main(String[] args) {
     launch(args);
@@ -19,8 +21,28 @@ public class BoardGameView extends Application {
 
   @Override
   public void init() {
+    canvas = new ResizableCanvas();
+    // Redraw canvas when size changes.
+    canvas.widthProperty().addListener(evt -> drawBoard());
+    canvas.heightProperty().addListener(evt -> drawBoard());
 
   }
+
+  /**
+   * Draws the board.
+   */
+  private void drawBoard() {
+    double width = canvas.getWidth();
+    double height = canvas.getHeight();
+
+    GraphicsContext gc = canvas.getGraphicsContext2D();
+    gc.clearRect(0, 0, width, height);
+
+    gc.setStroke(Color.RED);
+    gc.strokeLine(0, 0, width, height);
+    gc.strokeLine(0, height, width, 0);
+  }
+
 
   @Override
   public void start(Stage primaryStage) {
@@ -73,25 +95,23 @@ public class BoardGameView extends Application {
 
     // Create a stack pane to hold the board and the label/button. Board is "behind" the label/buttons.
     StackPane stackPane = new StackPane();
-    stackPane.getChildren().addAll(loadBoard(), labelAndButton);
+
+    stackPane.getChildren().addAll(canvas, labelAndButton);
+
+    // Binds the canvas size to the stack pane size
+    canvas.widthProperty().bind(stackPane.widthProperty());
+    canvas.heightProperty().bind(stackPane.heightProperty());
 
     return stackPane;
   }
 
-  private Canvas loadBoard() {
-    Canvas canvas = new Canvas();
-
-    return canvas;
-  }
-
-
   private MenuBar createTopMenuBar() {
-    // Menu options
+    // Create Menu options
     Menu loadMenu = new Menu("Load");
     Menu saveMenu = new Menu("Save");
     Menu settingsMenu = new Menu("Settings");
 
-    // Menu items
+    // Create Menu items
     MenuItem loadBoard = new MenuItem("New Board");
     MenuItem loadPlayers = new MenuItem("Players");
     MenuItem saveBoard = new MenuItem("Board");
@@ -108,5 +128,50 @@ public class BoardGameView extends Application {
     return menuBar;
   }
 
+
+  /**
+   * A resizable canvas that redraws itself when the size changes.
+   * This class extends the Canvas class and overrides the isResizable,
+   * prefWidth, and prefHeight methods to allow for resizing.
+   *
+   * <p>This class is based on the example provided by Dirk Lemmermann:
+   * <a href="https://dlemmermann.wordpress.com/2014/04/10/javafx-tip-1-resizable-canvas/">Resizable Canvas</a></p>
+   *
+   */
+  class ResizableCanvas extends Canvas {
+
+    /**
+     * Overrides the isResizable method to be true. This allows the canvas to be resized.
+     *
+     * @return true to indicate that the canvas is resizable
+     */
+    @Override
+    public boolean isResizable() {
+      return true;
+    }
+
+
+    /**
+     * Overrides the prefWidth method to return 0. This is to let the parent determine the width.
+     *
+     * @param width the preferred width
+     * @return 0 to let the parent determine the height
+     */
+    @Override
+    public double prefWidth(double width) {
+      return 0;
+    }
+
+    /**
+     * Overrides the prefHeight method to return 0. This is to let the parent determine the height.
+     *
+     * @param height the preferred height
+     * @return 0 to let the parent determine the height
+     */
+    @Override
+    public double prefHeight(double height) {
+      return 0;
+    }
+  }
 
 }
