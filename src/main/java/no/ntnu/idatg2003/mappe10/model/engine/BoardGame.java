@@ -6,6 +6,7 @@ import no.ntnu.idatg2003.mappe10.model.dice.Dice;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -20,17 +21,17 @@ public class BoardGame {
   private final List<BoardGameObserver> observers = new ArrayList<>();
 
   /**
-   * Initializes the game with the given number of dice and players.
+   * Initializes a new game with the given number of dice, tiles, rows and columns.
    *
-   * @param numberOfDice  the number of dice to use
-   * @param numberOfTiles the number of tiles to use
-   * @param rows          the number of rows in the board
-   * @param columns       the number of columns in the board
+   * @param numberOfDice    the number of dice to use
+   * @param numberOfTiles   the number of tiles to use
+   * @param numberOfRows    the number of rows in the board
+   * @param numberOfColumns the number of columns in the board
    */
-  public void initializeGame(int numberOfDice, int numberOfTiles, int rows, int columns) {
+  public void initializeNewGame(int numberOfDice, int numberOfTiles, int numberOfRows, int numberOfColumns) {
     createDice(numberOfDice);
     createPlayerList();
-    createBoard(numberOfTiles, rows, columns);
+    createBoard(numberOfTiles, numberOfRows, numberOfColumns);
   }
 
   /**
