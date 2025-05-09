@@ -1,10 +1,7 @@
 package no.ntnu.idatg2003.mappe10.model.board;
 
-import no.ntnu.idatg2003.mappe10.model.tile.LadderAction;
 import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
 import no.ntnu.idatg2003.mappe10.model.filehandler.gson.BoardFileReaderGson;
-
-import java.util.List;
 
 
 public class BoardGameFactory {
@@ -15,14 +12,27 @@ public class BoardGameFactory {
         this.gsonReader = new BoardFileReaderGson();
     }
 
-    public Board createBoard1() {
-        Board board = new Board(60,10, 10);
+    public BoardGame createLadderGame() {
+        BoardGame boardGame = new BoardGame();
+        boardGame.initializeNewGame(2, 90,9,10);
 
-        // Add ladders to the board
-        board.getTile(3).setLandAction(new LadderAction(10, "Climb to tile 10"));
-        board.getTile(6).setLandAction(new LadderAction(14, "Climb to tile 14"));
-        board.getTile(20).setLandAction(new LadderAction(38, "Climb to tile 38"));
+        int rows = boardGame.getBoard().getNumberOfRows();
+        int columns = boardGame.getBoard().getNumberOfColumns();
+        int numberOfTiles = boardGame.getBoard().getLastTile().getTileId();
 
-        return board;
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < columns; c++) {
+                // if row is even, tileId = r * columns + c + 1.
+                // if row is odd, tileId = r * columns + (columns - c)
+                // Help from ChatGPT to find the formula.
+                int tileId = (r % 2 == 0) ? r * columns + c + 1 : r * columns + (columns - c);
+                if (tileId > numberOfTiles) {
+                    break;
+                }
+                boardGame.getBoard().getTile(tileId).setCoordinate(r, c);
+            }
+        }
+
+        return boardGame;
     }
 }

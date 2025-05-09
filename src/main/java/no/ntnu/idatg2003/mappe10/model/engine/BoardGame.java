@@ -1,6 +1,8 @@
 package no.ntnu.idatg2003.mappe10.model.engine;
 
 import no.ntnu.idatg2003.mappe10.model.board.Board;
+import no.ntnu.idatg2003.mappe10.model.board.BoardGameFactory;
+import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
 import no.ntnu.idatg2003.mappe10.model.dice.Dice;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
@@ -12,24 +14,35 @@ import java.util.List;
 
 public class BoardGame {
   private Board board;
+  private Coordinate boardMax;
   private Player currentPlayer;
   private Player winner;
   private List<Player> playerList;
   private Dice dice;
-  private final List<BoardGameObserver> observers = new ArrayList<>();
+  private List<BoardGameObserver> observers;
+  private BoardGameFactory boardGameFactory;
+
+
+  public BoardGame() {
+    this.observers = new ArrayList<>();
+    this.boardGameFactory = new BoardGameFactory();
+  }
 
   /**
-   * Initializes the game with the given number of dice and players.
+   * Initializes a new game with the given number of dice, tiles, rows and columns.
    *
-   * @param numberOfDice  the number of dice to use
-   * @param numberOfTiles the number of tiles to use
-   * @param rows          the number of rows in the board
-   * @param columns       the number of columns in the board
+   * @param numberOfDice    the number of dice to use
+   * @param numberOfTiles   the number of tiles to use
+   * @param numberOfRows    the number of rows in the board
+   * @param numberOfColumns the number of columns in the board
    */
-  public void initializeGame(int numberOfDice, int numberOfTiles, int rows, int columns) {
+  public void initializeNewGame(int numberOfDice, int numberOfTiles, int numberOfRows, int numberOfColumns) {
+    if (numberOfTiles > numberOfRows * numberOfColumns) {
+      throw new IllegalArgumentException("Number of tiles cannot be greater than number of rows * number of columns");
+    }
     createDice(numberOfDice);
     createPlayerList();
-    createBoard(numberOfTiles, rows, columns);
+    createBoard(numberOfTiles, numberOfRows, numberOfColumns);
   }
 
   /**
@@ -58,11 +71,12 @@ public class BoardGame {
   }
 
   /**
-   * Creates a new board with the given number of tiles, rows and columns.
+   * Creates a new board with the given number of tiles, numberOfRows and numberOfColumns.
    * Old board is overwritten.
    */
-  public void createBoard(int numberOfTiles, int rows, int columns) {
-    board = new Board(numberOfTiles, rows, columns);
+  public void createBoard(int numberOfTiles, int numberOfRows, int numberOfColumns) {
+    board = new Board(numberOfTiles, numberOfRows, numberOfColumns);
+    boardMax = new Coordinate(numberOfRows - 1.0, numberOfColumns - 1.0);
   }
 
   /**
@@ -104,8 +118,8 @@ public class BoardGame {
         System.out.println("The winner is: " + getWinner().getName());
         return false;
       }
-      System.out.println("Player: " + currentPlayer.getName() +
-          " on tile " + currentPlayer.getCurrentTile().getTileId());
+      System.out.println("Player: " + currentPlayer.getName()
+          + " on tile " + currentPlayer.getCurrentTile().getTileId());
     }
     return true;
   }
@@ -145,6 +159,24 @@ public class BoardGame {
   public Board getBoard() {
     return board;
   }
+
+  public BoardGameFactory getFactory() {
+    return boardGameFactory;
+  }
+
+  /**
+   * Returns the transformed coordinates from the board (r, c) to the canvas (x, y).
+   *
+   * @param rc the (r, c) coordinates to transform to (x, y)
+   * @return the (x, y) coordinates corresponding to the given (r, c) coordinates
+   */
+  public Coordinate transformBoardToCanvas(Coordinate rc, Coordinate canvasMax) {
+    return new Coordinate(
+        canvasMax.getX0() / boardMax.getX1() * rc.getX1(),
+        canvasMax.getX1() - canvasMax.getX1() / boardMax.getX0() * rc.getX0()
+    );
+  }
+
 
   /**
    * Return the iterator for the player list.
