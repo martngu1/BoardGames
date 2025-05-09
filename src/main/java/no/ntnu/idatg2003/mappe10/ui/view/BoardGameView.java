@@ -8,9 +8,12 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import no.ntnu.idatg2003.mappe10.model.board.Board;
 import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
 
 public class BoardGameView extends Application {
+  private Board board;
+  private int playerCount;
   private static final int WINDOW_WIDTH = 1000;
   private static final int WINDOW_HEIGHT = 700;
   private Canvas canvas;
@@ -165,6 +168,13 @@ public class BoardGameView extends Application {
     public double prefHeight(double height) {
       return 0;
     }
+  }
+  public void setBoard(Board board) {
+    this.board = board;
+  }
+
+  public void setPlayerCount(int playerCount) {
+    this.playerCount = playerCount;
   }
 
 }
