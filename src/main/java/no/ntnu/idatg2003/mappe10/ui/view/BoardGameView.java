@@ -4,16 +4,17 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
 
 public class BoardGameView extends Application {
-  private static final int WINDOW_WIDTH = 800;
-  private static final int WINDOW_HEIGHT = 600;
+  private static final int WINDOW_WIDTH = 1000;
+  private static final int WINDOW_HEIGHT = 700;
   private Canvas canvas;
+  private BoardGameController controller;
 
   public static void main(String[] args) {
     launch(args);
@@ -21,26 +22,19 @@ public class BoardGameView extends Application {
 
   @Override
   public void init() {
+    controller = new BoardGameController(this);
+    controller.initLadderGame();
     canvas = new ResizableCanvas();
     // Redraw canvas when size changes.
     canvas.widthProperty().addListener(evt -> drawBoard());
     canvas.heightProperty().addListener(evt -> drawBoard());
-
   }
 
   /**
    * Draws the board.
    */
   private void drawBoard() {
-    double width = canvas.getWidth();
-    double height = canvas.getHeight();
-
-    GraphicsContext gc = canvas.getGraphicsContext2D();
-    gc.clearRect(0, 0, width, height);
-
-    gc.setStroke(Color.RED);
-    gc.strokeLine(0, 0, width, height);
-    gc.strokeLine(0, height, width, 0);
+    controller.drawCurrentBoard(canvas);
   }
 
 
@@ -95,12 +89,11 @@ public class BoardGameView extends Application {
 
     // Create a stack pane to hold the board and the label/button. Board is "behind" the label/buttons.
     StackPane stackPane = new StackPane();
-
     stackPane.getChildren().addAll(canvas, labelAndButton);
 
     // Binds the canvas size to the stack pane size
-    canvas.widthProperty().bind(stackPane.widthProperty());
-    canvas.heightProperty().bind(stackPane.heightProperty());
+    canvas.widthProperty().bind(stackPane.widthProperty().subtract(100));
+    canvas.heightProperty().bind(stackPane.heightProperty().subtract(100));
 
     return stackPane;
   }

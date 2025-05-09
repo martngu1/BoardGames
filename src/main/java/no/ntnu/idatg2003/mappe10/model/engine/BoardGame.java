@@ -1,6 +1,7 @@
 package no.ntnu.idatg2003.mappe10.model.engine;
 
 import no.ntnu.idatg2003.mappe10.model.board.Board;
+import no.ntnu.idatg2003.mappe10.model.board.BoardGameFactory;
 import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
 import no.ntnu.idatg2003.mappe10.model.dice.Dice;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
@@ -18,7 +19,14 @@ public class BoardGame {
   private Player winner;
   private List<Player> playerList;
   private Dice dice;
-  private final List<BoardGameObserver> observers = new ArrayList<>();
+  private List<BoardGameObserver> observers;
+  private BoardGameFactory boardGameFactory;
+
+
+  public BoardGame() {
+    this.observers = new ArrayList<>();
+    this.boardGameFactory = new BoardGameFactory();
+  }
 
   /**
    * Initializes a new game with the given number of dice, tiles, rows and columns.
@@ -29,6 +37,9 @@ public class BoardGame {
    * @param numberOfColumns the number of columns in the board
    */
   public void initializeNewGame(int numberOfDice, int numberOfTiles, int numberOfRows, int numberOfColumns) {
+    if (numberOfTiles > numberOfRows * numberOfColumns) {
+      throw new IllegalArgumentException("Number of tiles cannot be greater than number of rows * number of columns");
+    }
     createDice(numberOfDice);
     createPlayerList();
     createBoard(numberOfTiles, numberOfRows, numberOfColumns);
@@ -65,7 +76,7 @@ public class BoardGame {
    */
   public void createBoard(int numberOfTiles, int numberOfRows, int numberOfColumns) {
     board = new Board(numberOfTiles, numberOfRows, numberOfColumns);
-    boardMax = new Coordinate(numberOfRows - 1, numberOfColumns - 1);
+    boardMax = new Coordinate(numberOfRows - 1.0, numberOfColumns - 1.0);
   }
 
   /**
@@ -149,6 +160,10 @@ public class BoardGame {
     return board;
   }
 
+  public BoardGameFactory getFactory() {
+    return boardGameFactory;
+  }
+
   /**
    * Returns the transformed coordinates from the board (r, c) to the canvas (x, y).
    *
@@ -157,8 +172,8 @@ public class BoardGame {
    */
   public Coordinate transformBoardToCanvas(Coordinate rc, Coordinate canvasMax) {
     return new Coordinate(
-        Math.round((float) canvasMax.getX0() / boardMax.getX1() * rc.getX1()),
-        Math.round(canvasMax.getX1() - ((float) canvasMax.getX1() / boardMax.getX0() * rc.getX0()))
+        canvasMax.getX0() / boardMax.getX1() * rc.getX1(),
+        canvasMax.getX1() - canvasMax.getX1() / boardMax.getX0() * rc.getX0()
     );
   }
 
