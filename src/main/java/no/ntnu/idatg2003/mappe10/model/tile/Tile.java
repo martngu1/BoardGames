@@ -47,9 +47,9 @@ public class Tile {
     }
 
     /**
-     * Returns the x coordinates of the tile.
+     * Returns the coordinates of the tile.
      *
-     * @return the int x coordinates of the tile
+     * @return the Coordinate object of the tile
      */
     public Coordinate getBoardCoords() {
         return this.boardCoords;
