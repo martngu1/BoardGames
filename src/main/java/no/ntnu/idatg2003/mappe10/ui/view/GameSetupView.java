@@ -8,8 +8,15 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import no.ntnu.idatg2003.mappe10.model.board.Board;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameFactory;
+import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
+import no.ntnu.idatg2003.mappe10.ui.controller.GameSetupController;
 
 public class GameSetupView {
+    private GameSetupController controller;
+
+    public GameSetupView() {
+        this.controller = new GameSetupController(this);
+    }
 
     public void start(Stage stage) {
         stage.setTitle("Game Setup");
@@ -33,28 +40,10 @@ public class GameSetupView {
 
         Button continueButton = new Button("Continue");
         continueButton.setOnAction(e -> {
-            int playerCount = playerSpinner.getValue();
+            // Maybe use single textfield to get player names. Hard to do with spinner.
+            int amountOfPlayers = playerSpinner.getValue();
             RadioButton selectedRadio = (RadioButton) boardToggleGroup.getSelectedToggle();
-            String selectedBoard = selectedRadio.getText();
-
-            Board board = null;
-            BoardGameFactory factory = new BoardGameFactory();
-            if (selectedBoard.equals("Ladder Game")) {
-                board = factory.createLadderGame().getBoard();
-            }
-
-            if (board != null) {
-                BoardGameView boardGameView = new BoardGameView();
-                boardGameView.setBoard(board);
-                boardGameView.setPlayerCount(playerCount);
-
-                try {
-                    boardGameView.start(new Stage());
-                    stage.close();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
+            controller.doContinue(selectedRadio.getText(), stage);
         });
 
         VBox rightBox = new VBox(10, boardLabel, boardOptions, continueButton);

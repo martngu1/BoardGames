@@ -16,7 +16,7 @@ class BoardGameTest {
 
   @BeforeEach
   void setUp() {
-    boardGame = new BoardGame();
+    boardGame = new BoardGame(null, null);
   }
 
   @Test

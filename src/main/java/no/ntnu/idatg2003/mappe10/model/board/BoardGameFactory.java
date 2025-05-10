@@ -13,8 +13,10 @@ public class BoardGameFactory {
     }
 
     public BoardGame createLadderGame() {
-        BoardGame boardGame = new BoardGame();
-        boardGame.initializeNewGame(2, 90,9,10);
+        BoardGame boardGame = new BoardGame(null, null);
+        boardGame.createDice(2);
+        boardGame.createPlayerList();
+        boardGame.createBoard(90, 9, 10);
 
         int rows = boardGame.getBoard().getNumberOfRows();
         int columns = boardGame.getBoard().getNumberOfColumns();
