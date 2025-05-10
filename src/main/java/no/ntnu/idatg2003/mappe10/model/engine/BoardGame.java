@@ -29,23 +29,6 @@ public class BoardGame {
   }
 
   /**
-   * Initializes a new game with the given number of dice, tiles, rows and columns.
-   *
-   * @param numberOfDice    the number of dice to use
-   * @param numberOfTiles   the number of tiles to use
-   * @param numberOfRows    the number of rows in the board
-   * @param numberOfColumns the number of columns in the board
-   */
-  public void initializeNewGame(int numberOfDice, int numberOfTiles, int numberOfRows, int numberOfColumns) {
-    if (numberOfTiles > numberOfRows * numberOfColumns) {
-      throw new IllegalArgumentException("Number of tiles cannot be greater than number of rows * number of columns");
-    }
-    createDice(numberOfDice);
-    createPlayerList();
-    createBoard(numberOfTiles, numberOfRows, numberOfColumns);
-  }
-
-  /**
    * Places all players on the given tile.
    *
    * @param tile the tile object to place the players on
