@@ -4,6 +4,8 @@ import no.ntnu.idatg2003.mappe10.model.board.Board;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameFactory;
 import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
 import no.ntnu.idatg2003.mappe10.model.dice.Dice;
+import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileReader;
+import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileWriter;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
@@ -21,11 +23,23 @@ public class BoardGame {
   private Dice dice;
   private List<BoardGameObserver> observers;
   private BoardGameFactory boardGameFactory;
+  private BoardFileReader boardFileReader;
+  private BoardFileWriter boardFileWriter;
 
-
-  public BoardGame() {
+  /**
+   * Creates a new BoardGame with a specified BoardFileReader and BoardFileWriter.
+   * The BoardFileReader and BoardFileWriter are used to read and write to files.
+   * Filehandlers support all file formats that are currently extensions of the interface
+   * BoardFileReader and BoardFileWriter.
+   *
+   * @param reader the BoardFileReader to use
+   * @param writer the BoardFileWriter to use
+   */
+  public BoardGame(BoardFileReader reader, BoardFileWriter writer) {
     this.observers = new ArrayList<>();
     this.boardGameFactory = new BoardGameFactory();
+    this.boardFileReader = reader;
+    this.boardFileWriter = writer;
   }
 
   /**
@@ -145,6 +159,14 @@ public class BoardGame {
 
   public BoardGameFactory getFactory() {
     return boardGameFactory;
+  }
+
+  public BoardFileReader getFileReader() {
+    return boardFileReader;
+  }
+
+  public BoardFileWriter getFileWriter() {
+    return boardFileWriter;
   }
 
   /**
