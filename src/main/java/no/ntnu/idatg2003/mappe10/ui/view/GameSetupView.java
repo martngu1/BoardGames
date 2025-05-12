@@ -11,7 +11,7 @@ import no.ntnu.idatg2003.mappe10.model.board.BoardGameFactory;
 
 public class GameSetupView {
 
-    public void start(Stage stage) {
+    public Scene getGameSetupScene(Stage stage) {
         stage.setTitle("Game Setup");
 
         Label playersLabel = new Label("Number of Players:");
@@ -31,42 +31,33 @@ public class GameSetupView {
         VBox boardOptions = new VBox(10, board1Radio);
         boardOptions.setPadding(new Insets(10, 0, 10, 0));
 
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> {
+            StartPage startPage = new StartPage();
+            stage.setScene(startPage.start(stage));
+        });
+
         Button continueButton = new Button("Continue");
         continueButton.setOnAction(e -> {
             int playerCount = playerSpinner.getValue();
             RadioButton selectedRadio = (RadioButton) boardToggleGroup.getSelectedToggle();
             String selectedBoard = selectedRadio.getText();
 
-            Board board = null;
-            BoardGameFactory factory = new BoardGameFactory();
-            if (selectedBoard.equals("Ladder Game")) {
-                board = factory.createLadderGame().getBoard();
-            }
+            // TO DO: Create a method to handle the selected board, or maybe this
+            // should be done in playersetupview idk yet
 
-            if (board != null) {
-                BoardGameView boardGameView = new BoardGameView();
-                boardGameView.setBoard(board);
-                boardGameView.setPlayerCount(playerCount);
-
-                try {
-                    boardGameView.start(new Stage());
-                    stage.close();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
+            PlayerSetupView playerSetupView = new PlayerSetupView();
+            playerSetupView.getPlayerSetupScene(stage, playerCount);
         });
 
-        VBox rightBox = new VBox(10, boardLabel, boardOptions, continueButton);
+        VBox rightBox = new VBox(10, boardLabel, boardOptions, continueButton, backButton);
         rightBox.setAlignment(Pos.CENTER_LEFT);
         rightBox.setPadding(new Insets(20));
 
         HBox layout = new HBox(40, leftBox, rightBox);
         layout.setPadding(new Insets(30));
 
-        Scene scene = new Scene(layout, 450, 250);
-        stage.setScene(scene);
-        stage.show();
+        return new Scene(layout, 450, 250);
     }
 
 }

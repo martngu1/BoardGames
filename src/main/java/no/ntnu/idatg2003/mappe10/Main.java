@@ -1,6 +1,7 @@
 package no.ntnu.idatg2003.mappe10;
 
 import javafx.application.Application;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
 import no.ntnu.idatg2003.mappe10.ui.view.BoardGameView;
@@ -10,7 +11,9 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         StartPage startPage = new StartPage();
-        startPage.start(primaryStage);
+        Scene scene = startPage.start(primaryStage);
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
     public static void main(String[] args) {
