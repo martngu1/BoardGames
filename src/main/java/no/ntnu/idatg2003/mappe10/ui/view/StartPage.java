@@ -12,7 +12,7 @@ import static javafx.application.Application.launch;
 
 public class StartPage {
 
-    public void start(Stage primaryStage) {
+    public Scene start(Stage primaryStage) {
         primaryStage.setTitle("Board Game");
 
         // Game Title
@@ -31,8 +31,8 @@ public class StartPage {
         // Button actions
         startGameBtn.setOnAction(e -> {
             GameSetupView setupView = new GameSetupView();
-            setupView.start(new Stage());
-            primaryStage.close();
+            Scene setupScene = setupView.getGameSetupScene(primaryStage);
+            primaryStage.setScene(setupScene);
         });
 
         optionsBtn.setOnAction(e -> {
@@ -47,8 +47,6 @@ public class StartPage {
         layout.setAlignment(Pos.CENTER);
         layout.getChildren().addAll(title, startGameBtn, optionsBtn, exitBtn);
 
-        Scene scene = new Scene(layout, 600, 400);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        return new Scene(layout, 800, 600, javafx.scene.paint.Color.LIGHTBLUE);
     }
 }
