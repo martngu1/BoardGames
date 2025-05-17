@@ -18,7 +18,7 @@ class PlayerTest {
   void setUp() {
     boardGame = new BoardGame();
     boardGame.createBoard(4, 1, 4);
-    testPlayer = new Player("TestPlayer", "", boardGame);
+    testPlayer = new Player("TestPlayer","playingpiece", boardGame);
     /*
     Tiles:
     -----------------

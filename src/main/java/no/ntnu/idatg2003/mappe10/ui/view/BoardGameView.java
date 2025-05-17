@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import no.ntnu.idatg2003.mappe10.model.player.PlayingPiece;
 import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
+import no.ntnu.idatg2003.mappe10.ui.controller.SoundController;
 
 import java.util.List;
 import java.util.Map;
@@ -18,8 +19,10 @@ public class BoardGameView {
   private static final int WINDOW_HEIGHT = 700;
   private Canvas canvas;
   private BoardGameController controller;
+  private SoundController soundController;
 
   public BoardGameView() {
+    soundController = new SoundController();
     controller = new BoardGameController(this);
     canvas = new ResizableCanvas();
     // Redraw canvas when size changes.
@@ -60,7 +63,13 @@ public class BoardGameView {
   private StackPane createBoardElements() {
     // Create buttons to roll the dice
     Button rollButton1 = new Button("Roll Die");
+    rollButton1.setOnAction(e ->{
+            soundController.playDiceRollSound();
+    });
     Button rollButton2 = new Button("Roll All Dice");
+    rollButton2.setOnAction(e -> {
+            soundController.playDiceRollSound();
+    });
     rollButton1.setScaleShape(true);
     rollButton2.setScaleShape(true);
     double buttonWidth = 150;

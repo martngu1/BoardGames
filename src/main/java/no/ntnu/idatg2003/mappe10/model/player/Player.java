@@ -72,6 +72,11 @@ public class Player {
   public String getPlayingPiece(){
     return playingPiece;
   }
+    /**
+     * Set the playing piece of the player.
+     *
+     * @param playingPiece the new playing piece of the player
+     */
   public void setPlayingPiece(String playingPiece){
     this.playingPiece = playingPiece;
   }
