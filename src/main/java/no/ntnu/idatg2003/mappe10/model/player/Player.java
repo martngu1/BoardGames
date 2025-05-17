@@ -20,8 +20,9 @@ public class Player {
    * @param name the name of the player
    * @param game the game the player is added to
    */
-  public Player(String name, BoardGame game) {
+  public Player(String name, String playingPiece, BoardGame game) {
     this.name = name;
+    this.playingPiece = playingPiece;
     game.addPlayer(this);
   }
 

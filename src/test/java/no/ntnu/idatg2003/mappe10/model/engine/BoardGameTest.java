@@ -16,7 +16,7 @@ class BoardGameTest {
 
   @BeforeEach
   void setUp() {
-    boardGame = new BoardGame();
+    boardGame = new BoardGame(null, null);
   }
 
   @Test
@@ -44,8 +44,8 @@ class BoardGameTest {
 
     Coordinate canvasCoords = boardGame.transformBoardToCanvas(boardCoords, canvasMaxCoords);
 
-    assertEquals(2, canvasCoords.getX0()); // Expected x = 6/4*1 = 1.5 -> rounds to 2
-    assertEquals(5, canvasCoords.getX1()); // Expected y = 6-(6/4)*1 = 4.5 -> rounds to 5
+    assertEquals(1.5, canvasCoords.getX0()); // Expected x = 6/4*1 = 1.5
+    assertEquals(4.5, canvasCoords.getX1()); // Expected y = 6-(6/4)*1 = 4.5
 
   }
 }
