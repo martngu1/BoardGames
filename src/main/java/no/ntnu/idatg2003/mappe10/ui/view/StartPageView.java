@@ -1,5 +1,6 @@
 package no.ntnu.idatg2003.mappe10.ui.view;
 
+import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -7,12 +8,26 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import no.ntnu.idatg2003.mappe10.ui.controller.StartPageController;
 
 import static javafx.application.Application.launch;
 
-public class StartPage {
+public class StartPageView extends Application {
+    private StartPageController controller;
+    private static final int WINDOW_WIDTH = 600;
+    private static final int WINDOW_HEIGHT = 400;
 
-    public Scene start(Stage primaryStage) {
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void init() {
+        controller = new StartPageController(this);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
         primaryStage.setTitle("Board Game");
 
         // Game Title
@@ -29,11 +44,7 @@ public class StartPage {
         exitBtn.setPrefWidth(200);
 
         // Button actions
-        startGameBtn.setOnAction(e -> {
-            GameSetupView setupView = new GameSetupView();
-            Scene setupScene = setupView.getGameSetupScene(primaryStage);
-            primaryStage.setScene(setupScene);
-        });
+        startGameBtn.setOnAction(e -> controller.doStartGame(primaryStage));
 
         optionsBtn.setOnAction(e -> {
             System.out.println("fikse senere");
@@ -47,6 +58,8 @@ public class StartPage {
         layout.setAlignment(Pos.CENTER);
         layout.getChildren().addAll(title, startGameBtn, optionsBtn, exitBtn);
 
-        return new Scene(layout, 800, 600, javafx.scene.paint.Color.LIGHTBLUE);
+        Scene scene = new Scene(layout, WINDOW_WIDTH, WINDOW_HEIGHT);
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 }

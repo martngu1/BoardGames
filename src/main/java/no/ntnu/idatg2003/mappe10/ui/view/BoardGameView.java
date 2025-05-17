@@ -1,6 +1,5 @@
 package no.ntnu.idatg2003.mappe10.ui.view;
 
-import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -8,25 +7,17 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import no.ntnu.idatg2003.mappe10.model.board.Board;
 import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
 
-public class BoardGameView extends Application {
-  private Board board;
+public class BoardGameView {
   private int playerCount;
   private static final int WINDOW_WIDTH = 1000;
   private static final int WINDOW_HEIGHT = 700;
   private Canvas canvas;
   private BoardGameController controller;
 
-  public static void main(String[] args) {
-    launch(args);
-  }
-
-  @Override
-  public void init() {
+  public BoardGameView() {
     controller = new BoardGameController(this);
-    controller.initLadderGame();
     canvas = new ResizableCanvas();
     // Redraw canvas when size changes.
     canvas.widthProperty().addListener(evt -> drawBoard());
@@ -41,14 +32,16 @@ public class BoardGameView extends Application {
   }
 
 
-  @Override
-  public void start(Stage primaryStage) {
+  public void start(String selectedBoard) {
+    controller.initBoardGame(selectedBoard);
+
     BorderPane root = new BorderPane();
     root.setTop(createTopMenuBar());
     root.setCenter(createBoardElements());
 
     Scene scene = new Scene(root);
 
+    Stage primaryStage = new Stage();
     primaryStage.setScene(scene);
     primaryStage.setTitle("Board Game");
     primaryStage.setWidth(WINDOW_WIDTH);
@@ -124,6 +117,9 @@ public class BoardGameView extends Application {
     return menuBar;
   }
 
+  public void setPlayerCount(int playerCount) {
+    this.playerCount = playerCount;
+  }
 
   /**
    * A resizable canvas that redraws itself when the size changes.
@@ -134,7 +130,7 @@ public class BoardGameView extends Application {
    * <a href="https://dlemmermann.wordpress.com/2014/04/10/javafx-tip-1-resizable-canvas/">Resizable Canvas</a></p>
    *
    */
-  class ResizableCanvas extends Canvas {
+  static class ResizableCanvas extends Canvas {
 
     /**
      * Overrides the isResizable method to be true. This allows the canvas to be resized.
@@ -168,13 +164,6 @@ public class BoardGameView extends Application {
     public double prefHeight(double height) {
       return 0;
     }
-  }
-  public void setBoard(Board board) {
-    this.board = board;
-  }
-
-  public void setPlayerCount(int playerCount) {
-    this.playerCount = playerCount;
   }
 
 }

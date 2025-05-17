@@ -8,10 +8,17 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import no.ntnu.idatg2003.mappe10.model.board.Board;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameFactory;
+import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
+import no.ntnu.idatg2003.mappe10.ui.controller.GameSetupController;
 
 public class GameSetupView {
+    private GameSetupController controller;
 
-    public Scene getGameSetupScene(Stage stage) {
+    public GameSetupView() {
+        this.controller = new GameSetupController(this);
+    }
+
+    public void start(Stage stage) {
         stage.setTitle("Game Setup");
 
         Label playersLabel = new Label("Number of Players:");
@@ -31,33 +38,24 @@ public class GameSetupView {
         VBox boardOptions = new VBox(10, board1Radio);
         boardOptions.setPadding(new Insets(10, 0, 10, 0));
 
-        Button backButton = new Button("Back");
-        backButton.setOnAction(e -> {
-            StartPage startPage = new StartPage();
-            stage.setScene(startPage.start(stage));
-        });
-
         Button continueButton = new Button("Continue");
         continueButton.setOnAction(e -> {
-            int playerCount = playerSpinner.getValue();
+            // Maybe use single textfield to get player names. Hard to do with spinner.
+            int amountOfPlayers = playerSpinner.getValue();
             RadioButton selectedRadio = (RadioButton) boardToggleGroup.getSelectedToggle();
-            String selectedBoard = selectedRadio.getText();
-
-            // TO DO: Create a method to handle the selected board, or maybe this
-            // should be done in playersetupview idk yet
-
-            PlayerSetupView playerSetupView = new PlayerSetupView();
-            playerSetupView.getPlayerSetupScene(stage, playerCount);
+            controller.doContinue(selectedRadio.getText(), stage);
         });
 
-        VBox rightBox = new VBox(10, boardLabel, boardOptions, continueButton, backButton);
+        VBox rightBox = new VBox(10, boardLabel, boardOptions, continueButton);
         rightBox.setAlignment(Pos.CENTER_LEFT);
         rightBox.setPadding(new Insets(20));
 
         HBox layout = new HBox(40, leftBox, rightBox);
         layout.setPadding(new Insets(30));
 
-        return new Scene(layout, 450, 250);
+        Scene scene = new Scene(layout, 450, 250);
+        stage.setScene(scene);
+        stage.show();
     }
 
 }

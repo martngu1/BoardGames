@@ -4,6 +4,8 @@ import no.ntnu.idatg2003.mappe10.model.board.Board;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameFactory;
 import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
 import no.ntnu.idatg2003.mappe10.model.dice.Dice;
+import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileReader;
+import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileWriter;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
@@ -21,28 +23,23 @@ public class BoardGame {
   private Dice dice;
   private List<BoardGameObserver> observers;
   private BoardGameFactory boardGameFactory;
-
-
-  public BoardGame() {
-    this.observers = new ArrayList<>();
-    this.boardGameFactory = new BoardGameFactory();
-  }
+  private BoardFileReader boardFileReader;
+  private BoardFileWriter boardFileWriter;
 
   /**
-   * Initializes a new game with the given number of dice, tiles, rows and columns.
+   * Creates a new BoardGame with a specified BoardFileReader and BoardFileWriter.
+   * The BoardFileReader and BoardFileWriter are used to read and write to files.
+   * Filehandlers support all file formats that are currently extensions of the interface
+   * BoardFileReader and BoardFileWriter.
    *
-   * @param numberOfDice    the number of dice to use
-   * @param numberOfTiles   the number of tiles to use
-   * @param numberOfRows    the number of rows in the board
-   * @param numberOfColumns the number of columns in the board
+   * @param reader the BoardFileReader to use
+   * @param writer the BoardFileWriter to use
    */
-  public void initializeNewGame(int numberOfDice, int numberOfTiles, int numberOfRows, int numberOfColumns) {
-    if (numberOfTiles > numberOfRows * numberOfColumns) {
-      throw new IllegalArgumentException("Number of tiles cannot be greater than number of rows * number of columns");
-    }
-    createDice(numberOfDice);
-    createPlayerList();
-    createBoard(numberOfTiles, numberOfRows, numberOfColumns);
+  public BoardGame(BoardFileReader reader, BoardFileWriter writer) {
+    this.observers = new ArrayList<>();
+    this.boardGameFactory = new BoardGameFactory();
+    this.boardFileReader = reader;
+    this.boardFileWriter = writer;
   }
 
   /**
@@ -162,6 +159,14 @@ public class BoardGame {
 
   public BoardGameFactory getFactory() {
     return boardGameFactory;
+  }
+
+  public BoardFileReader getFileReader() {
+    return boardFileReader;
+  }
+
+  public BoardFileWriter getFileWriter() {
+    return boardFileWriter;
   }
 
   /**
