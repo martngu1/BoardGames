@@ -39,8 +39,8 @@ public class BoardGameController {
    *
    * @param playerName the name of the player
    */
-  public void addPlayer(String playerName) {
-    new Player(playerName, boardGame);
+  public void addPlayer(String playerName, String playingPiece) {
+    new Player(playerName,playingPiece, boardGame);
   }
 
   public void drawCurrentBoard(Canvas canvas) {

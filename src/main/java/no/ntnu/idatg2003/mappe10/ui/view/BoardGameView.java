@@ -7,6 +7,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import no.ntnu.idatg2003.mappe10.model.player.PlayingPiece;
 import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
 
 public class BoardGameView {
@@ -119,6 +120,10 @@ public class BoardGameView {
 
   public void setPlayerCount(int playerCount) {
     this.playerCount = playerCount;
+  }
+
+  public void addPlayer(String playerName, String playingPiece) {
+    controller.addPlayer(playerName, playingPiece);
   }
 
   /**

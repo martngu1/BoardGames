@@ -26,7 +26,7 @@ public class CSVFileHandler{
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                Player player = new Player(parts[0], game);
+                Player player = new Player(parts[0],"TODO: addplaying piece to CSV, save and laod", game);
                 player.setPlayingPiece(parts[1]);
                 players.add(player);
             }

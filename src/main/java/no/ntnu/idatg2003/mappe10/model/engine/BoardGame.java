@@ -34,6 +34,7 @@ public class BoardGame {
     this.observers = new ArrayList<>();
     this.boardGameFactory = new BoardGameFactory();
     this.boardPath = "./src/main/resources/board/";
+    this.playerList = new ArrayList<>();
   }
 
   /**
@@ -43,13 +44,6 @@ public class BoardGame {
    */
   public void placeAllPlayersOnTile(Tile tile) {
     playerList.forEach(player -> player.placeOnTile(tile));
-  }
-
-  /**
-   * Creates a new player list. Old player list is overwritten.
-   */
-  public void createPlayerList() {
-    playerList = new ArrayList<>();
   }
 
   /**
