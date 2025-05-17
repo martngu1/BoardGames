@@ -10,8 +10,10 @@ import javafx.stage.Stage;
 import no.ntnu.idatg2003.mappe10.model.player.PlayingPiece;
 import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
 
+import java.util.List;
+import java.util.Map;
+
 public class BoardGameView {
-  private int playerCount;
   private static final int WINDOW_WIDTH = 1000;
   private static final int WINDOW_HEIGHT = 700;
   private Canvas canvas;
@@ -32,9 +34,14 @@ public class BoardGameView {
     controller.drawCurrentBoard(canvas);
   }
 
-
-  public void start(String selectedBoard) {
+  public void start(String selectedBoard, Map<String, String> playersAndPieces) {
+    // Initialize the board game with the selected board and players
     controller.initBoardGame(selectedBoard);
+    playersAndPieces.keySet().forEach(playerName -> {
+      String playingPiece = playersAndPieces.get(playerName);
+      controller.addPlayer(playerName, playingPiece);
+    });
+    controller.placePlayerOnStartTile();
 
     BorderPane root = new BorderPane();
     root.setTop(createTopMenuBar());
@@ -116,14 +123,6 @@ public class BoardGameView {
     menuBar.getMenus().addAll(loadMenu, saveMenu, settingsMenu);
 
     return menuBar;
-  }
-
-  public void setPlayerCount(int playerCount) {
-    this.playerCount = playerCount;
-  }
-
-  public void addPlayer(String playerName, String playingPiece) {
-    controller.addPlayer(playerName, playingPiece);
   }
 
   /**

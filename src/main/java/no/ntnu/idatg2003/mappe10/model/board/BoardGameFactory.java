@@ -2,6 +2,7 @@ package no.ntnu.idatg2003.mappe10.model.board;
 
 import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
 import no.ntnu.idatg2003.mappe10.model.filehandler.gson.BoardFileReaderGson;
+import no.ntnu.idatg2003.mappe10.ui.view.BoardGameView;
 
 
 public class BoardGameFactory {
@@ -15,7 +16,6 @@ public class BoardGameFactory {
     public BoardGame createLadderGame() {
         BoardGame boardGame = new BoardGame();
         boardGame.createDice(2);
-        boardGame.createPlayerList();
         boardGame.createBoard(90, 9, 10);
 
         int rows = boardGame.getBoard().getNumberOfRows();

@@ -15,6 +15,7 @@ import no.ntnu.idatg2003.mappe10.model.board.BoardGameFactory;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,8 +23,7 @@ public class PlayerSetupView {
 
     private final List<String> availablePieces = List.of("Apple", "Bee", "Computer", "Magic 8 Ball", "Trumpet");
     private final List<ComboBox<String>> pieceComboBoxes = new ArrayList<>();
-    private final List<String> selectedPieces = new ArrayList<>();
-    private final List<String> selectedNames = new ArrayList<>();
+    private final HashMap<String, String> playersAndPieces = new HashMap<>();
 
 
     public void getPlayerSetupScene(Stage stage, int playerCount, String selectedBoard) {
@@ -39,8 +39,7 @@ public class PlayerSetupView {
 
         Button continueButton = new Button("Continue");
         continueButton.setOnAction(e -> {
-            selectedPieces.clear();
-            selectedNames.clear();
+            playersAndPieces.clear();
 
             for (int i = 0; i < playerCount; i++) {
                 HBox playerBox = (HBox) root.getChildren().get(i + 1); // +1 accounts for topSection
@@ -54,21 +53,13 @@ public class PlayerSetupView {
                     System.out.println("Please enter name and select a piece for all players.");
                     return;
                 }
-                System.out.println("Player " + (i + 1) + ": " + playerName + " with piece: " + selectedPiece);
 
-                selectedNames.add(playerName);
-                selectedPieces.add(selectedPiece);
+                playersAndPieces.put(playerName, selectedPiece);
             }
 
             // Create BoardGameView and add players
             BoardGameView boardGameView = new BoardGameView();
-            boardGameView.setPlayerCount(playerCount);
-
-            for (int i = 0; i < playerCount; i++) {
-                boardGameView.addPlayer(selectedNames.get(i), selectedPieces.get(i));
-            }
-
-            boardGameView.start(selectedBoard);
+            boardGameView.start(selectedBoard, playersAndPieces);
             Stage currentStage = (Stage) root.getScene().getWindow();
             currentStage.close(); // Close the player setup window
         });
