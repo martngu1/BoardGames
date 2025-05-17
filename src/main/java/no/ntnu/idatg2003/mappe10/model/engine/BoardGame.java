@@ -6,6 +6,7 @@ import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
 import no.ntnu.idatg2003.mappe10.model.dice.Dice;
 import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileReader;
 import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileWriter;
+import no.ntnu.idatg2003.mappe10.model.filehandler.gson.BoardFileWriterGson;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
@@ -23,23 +24,16 @@ public class BoardGame {
   private Dice dice;
   private List<BoardGameObserver> observers;
   private BoardGameFactory boardGameFactory;
-  private BoardFileReader boardFileReader;
-  private BoardFileWriter boardFileWriter;
+  private String boardPath;
 
   /**
-   * Creates a new BoardGame with a specified BoardFileReader and BoardFileWriter.
-   * The BoardFileReader and BoardFileWriter are used to read and write to files.
-   * Filehandlers support all file formats that are currently extensions of the interface
-   * BoardFileReader and BoardFileWriter.
-   *
-   * @param reader the BoardFileReader to use
-   * @param writer the BoardFileWriter to use
+   * Creates a new BoardGame object.
+   * Note that a player list must be created after the object is constructed.
    */
-  public BoardGame(BoardFileReader reader, BoardFileWriter writer) {
+  public BoardGame() {
     this.observers = new ArrayList<>();
     this.boardGameFactory = new BoardGameFactory();
-    this.boardFileReader = reader;
-    this.boardFileWriter = writer;
+    this.boardPath = "./src/main/resources/board/";
   }
 
   /**
@@ -161,12 +155,13 @@ public class BoardGame {
     return boardGameFactory;
   }
 
-  public BoardFileReader getFileReader() {
-    return boardFileReader;
-  }
-
-  public BoardFileWriter getFileWriter() {
-    return boardFileWriter;
+  public void saveBoard(String fileName, String formatType) {
+    BoardFileWriter writer;
+    switch (formatType.toLowerCase()) {
+      case "json" -> writer = new BoardFileWriterGson();
+      default -> throw new IllegalArgumentException("Unsupported format type: " + formatType);
+    }
+    writer.writeBoard(this.boardPath + fileName, this.board);
   }
 
   /**

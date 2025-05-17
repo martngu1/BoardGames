@@ -13,7 +13,7 @@ public class BoardGameFactory {
     }
 
     public BoardGame createLadderGame() {
-        BoardGame boardGame = new BoardGame(null, null);
+        BoardGame boardGame = new BoardGame();
         boardGame.createDice(2);
         boardGame.createPlayerList();
         boardGame.createBoard(90, 9, 10);
