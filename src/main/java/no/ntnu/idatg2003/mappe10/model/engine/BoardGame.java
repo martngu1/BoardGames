@@ -26,6 +26,7 @@ public class BoardGame {
   private BoardFileReader boardFileReader;
   private BoardFileWriter boardFileWriter;
 
+
   /**
    * Creates a new BoardGame with a specified BoardFileReader and BoardFileWriter.
    * The BoardFileReader and BoardFileWriter are used to read and write to files.
@@ -40,6 +41,7 @@ public class BoardGame {
     this.boardGameFactory = new BoardGameFactory();
     this.boardFileReader = reader;
     this.boardFileWriter = writer;
+    this.playerList = new ArrayList<>();
   }
 
   /**

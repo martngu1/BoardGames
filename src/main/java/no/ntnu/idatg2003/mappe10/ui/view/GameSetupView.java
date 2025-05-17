@@ -34,6 +34,13 @@ public class GameSetupView {
         board1Radio.setToggleGroup(boardToggleGroup);
         board1Radio.setSelected(true);
 
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> {
+            StartPageView startPageView = new StartPageView();
+            startPageView.start(stage);
+        });
+
+
         // Add more boards senere
         VBox boardOptions = new VBox(10, board1Radio);
         boardOptions.setPadding(new Insets(10, 0, 10, 0));
@@ -43,10 +50,10 @@ public class GameSetupView {
             // Maybe use single textfield to get player names. Hard to do with spinner.
             int amountOfPlayers = playerSpinner.getValue();
             RadioButton selectedRadio = (RadioButton) boardToggleGroup.getSelectedToggle();
-            controller.doContinue(selectedRadio.getText(), stage);
+            controller.doContinue(selectedRadio.getText(), stage, amountOfPlayers);
         });
 
-        VBox rightBox = new VBox(10, boardLabel, boardOptions, continueButton);
+        VBox rightBox = new VBox(10, boardLabel, boardOptions, continueButton, backButton);
         rightBox.setAlignment(Pos.CENTER_LEFT);
         rightBox.setPadding(new Insets(20));
 

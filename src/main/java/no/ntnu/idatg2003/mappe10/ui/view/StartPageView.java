@@ -10,7 +10,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import no.ntnu.idatg2003.mappe10.ui.controller.StartPageController;
 
-import static javafx.application.Application.launch;
 
 public class StartPageView extends Application {
     private StartPageController controller;
@@ -21,13 +20,9 @@ public class StartPageView extends Application {
         launch(args);
     }
 
-    @Override
-    public void init() {
-        controller = new StartPageController(this);
-    }
-
-    @Override
     public void start(Stage primaryStage) {
+        controller = new StartPageController(this);
+
         primaryStage.setTitle("Board Game");
 
         // Game Title
