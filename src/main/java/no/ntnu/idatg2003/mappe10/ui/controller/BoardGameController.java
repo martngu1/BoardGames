@@ -5,6 +5,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
 import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
+import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileReader;
+import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileWriter;
+import no.ntnu.idatg2003.mappe10.model.filehandler.gson.BoardFileReaderGson;
+import no.ntnu.idatg2003.mappe10.model.filehandler.gson.BoardFileWriterGson;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 import no.ntnu.idatg2003.mappe10.ui.view.BoardGameView;
@@ -14,25 +18,21 @@ public class BoardGameController {
   BoardGame boardGame;
 
   /**
-   * Creates a new BoardGameController with the given view.
+   * Creates a new BoardGameController with the given BoardGameView.
    *
    * @param view the view to control
    */
   public BoardGameController(BoardGameView view) {
     this.boardGameView = view;
-    this.boardGame = new BoardGame();
+    BoardFileWriter writer = new BoardFileWriterGson(); // Change file writer to other formats if needed
+    BoardFileReader reader = new BoardFileReaderGson(); // Change file reader to other formats if needed
+    this.boardGame = new BoardGame(reader, writer);
   }
 
-  /**
-   * Initializes the game with the given number of dice and players.
-   *
-   * @param numberOfDice  the number of dice to use
-   * @param numberOfTiles the number of tiles to use
-   * @param rows          the number of rows in the board
-   * @param columns       the number of columns in the board
-   */
-  public void initializeNewGame(int numberOfDice, int numberOfTiles, int rows, int columns) {
-    boardGame.initializeNewGame(numberOfDice, numberOfTiles, rows, columns);
+  public void initBoardGame(String selectedBoard) {
+    if (selectedBoard.equals("Ladder Game")) {
+    initLadderGame();
+    }
   }
 
   public void initLadderGame() {
@@ -45,8 +45,8 @@ public class BoardGameController {
    *
    * @param playerName the name of the player
    */
-  public void addPlayer(String playerName) {
-    new Player(playerName, boardGame);
+  public void addPlayer(String playerName, String playingPiece) {
+    new Player(playerName,playingPiece, boardGame);
   }
 
   public void drawCurrentBoard(Canvas canvas) {

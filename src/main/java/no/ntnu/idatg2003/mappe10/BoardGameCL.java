@@ -7,12 +7,15 @@ import java.util.Iterator;
 
 public class BoardGameCL {
   public static void main(String[] args) {
-    BoardGame boardGame = new BoardGame();
-    boardGame.initializeNewGame(2, 100, 10, 10);
-    new Player("Player 1", boardGame);
-    new Player("Player 2", boardGame);
-    new Player("Player 3", boardGame);
-    new Player("Player 4", boardGame);
+    BoardGame boardGame = new BoardGame(null, null);
+    boardGame.createDice(2);
+    boardGame.createPlayerList();
+    boardGame.createBoard(90, 9, 10);
+
+    new Player("Player 1", "playingpiece1",boardGame);
+    new Player("Player 2", "playingpiece2",boardGame);
+    new Player("Player 3", "playingpiece3",boardGame);
+    new Player("Player 4", "playingpiece4",boardGame);
     boardGame.placeAllPlayersOnTile(boardGame.getBoard().getFirstTile());
 
     System.out.println("Starting game...\n\nThe following players are playing the game:");
