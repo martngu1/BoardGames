@@ -16,10 +16,9 @@ class PlayerTest {
 
   @BeforeEach
   void setUp() {
-    boardGame = new BoardGame(null, null);
-    boardGame.createPlayerList();
+    boardGame = new BoardGame();
     boardGame.createBoard(4, 1, 4);
-    testPlayer = new Player("TestPlayer", boardGame);
+    testPlayer = new Player("TestPlayer","playingpiece", boardGame);
     /*
     Tiles:
     -----------------

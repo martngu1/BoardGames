@@ -1,5 +1,8 @@
 package no.ntnu.idatg2003.mappe10.model.coordinate;
 
+/**
+ * Represents a coordinate in a 2D space with x and y values.
+ */
 public class Coordinate {
   private double x0;
   private double x1;

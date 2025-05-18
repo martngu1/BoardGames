@@ -16,16 +16,15 @@ class BoardGameTest {
 
   @BeforeEach
   void setUp() {
-    boardGame = new BoardGame(null, null);
+    boardGame = new BoardGame();
   }
 
   @Test
   void placeAllPlayersOnTilePositiveTest() {
     Tile tile = new Tile(0);
-    boardGame.createPlayerList();
-    new Player("TestPlayer1", boardGame);
-    new Player("TestPlayer2", boardGame);
-    new Player("TestPlayer3", boardGame);
+    new Player("TestPlayer1","1", boardGame);
+    new Player("TestPlayer2","2", boardGame);
+    new Player("TestPlayer3","3", boardGame);
 
     boardGame.placeAllPlayersOnTile(tile);
 
