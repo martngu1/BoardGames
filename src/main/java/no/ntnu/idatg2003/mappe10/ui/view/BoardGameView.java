@@ -1,5 +1,7 @@
 package no.ntnu.idatg2003.mappe10.ui.view;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -11,10 +13,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
-import no.ntnu.idatg2003.mappe10.model.dice.Dice;
-import no.ntnu.idatg2003.mappe10.model.player.Player;
-import no.ntnu.idatg2003.mappe10.model.player.PlayingPiece;
 import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
 import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
 import no.ntnu.idatg2003.mappe10.ui.controller.SoundController;
@@ -22,6 +22,7 @@ import no.ntnu.idatg2003.mappe10.ui.controller.SoundController;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class BoardGameView implements BoardGameObserver {
   private static final int WINDOW_WIDTH = 1000;
@@ -218,13 +219,7 @@ public class BoardGameView implements BoardGameObserver {
     return rightBox;
   }
 
-  public void setDiceBoxVisible(boolean visible) {
-    if (diceBox != null) {
-      diceBox.setVisible(visible);
-    } else {
-      System.err.println("diceBox is null in setDiceBoxVisible");
-    }
-  }
+
   public void showDiceResults(List<Integer> diceResults, int amountOfDice) {
     diceBox.setVisible(true);
     diceBox.getChildren().clear(); // clear the old image

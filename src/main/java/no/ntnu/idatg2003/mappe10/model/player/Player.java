@@ -34,16 +34,14 @@ public class Player {
   }
 
   /**
-   * Moves the player a given number of steps on the board.
-   *
-   * @param steps the number of steps to move
+   * Move the player to the next tile.
    */
-  public void move(int steps) {
-    Tile tileDummy = currentTile;
-    for (int i=0; i < steps && (tileDummy.getNextTile() != null); i++) {
-      tileDummy = tileDummy.getNextTile();
+  public void move() {
+    if (currentTile.getNextTile() == null) {
+      this.placeOnTile(currentTile);
+      return;
     }
-    this.placeOnTile(tileDummy);
+    this.placeOnTile(currentTile.getNextTile());
   }
 
   /**

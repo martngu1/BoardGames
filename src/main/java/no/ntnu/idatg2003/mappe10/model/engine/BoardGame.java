@@ -77,9 +77,12 @@ public class BoardGame {
    * Roll the dice and move the number of steps rolled for the current player.
    */
   public void play() {
-    int diceRoll = dice.roll();
-    currentPlayer.move(diceRoll);
+    currentPlayer.move();
     notifyObservers();
+  }
+
+  public int rollDice() {
+    return dice.roll();
   }
 
   public int getDieValue(int dieNumber) {
@@ -104,14 +107,16 @@ public class BoardGame {
     for (Player player : playerList) {
       currentPlayer = player;
       int diceRoll = dice.roll();
-      currentPlayer.move(diceRoll);
+      for (int i = 0; i < diceRoll; i++) {
+        currentPlayer.move();
+      }
       if (playerWon()) {
         winner = currentPlayer;
         System.out.println("The winner is: " + getWinner().getName());
         return false;
       }
       System.out.println("Player: " + currentPlayer.getName()
-          + " on tile " + currentPlayer.getCurrentTile().getTileId());
+            + " on tile " + currentPlayer.getCurrentTile().getTileId());
     }
     return true;
   }
@@ -177,8 +182,8 @@ public class BoardGame {
    */
   public Coordinate transformBoardToCanvas(Coordinate rc, Coordinate canvasMax) {
     return new Coordinate(
-        canvasMax.getX0() / boardMax.getX1() * rc.getX1(),
-        canvasMax.getX1() - canvasMax.getX1() / boardMax.getX0() * rc.getX0()
+          canvasMax.getX0() / boardMax.getX1() * rc.getX1(),
+          canvasMax.getX1() - canvasMax.getX1() / boardMax.getX0() * rc.getX0()
     );
   }
 
