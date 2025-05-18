@@ -1,8 +1,11 @@
 package no.ntnu.idatg2003.mappe10.ui.controller;
 
+import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
 import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
@@ -15,9 +18,11 @@ import java.io.InputStream;
 import java.util.*;
 
 public class BoardGameController {
-  BoardGameView boardGameView;
-  BoardGame boardGame;
-  Queue<String> playerQueue;
+  private BoardGameView boardGameView;
+  private BoardGame boardGame;
+  private Queue<String> playerQueue;
+  private Roller roller;
+
 
   /**
    * Creates a new BoardGameController with the given BoardGameView.
@@ -31,13 +36,21 @@ public class BoardGameController {
   }
 
   public void initBoardGame(String selectedBoard) {
+    roller = new Roller();
     if (selectedBoard.equals("Ladder Game")) {
       initLadderGame();
     }
   }
 
+  public void arrangePlayerTurns() {
+    // Sets the current player to the first player in the queue but does not remove them from the queue
+    boardGame.setCurrentPlayer(playerQueue.peek());
+    boardGameView.setCurrentPlayerLabel(boardGame.getCurrentPlayer().getName());
+  }
+
   public void initLadderGame() {
     boardGame = boardGame.getFactory().createLadderGame();
+
   }
 
   public void registerObserver(BoardGameObserver observer) {
@@ -53,10 +66,32 @@ public class BoardGameController {
   }
 
   public void playTurn() {
-    boardGame.setCurrentPlayer(playerQueue.poll());
-    boardGame.play();
-    playerQueue.add(boardGame.getCurrentPlayer().getName());
-    System.out.println("Current player: " + boardGame.getCurrentPlayer().getName());
+    if (roller == null){
+      roller = new Roller();
+    }
+
+    roller.start(() -> {
+      boardGame.setCurrentPlayer(playerQueue.poll());
+      boardGame.play();
+      displayDiceResults();
+      playerQueue.add(boardGame.getCurrentPlayer().getName());
+      boardGameView.setCurrentPlayerLabel(playerQueue.peek());
+      System.out.println("Current player: " + boardGame.getCurrentPlayer().getName());
+    });
+  }
+
+  public void displayDiceResults() {
+    List <Integer> diceResults = new ArrayList<>();
+    for (int i = 0; i < boardGame.getDiceAmount(); i++) {
+      int diceResult = boardGame.getDieValue(i);
+      diceResults.add(diceResult);
+    }
+      boardGameView.showDiceResults(diceResults, boardGame.getDiceAmount());
+  }
+
+
+  public String getCurrentPlayerName() {
+    return boardGame.getCurrentPlayer().getName();
   }
 
   public void placePlayerOnStartTile() {
@@ -106,6 +141,7 @@ public class BoardGameController {
     }
   }
 
+
   private void drawPlayers(Tile tile, GraphicsContext gc, double x, double y, double tileWidth, double tileHeight) {
     Iterator<Player> playerIterator = boardGame.getPlayerListIterator();
     while (playerIterator.hasNext()) {
@@ -122,4 +158,44 @@ public class BoardGameController {
       }
     }
   }
-}
+
+
+  /**
+   * Animation for rolling the dice
+   *
+   * <p>This class is based on the example provided by Mark Goadrich:
+   * <a href="https://www.youtube.com/watch?v=WZmKAMSMTPo">Pig Dice Game using JavaFX - 6: Animating the Die Roll</a></p>
+   */
+  private class Roller extends AnimationTimer {
+    private long startTime;
+    private long lastUpdate;
+    private Runnable onFinished;
+
+    public void start(Runnable onFinished) {
+      this.onFinished = onFinished;
+      startTime = System.nanoTime();
+      lastUpdate = startTime;
+      boardGameView.setDiceBoxVisible(true);
+      super.start();
+    }
+
+    @Override
+    public void handle(long now) {
+      if (now - startTime > 1_000_000_000L) { // 1 second duration
+        stop();
+        if (onFinished != null) onFinished.run(); // Do real roll after animation ends
+        return;
+      }
+
+      if (now - lastUpdate > 100_000_000L) { // update every 100ms
+        int diceAmount = boardGame.getDiceAmount();
+        List <Integer> diceResults = new ArrayList<>();
+        for (int i = 0; i < diceAmount; i++) {
+          diceResults.add(1 + (int) (Math.random() * 6));
+        }
+          boardGameView.showDiceResults(diceResults,boardGame.getDiceAmount() );
+          lastUpdate = now;
+        }
+      }
+    }
+  }

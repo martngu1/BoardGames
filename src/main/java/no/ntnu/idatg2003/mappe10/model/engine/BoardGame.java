@@ -82,6 +82,14 @@ public class BoardGame {
     notifyObservers();
   }
 
+  public int getDieValue(int dieNumber) {
+    return dice.getDie(dieNumber);
+  }
+
+  public int getDiceAmount() {
+    return dice.getNumberOfDice();
+  }
+
   public void setCurrentPlayer(String playerName) {
     playerList.stream()
         .filter(player -> player.getName().equals(playerName))

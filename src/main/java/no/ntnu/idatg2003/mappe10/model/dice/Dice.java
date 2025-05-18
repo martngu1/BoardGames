@@ -46,5 +46,8 @@ public class Dice {
   public int getDie(int dieNumber) {
     return diceList.get(dieNumber).getValue();
   }
+  public int getNumberOfDice() {
+    return diceList.size();
+  }
 
 }

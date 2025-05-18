@@ -1,13 +1,16 @@
 package no.ntnu.idatg2003.mappe10.ui.view;
 
+import javafx.animation.Timeline;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
+import no.ntnu.idatg2003.mappe10.model.dice.Dice;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
 import no.ntnu.idatg2003.mappe10.model.player.PlayingPiece;
 import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
@@ -22,11 +25,14 @@ public class BoardGameView implements BoardGameObserver {
   private Canvas canvas;
   private BoardGameController controller;
   private SoundController soundController;
+  private Label currentPlayerLabel;
+  private HBox diceBox;
 
   public BoardGameView() {
     soundController = new SoundController();
     controller = new BoardGameController(this);
     canvas = new ResizableCanvas();
+    currentPlayerLabel = new Label();
     // Redraw canvas when size changes.
     canvas.widthProperty().addListener(evt -> drawBoard());
     canvas.heightProperty().addListener(evt -> drawBoard());
@@ -47,6 +53,7 @@ public class BoardGameView implements BoardGameObserver {
       controller.addPlayerToQueue(playerName);
     });
     controller.placePlayerOnStartTile();
+    controller.arrangePlayerTurns();
   }
 
   /**
@@ -63,6 +70,7 @@ public class BoardGameView implements BoardGameObserver {
     BorderPane root = new BorderPane();
     root.setTop(createTopMenuBar());
     root.setCenter(createBoardElements());
+    root.setRight(createDiceAndLogBox());
 
     Scene scene = new Scene(root);
 
@@ -74,32 +82,75 @@ public class BoardGameView implements BoardGameObserver {
     primaryStage.show();
   }
 
-  private StackPane createBoardElements() {
+  private VBox createBoardElements() {
+
+    // Combine the label and button box into single layer
+    BorderPane labelAndButton = new BorderPane();
+    labelAndButton.setTop(currentPlayerLabel);
+
+    // Create a stack pane to hold the board and the label/button. Board is "behind" the label/buttons.
+    VBox leftBox = new VBox();
+    leftBox.getChildren().addAll(canvas, labelAndButton);
+
+    // Binds the canvas size to the stack pane size
+    canvas.widthProperty().bind(leftBox.widthProperty()); //.subtract(50));
+    canvas.heightProperty().bind(leftBox.heightProperty()); //.subtract(50));
+
+    return leftBox;
+  }
+  public VBox createDiceAndLogBox() {
+    // Create a label to display current player
+    currentPlayerLabel.setStyle("-fx-font-size: 16px; -fx-padding: 10px;");
+    currentPlayerLabel.borderProperty().set(
+            new Border(
+                    new BorderStroke(
+                            Color.BLACK,
+                            BorderStrokeStyle.SOLID,
+                            null,
+                            new BorderWidths(0, 3, 3, 3)
+                    )
+            )
+    );
+    currentPlayerLabel.setAlignment(Pos.CENTER);
+
+    // Create a VBox to hold the dice and log
+    VBox rollingBox = new VBox(10);
+    rollingBox.setAlignment(Pos.TOP_CENTER);
+    rollingBox.setStyle("-fx-padding: 10px;");
+
+    // VBox to hold where the dices will be shown, only comes up when the player rolls the dice
+    diceBox = new HBox(10);
+    diceBox.setAlignment(Pos.CENTER);
+    diceBox.setVisible(false);
+
     // Create buttons to roll the dice
-    Button rollButton1 = new Button("Roll Die");
+    Button rollButton1 = new Button("Roll Dice");
+    // Sets a cooldown when pressed
     rollButton1.setOnAction(e -> {
-      soundController.playButtonSound();
-      controller.playTurn());
-    }
-    Button rollButton2 = new Button("Roll All Dice");
-    rollButton2.setOnAction(e -> {
-            soundController.playDiceRollSound();
+      soundController.playDiceRollSound();
+      controller.playTurn();
+      // rollButton1.setDisable(true);
     });
+
     rollButton1.setScaleShape(true);
-    rollButton2.setScaleShape(true);
     double buttonWidth = 150;
     rollButton1.setMinWidth(buttonWidth);
-    rollButton2.setMinWidth(buttonWidth);
 
-    VBox buttonBox = new VBox(10);
-    buttonBox.setAlignment(Pos.BOTTOM_CENTER);
-    buttonBox.getChildren().addAll(rollButton1, rollButton2);
-    buttonBox.setStyle("-fx-padding: 13px;");
+    VBox logBox = new VBox(10);
+    logBox.setAlignment(Pos.BOTTOM_CENTER);
+    logBox.setStyle("-fx-padding: 10px;");
 
-    // Create a label to display current player
-    Label label = new Label("Current Player: ");
-    label.setStyle("-fx-font-size: 16px; -fx-padding: 10px;");
-    label.borderProperty().set(
+    // Create a label for the log
+    Label logLabel = new Label("Game Log");
+    logLabel.setStyle("-fx-font-size: 16px; -fx-padding: 10px;");
+    logLabel.setAlignment(Pos.CENTER);
+
+    // Add the label to the VBox
+    logBox.getChildren().add(logLabel);
+    rollingBox.getChildren().addAll(currentPlayerLabel, rollButton1, diceBox);
+
+    VBox rightBox = new VBox(5);
+    rightBox.setBorder(
           new Border(
                 new BorderStroke(
                       Color.BLACK,
@@ -107,24 +158,40 @@ public class BoardGameView implements BoardGameObserver {
                       null,
                       new BorderWidths(0, 3, 3, 3)
                 )
-          )
-    );
+          ));
+    rightBox.getChildren().addAll(rollingBox, logBox);
 
-    // Combine the label and button box into single layer
-    BorderPane labelAndButton = new BorderPane();
-    labelAndButton.setTop(label);
-    labelAndButton.setBottom(buttonBox);
-
-    // Create a stack pane to hold the board and the label/button. Board is "behind" the label/buttons.
-    StackPane stackPane = new StackPane();
-    stackPane.getChildren().addAll(canvas, labelAndButton);
-
-    // Binds the canvas size to the stack pane size
-    canvas.widthProperty().bind(stackPane.widthProperty().subtract(100));
-    canvas.heightProperty().bind(stackPane.heightProperty().subtract(100));
-
-    return stackPane;
+    return rightBox;
   }
+
+  public void setDiceBoxVisible(boolean visible) {
+    if (diceBox != null) {
+      diceBox.setVisible(visible);
+    } else {
+      System.err.println("diceBox is null in setDiceBoxVisible");
+    }
+  }
+  public void showDiceResults(List<Integer> diceResults, int amountOfDice) {
+    diceBox.setVisible(true);
+    diceBox.getChildren().clear(); // clear the old image
+
+    for (int i = 0; i < amountOfDice; i++) {
+      int rollResult = diceResults.get(i);
+      String imagePath = "/dice_images/dice_" + rollResult + ".png";
+
+      try {
+        ImageView diceImage = new ImageView(getClass().getResource(imagePath).toExternalForm());
+        diceImage.setFitWidth(50);
+        diceImage.setFitHeight(50);
+        diceImage.setPreserveRatio(true);
+        diceBox.getChildren().add(diceImage);
+      } catch (NullPointerException e) {
+        System.out.println("Error loading image: " + imagePath);
+      }
+    }
+  }
+
+
 
   private MenuBar createTopMenuBar() {
     // Create Menu options
@@ -154,6 +221,10 @@ public class BoardGameView implements BoardGameObserver {
     // Update the current position of the player in canvas.
     System.out.println("updatePosition called");
     controller.drawCurrentBoard(canvas);
+  }
+
+  public void setCurrentPlayerLabel(String playerName) {
+    currentPlayerLabel.setText("Current Players turn: " + playerName);
   }
 
   /**
