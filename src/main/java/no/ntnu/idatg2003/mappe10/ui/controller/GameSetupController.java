@@ -6,6 +6,7 @@ import no.ntnu.idatg2003.mappe10.model.board.BoardGameFactory;
 import no.ntnu.idatg2003.mappe10.ui.view.BoardGameView;
 import no.ntnu.idatg2003.mappe10.ui.view.GameSetupView;
 import no.ntnu.idatg2003.mappe10.ui.view.PlayerSetupView;
+import no.ntnu.idatg2003.mappe10.ui.view.StartPageView;
 
 public class GameSetupController {
   private GameSetupView gameSetupView;
@@ -22,5 +23,13 @@ public class GameSetupController {
       ex.printStackTrace();
     }
   }
+    public void doBack(Stage stage) {
+        try {
+          StartPageView startPageView = new StartPageView();
+          startPageView.start(stage);
+        } catch (Exception ex) {
+        ex.printStackTrace();
+        }
+    }
 }
 

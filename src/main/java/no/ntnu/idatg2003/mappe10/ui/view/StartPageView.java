@@ -11,6 +11,8 @@ import javafx.stage.Stage;
 import no.ntnu.idatg2003.mappe10.ui.controller.SoundController;
 import no.ntnu.idatg2003.mappe10.ui.controller.StartPageController;
 
+import static java.lang.Thread.sleep;
+
 
 public class StartPageView extends Application {
     private SoundController soundController;
@@ -51,10 +53,13 @@ public class StartPageView extends Application {
 
         optionsBtn.setOnAction(e -> {
             soundController.playButtonSound();
-            System.out.println("fikse senere");
+            controller.doOptions(primaryStage);
         });
 
-        exitBtn.setOnAction(e -> primaryStage.close());
+        exitBtn.setOnAction(e -> {
+            primaryStage.close();
+
+        });
 
         // Layout
         VBox layout = new VBox(20);
