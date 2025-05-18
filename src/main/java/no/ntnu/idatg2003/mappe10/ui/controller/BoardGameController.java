@@ -1,5 +1,6 @@
 package no.ntnu.idatg2003.mappe10.ui.controller;
 
+import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -117,8 +118,12 @@ public class BoardGameController {
           System.out.println("Image not found: " + imagePath);
           return;
         }
+
         Image image = new Image(inputStream);
-        gc.drawImage(image, x, y, tileWidth / 2, tileHeight / 2);
+        double xCentered = x + tileWidth / 4;
+        double yCentered = y + tileHeight / 4;
+
+        gc.drawImage(image, xCentered, yCentered, tileWidth / 2, tileHeight / 2);
       }
     }
   }

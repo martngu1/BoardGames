@@ -8,12 +8,9 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
-import no.ntnu.idatg2003.mappe10.model.player.Player;
-import no.ntnu.idatg2003.mappe10.model.player.PlayingPiece;
 import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
 import no.ntnu.idatg2003.mappe10.ui.controller.SoundController;
 
-import java.util.List;
 import java.util.Map;
 
 public class BoardGameView implements BoardGameObserver {
@@ -79,8 +76,8 @@ public class BoardGameView implements BoardGameObserver {
     Button rollButton1 = new Button("Roll Die");
     rollButton1.setOnAction(e -> {
       soundController.playButtonSound();
-      controller.playTurn());
-    }
+      controller.playTurn();
+    });
     Button rollButton2 = new Button("Roll All Dice");
     rollButton2.setOnAction(e -> {
             soundController.playDiceRollSound();
