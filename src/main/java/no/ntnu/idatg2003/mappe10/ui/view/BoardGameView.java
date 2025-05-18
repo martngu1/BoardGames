@@ -3,14 +3,18 @@ package no.ntnu.idatg2003.mappe10.ui.view;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
+import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
 import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
 import no.ntnu.idatg2003.mappe10.ui.controller.SoundController;
 
+import java.io.InputStream;
 import java.util.Map;
 
 public class BoardGameView implements BoardGameObserver {
@@ -50,7 +54,57 @@ public class BoardGameView implements BoardGameObserver {
    * Draws the board.
    */
   private void drawBoard() {
-    controller.drawCurrentBoard(canvas);
+    double width = canvas.getWidth();
+    double height = canvas.getHeight();
+
+    GraphicsContext gc = canvas.getGraphicsContext2D();
+    gc.clearRect(0, 0, width, height);
+
+    gc.setFill(Color.LIGHTGRAY);
+    gc.fillRect(0, 0, width, height);
+
+    double tileWidth = controller.getTileWidth(width);
+    double tileHeight = controller.getTileHeight(height);
+
+    double offsetWidth = width - tileWidth;
+    double offsetHeight = height - tileHeight;
+
+    // Draw the board
+    int numberOfTiles = controller.getNumberOfTiles();
+    for (int i = 1; i <= numberOfTiles; i++) {
+      Coordinate canvasCoords = controller.getCanvasCoords(i, offsetWidth, offsetHeight);
+      double x = canvasCoords.getX0();
+      double y = canvasCoords.getX1();
+
+      gc.setStroke(Color.BLACK);
+      gc.strokeRect(x, y, tileWidth, tileHeight);
+      gc.strokeText(String.valueOf(i), x + tileWidth / 2, y + tileHeight / 2);
+    }
+    // Draw the players
+    drawPlayers(offsetWidth, offsetHeight, tileWidth, tileHeight);
+  }
+
+  private void drawPlayers(double canvasWidth, double canvasHeight, double tileWidth, double tileHeight) {
+    GraphicsContext gc = canvas.getGraphicsContext2D();
+    controller.getPlayerListIterator().forEachRemaining(player -> {
+      Coordinate canvasCoords = controller.getCanvasCoords(
+            player.getCurrentTile().getTileId(),
+            canvasWidth,
+            canvasHeight);
+
+      double x = canvasCoords.getX0() + tileWidth / 4;
+      double y = canvasCoords.getX1() + tileHeight / 4;
+
+      InputStream inputStream = getClass().getResourceAsStream("/playingPieces/" + player.getPlayingPiece() + ".png");
+      if (inputStream == null) {
+        System.out.println("Image not found: " + player.getPlayingPiece());
+        return;
+      }
+
+      Image image = new Image(inputStream);
+      gc.drawImage(image, x, y, tileWidth / 2, tileHeight / 2);
+    });
+
   }
 
   public void start(String selectedBoard, Map<String, String> playersAndPieces) {
@@ -80,7 +134,7 @@ public class BoardGameView implements BoardGameObserver {
     });
     Button rollButton2 = new Button("Roll All Dice");
     rollButton2.setOnAction(e -> {
-            soundController.playDiceRollSound();
+      soundController.playDiceRollSound();
     });
     rollButton1.setScaleShape(true);
     rollButton2.setScaleShape(true);
@@ -146,11 +200,12 @@ public class BoardGameView implements BoardGameObserver {
     return menuBar;
   }
 
+
   @Override
   public void updatePosition() {
     // Update the current position of the player in canvas.
     System.out.println("updatePosition called");
-    controller.drawCurrentBoard(canvas);
+    drawBoard();
   }
 
   /**
