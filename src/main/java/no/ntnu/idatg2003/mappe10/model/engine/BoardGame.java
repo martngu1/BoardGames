@@ -74,20 +74,19 @@ public class BoardGame {
   }
 
   /**
-   * Plays the game. Each player in the player list rolls the dice and moves the number of steps rolled.
+   * Roll the dice and move the number of steps rolled for the current player.
    */
-  public boolean play() {
-    for (Player player : playerList) {
-      currentPlayer = player;
-      int diceRoll = dice.roll();
-      currentPlayer.move(diceRoll);
-      notifyObservers(currentPlayer.getName(), currentPlayer.getCurrentTile().getTileId());
-      if (playerWon()) {
-        winner = currentPlayer;
-        return false;
-      }
-    }
-    return true;
+  public void play() {
+    int diceRoll = dice.roll();
+    currentPlayer.move(diceRoll);
+    notifyObservers();
+  }
+
+  public void setCurrentPlayer(String playerName) {
+    playerList.stream()
+        .filter(player -> player.getName().equals(playerName))
+        .findFirst()
+        .ifPresent(player -> currentPlayer = player);
   }
 
   /**
@@ -107,6 +106,10 @@ public class BoardGame {
           + " on tile " + currentPlayer.getCurrentTile().getTileId());
     }
     return true;
+  }
+
+  public Player getCurrentPlayer() {
+    return currentPlayer;
   }
 
   /**
@@ -189,9 +192,9 @@ public class BoardGame {
     observers.remove(observer);
   }
 
-  private void notifyObservers(String playerName, int newPosition) {
+  private void notifyObservers() {
     for (BoardGameObserver observer : observers) {
-      observer.updatePosition(playerName, newPosition);
+      observer.updatePosition();
     }
   }
 }
