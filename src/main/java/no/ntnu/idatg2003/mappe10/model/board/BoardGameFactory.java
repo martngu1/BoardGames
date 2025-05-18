@@ -3,6 +3,8 @@ package no.ntnu.idatg2003.mappe10.model.board;
 import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
 import no.ntnu.idatg2003.mappe10.model.filehandler.gson.BoardFileReaderGson;
 import no.ntnu.idatg2003.mappe10.model.tile.LadderAction;
+import no.ntnu.idatg2003.mappe10.ui.view.BoardGameView;
+
 
 /**
  * The BoardGameFactory class is responsible for creating instances of the
@@ -29,10 +31,7 @@ public class BoardGameFactory {
         boardGame.createDice(2);
         boardGame.createBoard(90, 9, 10);
 
-        // Add tile actions
-        boardGame.getBoard().getTile(3).setLandAction(new LadderAction(12, "Ladder to 12"));
-
-
+        // Set tile coords for canvas
         int rows = boardGame.getBoard().getNumberOfRows();
         int columns = boardGame.getBoard().getNumberOfColumns();
         int numberOfTiles = boardGame.getBoard().getLastTile().getTileId();
