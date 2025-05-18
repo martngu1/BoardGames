@@ -22,9 +22,9 @@ class BoardGameTest {
   @Test
   void placeAllPlayersOnTilePositiveTest() {
     Tile tile = new Tile(0);
-    new Player("TestPlayer1", "",boardGame);
-    new Player("TestPlayer2", "",boardGame);
-    new Player("TestPlayer3", "",boardGame);
+    new Player("TestPlayer1","1", boardGame);
+    new Player("TestPlayer2","2", boardGame);
+    new Player("TestPlayer3","3", boardGame);
 
     boardGame.placeAllPlayersOnTile(tile);
 
