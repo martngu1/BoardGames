@@ -27,9 +27,10 @@ public class PlayerSetupView {
 
     private final List<String> availablePieces = List.of("Apple", "Bee", "Computer", "Magic 8 Ball", "Trumpet");
     private final List<ComboBox<String>> pieceComboBoxes = new ArrayList<>();
-    private final HashMap<String, String> playersAndPieces = new HashMap<>();
+
 
     public PlayerSetupView() {
+
         this.controller = new PlayerSetupController(this);
         this.soundController = SoundController.getInstance();
 
@@ -50,36 +51,13 @@ public class PlayerSetupView {
         Button continueButton = new Button("Continue");
         continueButton.setOnAction(e -> {
             soundController.playButtonSound();
-            playersAndPieces.clear();
-
-            for (int i = 0; i < playerCount; i++) {
-                HBox playerBox = (HBox) root.getChildren().get(i + 1); // +1 accounts for topSection
-                TextField nameField = (TextField) playerBox.getChildren().get(1);
-                ComboBox<String> pieceBox = pieceComboBoxes.get(i);
-
-                String playerName = nameField.getText();
-                String selectedPiece = pieceBox.getValue();
-
-                if (playerName.isEmpty() || selectedPiece == null) {
-                    System.out.println("Please enter name and select a piece for all players.");
-                    return;
-                }
-
-                playersAndPieces.put(playerName, selectedPiece);
-            }
-
-            // Create BoardGameView and add players
-            BoardGameView boardGameView = new BoardGameView();
-            boardGameView.start(selectedBoard, playersAndPieces);
-            Stage currentStage = (Stage) root.getScene().getWindow();
-            currentStage.close(); // Close the player setup window
+            controller.doContinue(playerCount, root, pieceComboBoxes, selectedBoard);
         });
 
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> {
             soundController.playButtonSound();
-            GameSetupView gameSetupView = new GameSetupView();
-            gameSetupView.start(stage);
+            controller.doBack(stage);
         });
 
         VBox topSection = new VBox(10, backButton, continueButton, titleLabel); 
@@ -110,25 +88,19 @@ public class PlayerSetupView {
         pieceComboBoxes.add(pieceComboBox);
         pieceComboBox.getItems().addAll(availablePieces);
         pieceComboBox.setPromptText("Select a piece");
+        // Sets an item to unavailable if already chosen
+        pieceComboBox.valueProperty().addListener((e, oldValue, newValue) -> {
+            if (newValue != null) {
+                soundController.playButtonSound();
+            }
+        });
 
         ImageView pieceImageView = new ImageView();
         pieceImageView.setFitWidth(50);
         pieceImageView.setFitHeight(50);
         pieceImageView.setPreserveRatio(true);
 
-        pieceComboBox.setOnAction(e -> {
-            String selected = pieceComboBox.getValue();
-            if (selected != null) {
-                try {
-                    String path = "/playingPieces/" + selected + ".png";
-                    Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(path)));
-                    pieceImageView.setImage(image);
-                } catch (Exception ex) {
-                    pieceImageView.setImage(null);
-                    System.err.println("Could not load image for: " + selected);
-                }
-            }
-        });
+        pieceComboBox.setOnAction(e -> controller.getPlayingPieces(pieceComboBox, pieceImageView));
 
         playerBox.getChildren().addAll(playerLabel, nameField, pieceComboBox, pieceImageView);
         return playerBox;

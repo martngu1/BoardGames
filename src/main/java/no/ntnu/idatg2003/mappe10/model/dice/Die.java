@@ -18,6 +18,7 @@ public class Die {
      * @return the int value of the die
      */
     public int roll() {
+        // Generate a random number between 1 and 6
         lastRolledValue = random.nextInt(1, 7);
         return lastRolledValue;
     }

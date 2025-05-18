@@ -1,7 +1,7 @@
 package no.ntnu.idatg2003.mappe10.ui.controller;
+import javafx.scene.control.Slider;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-
 
 
 
@@ -19,7 +19,7 @@ public class SoundController {
     }
 
     public void playDiceRollSound() {
-        try{
+        try {
             String path = "/sounds/dice_roll.mp3";
             mediaPlayer = new MediaPlayer(new Media(getClass().getResource(path).toString()));
 
@@ -29,8 +29,9 @@ public class SoundController {
         }
 
     }
+
     public void playButtonSound() {
-        try{
+        try {
             String path = "/sounds/button_press.mp3";
             mediaPlayer = new MediaPlayer(new Media(getClass().getResource(path).toString()));
 
@@ -39,6 +40,7 @@ public class SoundController {
             System.out.println("Error playing sound: " + e.getMessage());
         }
     }
+
     public void playBackgroundMusic() {
         try {
             if (backgroundMusicPlayer == null) {
@@ -55,11 +57,46 @@ public class SoundController {
         }
     }
 
+    public void quitSound() {
+        try {
+            String path = "/sounds/quit_sound.mp3";
+            mediaPlayer = new MediaPlayer(new Media(getClass().getResource(path).toString()));
+
+            mediaPlayer.play();
+        } catch (Exception e) {
+            System.out.println("Error playing sound: " + e.getMessage());
+        }
+    }
+
+
     public void stopBackgroundMusic() {
         if (backgroundMusicPlayer != null) {
             backgroundMusicPlayer.stop();
         }
     }
+    public void startBackgroundMusic() {
+        if (backgroundMusicPlayer != null) {
+            backgroundMusicPlayer.play();
+        }
+    }
+
+    public double getVolume() {
+        if (backgroundMusicPlayer != null) {
+            return backgroundMusicPlayer.getVolume();
+        }
+        return 0.0;
+    }
+
+    public void setVolume(double v) {
+        if (backgroundMusicPlayer != null) {
+            backgroundMusicPlayer.setVolume(v);
+        }
+    }
 }
+
+
+
+
+
 
 
