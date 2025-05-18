@@ -27,6 +27,7 @@ public class GameSetupView {
 
         Label playersLabel = new Label("Number of Players:");
         Spinner<Integer> playerSpinner = new Spinner<>(1, 5, 2);
+        playerSpinner.valueProperty().addListener((e, oldValue, newValue) -> soundController.playButtonSound());
         VBox leftBox = new VBox(10, playersLabel, playerSpinner);
         leftBox.setAlignment(Pos.CENTER_LEFT);
         leftBox.setPadding(new Insets(20));
@@ -41,8 +42,7 @@ public class GameSetupView {
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> {
             soundController.playButtonSound();
-            StartPageView startPageView = new StartPageView();
-            startPageView.start(stage);
+            controller.doBack(stage);
         });
 
 
