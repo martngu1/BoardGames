@@ -8,10 +8,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import no.ntnu.idatg2003.mappe10.ui.controller.SoundController;
 import no.ntnu.idatg2003.mappe10.ui.controller.StartPageController;
 
 
 public class StartPageView extends Application {
+    private SoundController soundController;
     private StartPageController controller;
     private static final int WINDOW_WIDTH = 600;
     private static final int WINDOW_HEIGHT = 400;
@@ -21,6 +23,7 @@ public class StartPageView extends Application {
     }
 
     public void start(Stage primaryStage) {
+        soundController = SoundController.getInstance();
         controller = new StartPageController(this);
 
         primaryStage.setTitle("Board Game");
@@ -38,10 +41,16 @@ public class StartPageView extends Application {
         optionsBtn.setPrefWidth(200);
         exitBtn.setPrefWidth(200);
 
+        soundController.playBackgroundMusic();
+
         // Button actions
-        startGameBtn.setOnAction(e -> controller.doStartGame(primaryStage));
+        startGameBtn.setOnAction(e -> {
+            soundController.playButtonSound();
+            controller.doStartGame(primaryStage);
+        });
 
         optionsBtn.setOnAction(e -> {
+            soundController.playButtonSound();
             System.out.println("fikse senere");
         });
 

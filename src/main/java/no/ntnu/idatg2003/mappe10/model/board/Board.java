@@ -13,6 +13,13 @@ public class Board {
     private int numberOfRows;
     private int numberOfColumns;
 
+    /**
+     * Constructor for the Board class.
+     *
+     * @param numberOfTiles
+     * @param numberOfRows
+     * @param numberOfColumns
+     */
     public Board(int numberOfTiles, int numberOfRows, int numberOfColumns) {
         this.tilesList = new HashMap<>();
         initBoard(numberOfTiles);
@@ -41,6 +48,8 @@ public class Board {
     /**
      * Adds tiles to the Map tilesList with their own distinct tileID.
      * tileID : Tile
+     *
+     * @param tile the tile to add
      */
     public void addTile(Tile tile) {
         tilesList.put(tile.getTileId(), tile);

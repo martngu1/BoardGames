@@ -7,9 +7,8 @@ import java.util.Iterator;
 
 public class BoardGameCL {
   public static void main(String[] args) {
-    BoardGame boardGame = new BoardGame(null, null);
+    BoardGame boardGame = new BoardGame();
     boardGame.createDice(2);
-    boardGame.createPlayerList();
     boardGame.createBoard(90, 9, 10);
 
     new Player("Player 1", "playingpiece1",boardGame);

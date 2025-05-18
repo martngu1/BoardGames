@@ -2,8 +2,13 @@ package no.ntnu.idatg2003.mappe10.model.board;
 
 import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
 import no.ntnu.idatg2003.mappe10.model.filehandler.gson.BoardFileReaderGson;
+import no.ntnu.idatg2003.mappe10.model.tile.LadderAction;
 
-
+/**
+ * The BoardGameFactory class is responsible for creating instances of the
+ * BoardGame class with specific configurations. It sets up the board, players,
+ * and actions for the game.
+ */
 public class BoardGameFactory {
 
     private BoardFileReaderGson gsonReader;
@@ -12,11 +17,21 @@ public class BoardGameFactory {
         this.gsonReader = new BoardFileReaderGson();
     }
 
+    /**
+     * Creates a BoardGame instance with a ladder game configuration.
+     * The game has 90 tiles, 9 rows, and 10 columns. Some tiles are configured
+     * with ladder actions.
+     *
+     * @return a configured BoardGame instance based on the ladder game
+     */
     public BoardGame createLadderGame() {
-        BoardGame boardGame = new BoardGame(null, null);
+        BoardGame boardGame = new BoardGame();
         boardGame.createDice(2);
-        boardGame.createPlayerList();
         boardGame.createBoard(90, 9, 10);
+
+        // Add tile actions
+        boardGame.getBoard().getTile(3).setLandAction(new LadderAction(12, "Ladder to 12"));
+
 
         int rows = boardGame.getBoard().getNumberOfRows();
         int columns = boardGame.getBoard().getNumberOfColumns();

@@ -9,15 +9,20 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import no.ntnu.idatg2003.mappe10.model.player.PlayingPiece;
 import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
+import no.ntnu.idatg2003.mappe10.ui.controller.SoundController;
+
+import java.util.List;
+import java.util.Map;
 
 public class BoardGameView {
-  private int playerCount;
   private static final int WINDOW_WIDTH = 1000;
   private static final int WINDOW_HEIGHT = 700;
   private Canvas canvas;
   private BoardGameController controller;
+  private SoundController soundController;
 
   public BoardGameView() {
+    soundController = new SoundController();
     controller = new BoardGameController(this);
     canvas = new ResizableCanvas();
     // Redraw canvas when size changes.
@@ -32,9 +37,14 @@ public class BoardGameView {
     controller.drawCurrentBoard(canvas);
   }
 
-
-  public void start(String selectedBoard) {
+  public void start(String selectedBoard, Map<String, String> playersAndPieces) {
+    // Initialize the board game with the selected board and players
     controller.initBoardGame(selectedBoard);
+    playersAndPieces.keySet().forEach(playerName -> {
+      String playingPiece = playersAndPieces.get(playerName);
+      controller.addPlayer(playerName, playingPiece);
+    });
+    controller.placePlayerOnStartTile();
 
     BorderPane root = new BorderPane();
     root.setTop(createTopMenuBar());
@@ -53,7 +63,13 @@ public class BoardGameView {
   private StackPane createBoardElements() {
     // Create buttons to roll the dice
     Button rollButton1 = new Button("Roll Die");
+    rollButton1.setOnAction(e ->{
+            soundController.playDiceRollSound();
+    });
     Button rollButton2 = new Button("Roll All Dice");
+    rollButton2.setOnAction(e -> {
+            soundController.playDiceRollSound();
+    });
     rollButton1.setScaleShape(true);
     rollButton2.setScaleShape(true);
     double buttonWidth = 150;
@@ -116,14 +132,6 @@ public class BoardGameView {
     menuBar.getMenus().addAll(loadMenu, saveMenu, settingsMenu);
 
     return menuBar;
-  }
-
-  public void setPlayerCount(int playerCount) {
-    this.playerCount = playerCount;
-  }
-
-  public void addPlayer(String playerName, String playingPiece) {
-    controller.addPlayer(playerName, playingPiece);
   }
 
   /**

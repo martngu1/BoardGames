@@ -10,15 +10,19 @@ import no.ntnu.idatg2003.mappe10.model.board.Board;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameFactory;
 import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
 import no.ntnu.idatg2003.mappe10.ui.controller.GameSetupController;
+import no.ntnu.idatg2003.mappe10.ui.controller.SoundController;
 
 public class GameSetupView {
     private GameSetupController controller;
+    private SoundController soundController;
 
     public GameSetupView() {
+        this.soundController = SoundController.getInstance();
         this.controller = new GameSetupController(this);
     }
 
     public void start(Stage stage) {
+
         stage.setTitle("Game Setup");
 
         Label playersLabel = new Label("Number of Players:");
@@ -36,6 +40,7 @@ public class GameSetupView {
 
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> {
+            soundController.playButtonSound();
             StartPageView startPageView = new StartPageView();
             startPageView.start(stage);
         });
@@ -47,6 +52,7 @@ public class GameSetupView {
 
         Button continueButton = new Button("Continue");
         continueButton.setOnAction(e -> {
+            soundController.playButtonSound();
             // Maybe use single textfield to get player names. Hard to do with spinner.
             int amountOfPlayers = playerSpinner.getValue();
             RadioButton selectedRadio = (RadioButton) boardToggleGroup.getSelectedToggle();
