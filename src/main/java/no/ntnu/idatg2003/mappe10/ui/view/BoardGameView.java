@@ -7,6 +7,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
+import no.ntnu.idatg2003.mappe10.model.player.Player;
 import no.ntnu.idatg2003.mappe10.model.player.PlayingPiece;
 import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
 import no.ntnu.idatg2003.mappe10.ui.controller.SoundController;
@@ -14,7 +16,7 @@ import no.ntnu.idatg2003.mappe10.ui.controller.SoundController;
 import java.util.List;
 import java.util.Map;
 
-public class BoardGameView {
+public class BoardGameView implements BoardGameObserver {
   private static final int WINDOW_WIDTH = 1000;
   private static final int WINDOW_HEIGHT = 700;
   private Canvas canvas;
@@ -31,6 +33,23 @@ public class BoardGameView {
   }
 
   /**
+   * Initializes the board game with the selected board and players.
+   *
+   * @param selectedBoard    the name of the selected board
+   * @param playersAndPieces a map of player names and their corresponding pieces
+   */
+  public void initBoardGame(String selectedBoard, Map<String, String> playersAndPieces) {
+    // Initialize the board game with the selected board and players
+    controller.initBoardGame(selectedBoard);
+    playersAndPieces.keySet().forEach(playerName -> {
+      String playingPiece = playersAndPieces.get(playerName);
+      controller.addPlayer(playerName, playingPiece);
+      controller.addPlayerToQueue(playerName);
+    });
+    controller.placePlayerOnStartTile();
+  }
+
+  /**
    * Draws the board.
    */
   private void drawBoard() {
@@ -38,13 +57,8 @@ public class BoardGameView {
   }
 
   public void start(String selectedBoard, Map<String, String> playersAndPieces) {
-    // Initialize the board game with the selected board and players
-    controller.initBoardGame(selectedBoard);
-    playersAndPieces.keySet().forEach(playerName -> {
-      String playingPiece = playersAndPieces.get(playerName);
-      controller.addPlayer(playerName, playingPiece);
-    });
-    controller.placePlayerOnStartTile();
+    initBoardGame(selectedBoard, playersAndPieces);
+    controller.registerObserver(this);
 
     BorderPane root = new BorderPane();
     root.setTop(createTopMenuBar());
@@ -63,9 +77,10 @@ public class BoardGameView {
   private StackPane createBoardElements() {
     // Create buttons to roll the dice
     Button rollButton1 = new Button("Roll Die");
-    rollButton1.setOnAction(e ->{
-            soundController.playDiceRollSound();
-    });
+    rollButton1.setOnAction(e -> {
+      soundController.playButtonSound();
+      controller.playTurn());
+    }
     Button rollButton2 = new Button("Roll All Dice");
     rollButton2.setOnAction(e -> {
             soundController.playDiceRollSound();
@@ -85,14 +100,14 @@ public class BoardGameView {
     Label label = new Label("Current Player: ");
     label.setStyle("-fx-font-size: 16px; -fx-padding: 10px;");
     label.borderProperty().set(
-        new Border(
-            new BorderStroke(
-                Color.BLACK,
-                BorderStrokeStyle.SOLID,
-                null,
-                new BorderWidths(0, 3, 3, 3)
-            )
-        )
+          new Border(
+                new BorderStroke(
+                      Color.BLACK,
+                      BorderStrokeStyle.SOLID,
+                      null,
+                      new BorderWidths(0, 3, 3, 3)
+                )
+          )
     );
 
     // Combine the label and button box into single layer
@@ -134,6 +149,13 @@ public class BoardGameView {
     return menuBar;
   }
 
+  @Override
+  public void updatePosition() {
+    // Update the current position of the player in canvas.
+    System.out.println("updatePosition called");
+    controller.drawCurrentBoard(canvas);
+  }
+
   /**
    * A resizable canvas that redraws itself when the size changes.
    * This class extends the Canvas class and overrides the isResizable,
@@ -141,7 +163,6 @@ public class BoardGameView {
    *
    * <p>This class is based on the example provided by Dirk Lemmermann:
    * <a href="https://dlemmermann.wordpress.com/2014/04/10/javafx-tip-1-resizable-canvas/">Resizable Canvas</a></p>
-   *
    */
   static class ResizableCanvas extends Canvas {
 
