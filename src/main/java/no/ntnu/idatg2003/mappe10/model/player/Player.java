@@ -12,6 +12,8 @@ public class Player {
   private String name;
   private String playingPiece;
   private Tile currentTile;
+  private BoardGame game;
+  private int turnsToSkip;
 
 
   /**
@@ -23,7 +25,9 @@ public class Player {
   public Player(String name, String playingPiece, BoardGame game) {
     this.name = name;
     this.playingPiece = playingPiece;
+    this.game = game;
     game.addPlayer(this);
+    this.turnsToSkip = 0;
   }
 
   /**
@@ -79,5 +83,16 @@ public class Player {
     this.playingPiece = playingPiece;
   }
 
+  public boolean shouldSkipTurn() {
+    return turnsToSkip > 0;
+  }
+  public void skipNextTurns(int count) {
+    this.turnsToSkip = count;
+  }
+  public void decrementSkipTurns() {
+    if (turnsToSkip > 0) {
+      turnsToSkip--;
+    }
+  }
 }
 

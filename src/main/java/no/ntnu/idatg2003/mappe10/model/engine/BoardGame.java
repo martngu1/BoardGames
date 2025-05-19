@@ -76,7 +76,7 @@ public class BoardGame {
   /**
    * Roll the dice and move the number of steps rolled for the current player.
    */
-  public void play() {
+  public void doTurn() {
     currentPlayer.move();
     notifyObservers();
   }
@@ -98,6 +98,17 @@ public class BoardGame {
         .filter(player -> player.getName().equals(playerName))
         .findFirst()
         .ifPresent(player -> currentPlayer = player);
+  }
+
+  public Tile getTileById(int tileId) {
+    return board.getTile(tileId);
+  }
+
+  public void performLandAction() {
+    Tile currentTile = currentPlayer.getCurrentTile();
+    if (currentTile.getLandAction() != null) {
+      currentTile.getLandAction().performAction(currentPlayer, this);
+    }
   }
 
   /**

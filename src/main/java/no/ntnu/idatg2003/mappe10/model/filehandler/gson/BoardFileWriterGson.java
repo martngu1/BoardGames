@@ -2,7 +2,7 @@ package no.ntnu.idatg2003.mappe10.model.filehandler.gson;
 
 import com.google.gson.*;
 import no.ntnu.idatg2003.mappe10.model.board.Board;
-import no.ntnu.idatg2003.mappe10.model.tile.LadderAction;
+import no.ntnu.idatg2003.mappe10.model.tile.tileaction.LadderAction;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileWriter;
 

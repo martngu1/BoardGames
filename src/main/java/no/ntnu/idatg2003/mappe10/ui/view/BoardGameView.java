@@ -16,6 +16,10 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
 import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
+import no.ntnu.idatg2003.mappe10.model.tile.Tile;
+import no.ntnu.idatg2003.mappe10.model.tile.tileaction.LadderAction;
+import no.ntnu.idatg2003.mappe10.model.tile.tileaction.PrisonAction;
+import no.ntnu.idatg2003.mappe10.model.tile.tileaction.TileAction;
 import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
 import no.ntnu.idatg2003.mappe10.ui.controller.SoundController;
 
@@ -91,6 +95,7 @@ public class BoardGameView implements BoardGameObserver {
       gc.strokeRect(x, y, tileWidth, tileHeight);
       gc.strokeText(String.valueOf(i), x + tileWidth / 2, y + tileHeight / 2);
     }
+    drawActions(offsetWidth, offsetHeight, tileWidth, tileHeight);
     // Draw the players
     drawPlayers(offsetWidth, offsetHeight, tileWidth, tileHeight);
   }
@@ -116,6 +121,72 @@ public class BoardGameView implements BoardGameObserver {
       gc.drawImage(image, x, y, tileWidth / 2, tileHeight / 2);
     });
 
+  }
+
+  private void drawActions(double canvasWidth, double canvasHeight, double tileWidth, double tileHeight) {
+    int numberOfTiles = controller.getNumberOfTiles();
+    for (int id = 1; id <= numberOfTiles; id++) {
+      // Java does not support switch cases with instanceof, so we use if-else statements instead
+      if (controller.checkIfTileAction(id).equals("Ladder")) {
+        drawLadders(id, canvasWidth, canvasHeight, tileWidth, tileHeight);
+      } else if (controller.checkIfTileAction(id).equals("Prison")) {
+        drawPrison(id, canvasWidth, canvasHeight, tileWidth, tileHeight);
+      }
+    }
+  }
+
+  private void drawPrison(int tileId, double canvasWidth, double canvasHeight, double tileWidth, double tileHeight) {
+    GraphicsContext gc = canvas.getGraphicsContext2D();
+    Coordinate rectCoords = controller.getCanvasCoords(tileId, canvasWidth, canvasHeight);
+    double x = rectCoords.getX0();
+    double y = rectCoords.getX1();
+    gc.setFill(Color.ORANGE);
+    gc.fillRect(x, y, tileWidth, tileHeight);
+
+    gc.setStroke(Color.BLACK);
+    gc.setLineWidth(1);
+    gc.strokeRect(x, y, tileWidth, tileHeight);
+
+    gc.setFill(Color.BLACK);
+    gc.fillText("Prison\n" + tileId, x + tileWidth / 4 + tileWidth / 8, y + tileHeight / 4 + tileHeight / 8);
+  }
+  private void drawLadders(int tileId, double canvasWidth, double canvasHeight, double tileWidth, double tileHeight) {
+    GraphicsContext gc = canvas.getGraphicsContext2D();
+
+    Coordinate sourceCoords = controller.getCanvasCoords(tileId, canvasWidth, canvasHeight);
+
+    double x = sourceCoords.getX0();
+    double y = sourceCoords.getX1();
+
+    int destTileId = controller.getDestinationTileId(tileId);
+    Coordinate destCoords = controller.getCanvasCoords(destTileId, canvasWidth, canvasHeight);
+
+    double destX = destCoords.getX0() - tileWidth / 8;
+    double destY = destCoords.getX1() - tileHeight / 8;
+
+      if (destTileId > tileId) {
+        gc.setStroke(Color.GREEN);
+      } else {
+        gc.setStroke(Color.RED);
+      }
+      double startX = x + tileWidth / 2;
+      double startY = y + tileHeight / 2;
+      double endX = destX + tileWidth / 2;
+      double endY = destY + tileHeight / 2;
+
+      gc.strokeLine(startX, startY, endX, endY);
+      drawArrowHeads(startX, startY, endX, endY);
+  }
+
+  private void drawArrowHeads(double x, double y, double destX, double destY) {
+    double arrowSize = 10;
+    double angle = Math.atan2(destY - y, destX - x);
+    double arrowAngle = Math.toRadians(20);
+
+    GraphicsContext gc = canvas.getGraphicsContext2D();
+    // Help from chatGPT
+    gc.strokeLine(destX, destY, destX - arrowSize * Math.cos(angle - arrowAngle), destY - arrowSize * Math.sin(angle - arrowAngle));
+    gc.strokeLine(destX, destY, destX - arrowSize * Math.cos(angle + arrowAngle), destY - arrowSize * Math.sin(angle + arrowAngle));
   }
 
   public void start(String selectedBoard, Map<String, String> playersAndPieces) {
@@ -219,7 +290,6 @@ public class BoardGameView implements BoardGameObserver {
     return rightBox;
   }
 
-
   public void showDiceResults(List<Integer> diceResults, int amountOfDice) {
     diceBox.setVisible(true);
     diceBox.getChildren().clear(); // clear the old image
@@ -239,8 +309,6 @@ public class BoardGameView implements BoardGameObserver {
       }
     }
   }
-
-
 
   private MenuBar createTopMenuBar() {
     // Create Menu options
@@ -269,7 +337,6 @@ public class BoardGameView implements BoardGameObserver {
   @Override
   public void updatePosition() {
     // Update the current position of the player in canvas.
-    System.out.println("updatePosition called");
     drawBoard();
   }
 

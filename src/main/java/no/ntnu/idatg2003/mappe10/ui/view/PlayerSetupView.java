@@ -1,5 +1,6 @@
 package no.ntnu.idatg2003.mappe10.ui.view;
 
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -16,17 +17,14 @@ import no.ntnu.idatg2003.mappe10.ui.controller.PlayerSetupController;
 import no.ntnu.idatg2003.mappe10.ui.controller.SoundController;
 import org.w3c.dom.Text;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class PlayerSetupView {
     private SoundController soundController;
     private PlayerSetupController controller;
-
     private final List<String> availablePieces = List.of("Apple", "Bee", "Computer", "Magic 8 Ball", "Trumpet");
     private final List<ComboBox<String>> pieceComboBoxes = new ArrayList<>();
+    private final Map<ComboBox<String>, String> selectedPieces = new HashMap<>();
 
 
     public PlayerSetupView() {
@@ -88,19 +86,37 @@ public class PlayerSetupView {
         pieceComboBoxes.add(pieceComboBox);
         pieceComboBox.getItems().addAll(availablePieces);
         pieceComboBox.setPromptText("Select a piece");
-        // Sets an item to unavailable if already chosen
-        pieceComboBox.valueProperty().addListener((e, oldValue, newValue) -> {
-            if (newValue != null) {
-                soundController.playButtonSound();
-            }
-        });
 
         ImageView pieceImageView = new ImageView();
         pieceImageView.setFitWidth(50);
         pieceImageView.setFitHeight(50);
         pieceImageView.setPreserveRatio(true);
 
-        pieceComboBox.setOnAction(e -> controller.getPlayingPieces(pieceComboBox, pieceImageView));
+        pieceComboBox.setOnAction(e -> {
+            String newSelection = pieceComboBox.getValue();
+            String oldSelection = selectedPieces.get(pieceComboBox);
+
+            if (oldSelection != null) {
+                for (ComboBox<String> otherBox : pieceComboBoxes) {
+                    if (otherBox != pieceComboBox && !otherBox.getItems().contains(oldSelection)) {
+                        otherBox.getItems().add(oldSelection);
+                        FXCollections.sort(otherBox.getItems());
+                    }
+                }
+            }
+
+            selectedPieces.put(pieceComboBox, newSelection);
+
+                // Remove new selection from all other combo boxes
+                for (ComboBox<String> otherBox : pieceComboBoxes) {
+                    if (otherBox != pieceComboBox) {
+                        otherBox.getItems().remove(newSelection);
+                    }
+                }
+
+            controller.getPlayingPieces(pieceComboBox, pieceImageView);
+            soundController.playButtonSound();
+        });
 
         playerBox.getChildren().addAll(playerLabel, nameField, pieceComboBox, pieceImageView);
         return playerBox;

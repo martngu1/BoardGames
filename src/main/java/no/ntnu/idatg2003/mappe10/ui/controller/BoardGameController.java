@@ -14,6 +14,9 @@ import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
 import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
+import no.ntnu.idatg2003.mappe10.model.tile.tileaction.LadderAction;
+import no.ntnu.idatg2003.mappe10.model.tile.tileaction.PrisonAction;
+import no.ntnu.idatg2003.mappe10.model.tile.tileaction.TileAction;
 import no.ntnu.idatg2003.mappe10.ui.view.BoardGameView;
 
 import java.io.InputStream;
@@ -72,23 +75,63 @@ public class BoardGameController {
     }
 
     roller.start(() -> {
-      boardGame.setCurrentPlayer(playerQueue.poll());
-      animatePlayerMove();
-      displayDiceResults();
-      playerQueue.add(boardGame.getCurrentPlayer().getName());
+      String currentPlayerName = playerQueue.poll();
+      boardGame.setCurrentPlayer(currentPlayerName);
+
+      Player currentPlayer = boardGame.getCurrentPlayer();
+      int diceValue = boardGame.rollDice();
+      System.out.println("Dice 1: " + boardGame.getDieValue(0) + " Dice 2: " + boardGame.getDieValue(1));
+
+      if (currentPlayer.shouldSkipTurn()) {
+        if (rolledDouble()) {
+          System.out.println(currentPlayer.getName() + " rolled doubles and is released from prison!");
+          play(currentPlayer, diceValue);
+          currentPlayer.decrementSkipTurns();
+        } else {
+          System.out.println(currentPlayer.getName() + " is in prison and cannot play this turn.");
+          currentPlayer.decrementSkipTurns();
+          displayDiceResults();
+          playerQueue.add(currentPlayer.getName());
+        }
+      } else {
+        play(currentPlayer, diceValue); // Regular turn
+      }
+
       boardGameView.setCurrentPlayerLabel(playerQueue.peek());
       System.out.println("Current player: " + boardGame.getCurrentPlayer().getName());
     });
   }
 
-  public void animatePlayerMove() {
-    int diceRoll = boardGame.rollDice();
+
+  public boolean rolledDouble() {
+    List<Integer> diceResults = new ArrayList<>();
+    for (int i = 0; i < boardGame.getDiceAmount(); i++) {
+      diceResults.add(boardGame.getDieValue(i));
+      System.out.println("Die " + (i + 1) + ": " + diceResults.get(i));
+    }
+    // Check if all dice have the same value
+    return diceResults.stream().distinct().count() == 1;
+  }
+  public void play(Player currentPlayer, int diceValue) {
+    animatePlayerMove(diceValue, () -> {
+      boardGame.performLandAction();
+      playerQueue.add(currentPlayer.getName());
+      boardGameView.setCurrentPlayerLabel(playerQueue.peek());
+      System.out.println("Current player: " + currentPlayer.getName());
+    });
+  }
+
+  public void animatePlayerMove(int diceRoll, Runnable onFinished) {
+    displayDiceResults();
     Timeline timeline = new Timeline();
     for (int i = 0; i < diceRoll; i++) {
       timeline.getKeyFrames().add(
-            new KeyFrame(Duration.seconds(0.3*i), e -> boardGame.play())
+            new KeyFrame(Duration.seconds(0.3*i), e -> boardGame.doTurn())
       );
     }
+    timeline.setOnFinished(e -> {
+      if (onFinished != null) onFinished.run();
+    });
     timeline.play();
   }
 
@@ -117,10 +160,29 @@ public class BoardGameController {
     return boardGame.getBoard().getNumberOfTiles();
   }
 
+  public int getDestinationTileId(int tileId) {
+    LadderAction ladderAction = (LadderAction) boardGame.getTileById(tileId).getLandAction();
+    return ladderAction.getDestinationTileId();
+  }
+
   public Coordinate getCanvasCoords(int tileId, double maxWidth, double maxHeight) {
     Coordinate rc = boardGame.getBoard().getTile(tileId).getBoardCoords();
     Coordinate maxXY = new Coordinate(maxWidth, maxHeight);
     return boardGame.transformBoardToCanvas(rc, maxXY);
+  }
+
+  public String checkIfTileAction(int tileId) {
+    TileAction action = boardGame.getTileById(tileId).getLandAction();
+    if (action == null){
+      return "";
+    }
+    if (action instanceof LadderAction) {
+      return "Ladder";
+    } else if (action instanceof PrisonAction) {
+      return "Prison";
+    }
+
+    return "null";
   }
 
   public Iterator<Player> getPlayerListIterator() {
@@ -156,7 +218,7 @@ public class BoardGameController {
 
     @Override
     public void handle(long now) {
-      if (now - startTime > 1_000_000_000L) { // 1 second duration
+      if (now - startTime > 1_500_000_000L) { // 1 second duration
         stop();
         if (onFinished != null) onFinished.run(); // Do real roll after animation ends
         return;
