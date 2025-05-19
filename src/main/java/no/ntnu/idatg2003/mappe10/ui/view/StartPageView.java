@@ -11,6 +11,8 @@ import javafx.stage.Stage;
 import no.ntnu.idatg2003.mappe10.ui.controller.SoundController;
 import no.ntnu.idatg2003.mappe10.ui.controller.StartPageController;
 
+import java.util.Objects;
+
 import static java.lang.Thread.sleep;
 
 
@@ -32,7 +34,7 @@ public class StartPageView extends Application {
 
         // Game Title
         Label title = new Label("Board Game");
-        title.setStyle("-fx-font-size: 28px; -fx-font-weight: bold;");
+        title.getStyleClass().addAll("label","title");
 
         // Buttons
         Button startGameBtn = new Button("Start Game");
@@ -68,6 +70,7 @@ public class StartPageView extends Application {
         layout.getChildren().addAll(title, startGameBtn, optionsBtn, exitBtn);
 
         Scene scene = new Scene(layout, WINDOW_WIDTH, WINDOW_HEIGHT);
+        scene.getStylesheets().add((getClass().getResource("/css/style.css")).toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
     }

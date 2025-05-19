@@ -1,32 +1,23 @@
 package no.ntnu.idatg2003.mappe10.ui.view;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.PauseTransition;
-import javafx.animation.Timeline;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
-import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
-import no.ntnu.idatg2003.mappe10.model.tile.Tile;
-import no.ntnu.idatg2003.mappe10.model.tile.tileaction.LadderAction;
-import no.ntnu.idatg2003.mappe10.model.tile.tileaction.PrisonAction;
-import no.ntnu.idatg2003.mappe10.model.tile.tileaction.TileAction;
+import no.ntnu.idatg2003.mappe10.model.player.Player;
 import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
 import no.ntnu.idatg2003.mappe10.ui.controller.SoundController;
+import no.ntnu.idatg2003.mappe10.ui.view.renderer.Renderer;
 
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class BoardGameView implements BoardGameObserver {
   private static final int WINDOW_WIDTH = 1000;
@@ -36,15 +27,16 @@ public class BoardGameView implements BoardGameObserver {
   private SoundController soundController;
   private Label currentPlayerLabel;
   private HBox diceBox;
+  private Renderer gameRenderer;
+  private TextArea logTextArea;
 
   public BoardGameView() {
     soundController = new SoundController();
     controller = new BoardGameController(this);
     canvas = new ResizableCanvas();
     currentPlayerLabel = new Label();
-    // Redraw canvas when size changes.
-    canvas.widthProperty().addListener(evt -> drawBoard());
-    canvas.heightProperty().addListener(evt -> drawBoard());
+    logTextArea = new TextArea();
+    gameRenderer = null;
   }
 
   /**
@@ -55,7 +47,7 @@ public class BoardGameView implements BoardGameObserver {
    */
   public void initBoardGame(String selectedBoard, Map<String, String> playersAndPieces) {
     // Initialize the board game with the selected board and players
-    controller.initBoardGame(selectedBoard);
+    gameRenderer = controller.initBoardGame(selectedBoard, canvas);
     playersAndPieces.keySet().forEach(playerName -> {
       String playingPiece = playersAndPieces.get(playerName);
       controller.addPlayer(playerName, playingPiece);
@@ -68,127 +60,6 @@ public class BoardGameView implements BoardGameObserver {
   /**
    * Draws the board.
    */
-  private void drawBoard() {
-    double width = canvas.getWidth();
-    double height = canvas.getHeight();
-
-    GraphicsContext gc = canvas.getGraphicsContext2D();
-    gc.clearRect(0, 0, width, height);
-
-    gc.setFill(Color.LIGHTGRAY);
-    gc.fillRect(0, 0, width, height);
-
-    double tileWidth = controller.getTileWidth(width);
-    double tileHeight = controller.getTileHeight(height);
-
-    double offsetWidth = width - tileWidth;
-    double offsetHeight = height - tileHeight;
-
-    // Draw the board
-    int numberOfTiles = controller.getNumberOfTiles();
-    for (int i = 1; i <= numberOfTiles; i++) {
-      Coordinate canvasCoords = controller.getCanvasCoords(i, offsetWidth, offsetHeight);
-      double x = canvasCoords.getX0();
-      double y = canvasCoords.getX1();
-
-      gc.setStroke(Color.BLACK);
-      gc.strokeRect(x, y, tileWidth, tileHeight);
-      gc.strokeText(String.valueOf(i), x + tileWidth / 2, y + tileHeight / 2);
-    }
-    drawActions(offsetWidth, offsetHeight, tileWidth, tileHeight);
-    // Draw the players
-    drawPlayers(offsetWidth, offsetHeight, tileWidth, tileHeight);
-  }
-
-  private void drawPlayers(double canvasWidth, double canvasHeight, double tileWidth, double tileHeight) {
-    GraphicsContext gc = canvas.getGraphicsContext2D();
-    controller.getPlayerListIterator().forEachRemaining(player -> {
-      Coordinate canvasCoords = controller.getCanvasCoords(
-            player.getCurrentTile().getTileId(),
-            canvasWidth,
-            canvasHeight);
-
-      double x = canvasCoords.getX0() + tileWidth / 4;
-      double y = canvasCoords.getX1() + tileHeight / 4;
-
-      InputStream inputStream = getClass().getResourceAsStream("/playingPieces/" + player.getPlayingPiece() + ".png");
-      if (inputStream == null) {
-        System.out.println("Image not found: " + player.getPlayingPiece());
-        return;
-      }
-
-      Image image = new Image(inputStream);
-      gc.drawImage(image, x, y, tileWidth / 2, tileHeight / 2);
-    });
-
-  }
-
-  private void drawActions(double canvasWidth, double canvasHeight, double tileWidth, double tileHeight) {
-    int numberOfTiles = controller.getNumberOfTiles();
-    for (int id = 1; id <= numberOfTiles; id++) {
-      // Java does not support switch cases with instanceof, so we use if-else statements instead
-      if (controller.checkIfTileAction(id).equals("Ladder")) {
-        drawLadders(id, canvasWidth, canvasHeight, tileWidth, tileHeight);
-      } else if (controller.checkIfTileAction(id).equals("Prison")) {
-        drawPrison(id, canvasWidth, canvasHeight, tileWidth, tileHeight);
-      }
-    }
-  }
-
-  private void drawPrison(int tileId, double canvasWidth, double canvasHeight, double tileWidth, double tileHeight) {
-    GraphicsContext gc = canvas.getGraphicsContext2D();
-    Coordinate rectCoords = controller.getCanvasCoords(tileId, canvasWidth, canvasHeight);
-    double x = rectCoords.getX0();
-    double y = rectCoords.getX1();
-    gc.setFill(Color.ORANGE);
-    gc.fillRect(x, y, tileWidth, tileHeight);
-
-    gc.setStroke(Color.BLACK);
-    gc.setLineWidth(1);
-    gc.strokeRect(x, y, tileWidth, tileHeight);
-
-    gc.setFill(Color.BLACK);
-    gc.fillText("Prison\n" + tileId, x + tileWidth / 4 + tileWidth / 8, y + tileHeight / 4 + tileHeight / 8);
-  }
-  private void drawLadders(int tileId, double canvasWidth, double canvasHeight, double tileWidth, double tileHeight) {
-    GraphicsContext gc = canvas.getGraphicsContext2D();
-
-    Coordinate sourceCoords = controller.getCanvasCoords(tileId, canvasWidth, canvasHeight);
-
-    double x = sourceCoords.getX0();
-    double y = sourceCoords.getX1();
-
-    int destTileId = controller.getDestinationTileId(tileId);
-    Coordinate destCoords = controller.getCanvasCoords(destTileId, canvasWidth, canvasHeight);
-
-    double destX = destCoords.getX0() - tileWidth / 8;
-    double destY = destCoords.getX1() - tileHeight / 8;
-
-      if (destTileId > tileId) {
-        gc.setStroke(Color.GREEN);
-      } else {
-        gc.setStroke(Color.RED);
-      }
-      double startX = x + tileWidth / 2;
-      double startY = y + tileHeight / 2;
-      double endX = destX + tileWidth / 2;
-      double endY = destY + tileHeight / 2;
-
-      gc.strokeLine(startX, startY, endX, endY);
-      drawArrowHeads(startX, startY, endX, endY);
-  }
-
-  private void drawArrowHeads(double x, double y, double destX, double destY) {
-    double arrowSize = 10;
-    double angle = Math.atan2(destY - y, destX - x);
-    double arrowAngle = Math.toRadians(20);
-
-    GraphicsContext gc = canvas.getGraphicsContext2D();
-    // Help from chatGPT
-    gc.strokeLine(destX, destY, destX - arrowSize * Math.cos(angle - arrowAngle), destY - arrowSize * Math.sin(angle - arrowAngle));
-    gc.strokeLine(destX, destY, destX - arrowSize * Math.cos(angle + arrowAngle), destY - arrowSize * Math.sin(angle + arrowAngle));
-  }
-
   public void start(String selectedBoard, Map<String, String> playersAndPieces) {
     initBoardGame(selectedBoard, playersAndPieces);
     controller.registerObserver(this);
@@ -219,15 +90,41 @@ public class BoardGameView implements BoardGameObserver {
     leftBox.getChildren().addAll(canvas, labelAndButton);
 
     // Binds the canvas size to the stack pane size
-    canvas.widthProperty().bind(leftBox.widthProperty()); //.subtract(50));
-    canvas.heightProperty().bind(leftBox.heightProperty()); //.subtract(50));
+    canvas.widthProperty().bind(leftBox.widthProperty());
+    canvas.heightProperty().bind(leftBox.heightProperty());
+
+    canvas.widthProperty().addListener(evt -> gameRenderer.drawBoard());
+    canvas.heightProperty().addListener(evt -> gameRenderer.drawBoard());
+
 
     return leftBox;
   }
   public VBox createDiceAndLogBox() {
-    // Create a label to display current player
+    VBox rollingBox = createRollingBox();
+    VBox logBox = createLogBox();
+
+    VBox rightBox = new VBox(5);
+    rightBox.setBorder(
+            new Border(
+                    new BorderStroke(
+                            Color.BLACK,
+                            BorderStrokeStyle.SOLID,
+                            null,
+                            new BorderWidths(0, 3, 3, 3)
+                    )
+            )
+    );
+
+    // Set preferred sizes here if needed
+    rollingBox.setPrefHeight(300);  // You can tweak this
+    logBox.setPrefHeight(200);      // And this too
+
+    rightBox.getChildren().addAll(rollingBox, logBox);
+    return rightBox;
+  }
+  private VBox createRollingBox() {
     currentPlayerLabel.setStyle("-fx-font-size: 16px; -fx-padding: 10px;");
-    currentPlayerLabel.borderProperty().set(
+    currentPlayerLabel.setBorder(
             new Border(
                     new BorderStroke(
                             Color.BLACK,
@@ -239,56 +136,80 @@ public class BoardGameView implements BoardGameObserver {
     );
     currentPlayerLabel.setAlignment(Pos.CENTER);
 
-    // Create a VBox to hold the dice and log
-    VBox rollingBox = new VBox(10);
-    rollingBox.setAlignment(Pos.TOP_CENTER);
-    rollingBox.setStyle("-fx-padding: 10px;");
-
-    // VBox to hold where the dices will be shown, only comes up when the player rolls the dice
     diceBox = new HBox(10);
     diceBox.setAlignment(Pos.CENTER);
     diceBox.setVisible(false);
 
-    // Create buttons to roll the dice
     Button rollButton1 = new Button("Roll Dice");
-    // Sets a cooldown when pressed
     rollButton1.setOnAction(e -> {
       soundController.playDiceRollSound();
       controller.playTurn();
-      // rollButton1.setDisable(true);
+    });
+    rollButton1.setScaleShape(true);
+    rollButton1.setMinWidth(150);
+
+    VBox playerListBox = new VBox(5);
+    playerListBox.setAlignment(Pos.CENTER_LEFT);
+    playerListBox.setStyle("-fx-padding: 10px;");
+
+    controller.getPlayerListIterator().forEachRemaining(player -> {
+      // Create a row for each player
+      HBox playerRow = new HBox(8);
+      playerRow.setAlignment(Pos.CENTER_LEFT);
+
+      // Load playing piece image from the players playing piece
+      InputStream imgStream = getClass().getResourceAsStream("/playingPieces/" + player.getPlayingPiece() + ".png");
+      ImageView pieceView = new ImageView();
+      if (imgStream != null) {
+        Image pieceImage = new Image(imgStream);
+        pieceView.setImage(pieceImage);
+        pieceView.setFitWidth(24);
+        pieceView.setFitHeight(24);
+      }
+
+      Label nameLabel = new Label(player.getName());
+      nameLabel.setStyle("-fx-font-size: 14px;");
+
+      playerRow.getChildren().addAll(pieceView, nameLabel);
+      playerListBox.getChildren().add(playerRow);
     });
 
-    rollButton1.setScaleShape(true);
-    double buttonWidth = 150;
-    rollButton1.setMinWidth(buttonWidth);
+    VBox rollingBox = new VBox(10);
+    rollingBox.setAlignment(Pos.TOP_CENTER);
+    rollingBox.setStyle("-fx-padding: 10px;");
+    rollingBox.getChildren().addAll(currentPlayerLabel, rollButton1, diceBox, playerListBox);
 
+    return rollingBox;
+  }
+  private VBox createLogBox() {
     VBox logBox = new VBox(10);
     logBox.setAlignment(Pos.BOTTOM_CENTER);
     logBox.setStyle("-fx-padding: 10px;");
 
-    // Create a label for the log
     Label logLabel = new Label("Game Log");
     logLabel.setStyle("-fx-font-size: 16px; -fx-padding: 10px;");
     logLabel.setAlignment(Pos.CENTER);
 
-    // Add the label to the VBox
-    logBox.getChildren().add(logLabel);
-    rollingBox.getChildren().addAll(currentPlayerLabel, rollButton1, diceBox);
+    logTextArea.setEditable(false);
+    logTextArea.setWrapText(true);
+    logTextArea.setPrefWidth(250);
+    VBox.setVgrow(logBox, Priority.ALWAYS); // Allow the log box to grow
+    logTextArea.setStyle("-fx-font-size: 14px; -fx-padding: 10px;");
+    logTextArea.setBorder(
+            new Border(
+                    new BorderStroke(
+                            Color.BLACK,
+                            BorderStrokeStyle.SOLID,
+                            null,
+                            new BorderWidths(0, 3, 3, 3)
+                    )
+            )
+    );
 
-    VBox rightBox = new VBox(5);
-    rightBox.setBorder(
-          new Border(
-                new BorderStroke(
-                      Color.BLACK,
-                      BorderStrokeStyle.SOLID,
-                      null,
-                      new BorderWidths(0, 3, 3, 3)
-                )
-          ));
-    rightBox.getChildren().addAll(rollingBox, logBox);
-
-    return rightBox;
+    logBox.getChildren().addAll(logLabel, logTextArea);
+    return logBox;
   }
+
 
   public void showDiceResults(List<Integer> diceResults, int amountOfDice) {
     diceBox.setVisible(true);
@@ -296,7 +217,7 @@ public class BoardGameView implements BoardGameObserver {
 
     for (int i = 0; i < amountOfDice; i++) {
       int rollResult = diceResults.get(i);
-      String imagePath = "/dice_images/dice_" + rollResult + ".png";
+      String imagePath = "/diceImages/dice_" + rollResult + ".png";
 
       try {
         ImageView diceImage = new ImageView(getClass().getResource(imagePath).toExternalForm());
@@ -337,12 +258,21 @@ public class BoardGameView implements BoardGameObserver {
   @Override
   public void updatePosition() {
     // Update the current position of the player in canvas.
-    drawBoard();
+    gameRenderer.drawBoard();
+  }
+
+  @Override
+  public void onTileAction(Player player, String actionDescription) {
+    String logMessage = player.getName() + " " + actionDescription;
+    addToLog(logMessage);
   }
 
   public void setCurrentPlayerLabel(String playerName) {
     currentPlayerLabel.setText("Current Players turn: " + playerName);
   }
+    public void addToLog(String logMessage) {
+        logTextArea.appendText(logMessage + "\n");
+    }
 
   /**
    * A resizable canvas that redraws itself when the size changes.

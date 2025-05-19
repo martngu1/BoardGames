@@ -11,6 +11,9 @@ public class PrisonAction implements TileAction {
         this.description = description;
     }
 
+    public String getDescription() {
+        return description;
+    }
     @Override
     public void performAction(Player player, BoardGame game) {
         // Only imprison if no one is currently in prison

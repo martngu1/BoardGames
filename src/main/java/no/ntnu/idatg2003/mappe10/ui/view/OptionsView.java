@@ -58,5 +58,6 @@ public class OptionsView{
         layout.getChildren().addAll(backButton,volumeSlider, musicToggle);
         layout.setStyle("-fx-padding: 20; -fx-alignment: center;");
         stage.setScene(new Scene(layout, WINDOW_WIDTH, WINDOW_HEIGHT));
+        layout.getStylesheets().add((getClass().getResource("/css/style.css")).toExternalForm());
     }
 }

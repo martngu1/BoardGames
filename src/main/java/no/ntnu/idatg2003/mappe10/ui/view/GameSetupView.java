@@ -60,13 +60,13 @@ public class GameSetupView {
         });
 
         VBox rightBox = new VBox(10, boardLabel, boardOptions, continueButton, backButton);
-        rightBox.setAlignment(Pos.CENTER_LEFT);
+        rightBox.setAlignment(Pos.CENTER_RIGHT);
         rightBox.setPadding(new Insets(20));
 
         HBox layout = new HBox(40, leftBox, rightBox);
-        layout.setPadding(new Insets(30));
 
-        Scene scene = new Scene(layout, 450, 250);
+        Scene scene = new Scene(layout, 600, 400);
+        scene.getStylesheets().add((getClass().getResource("/css/style.css")).toExternalForm());
         stage.setScene(scene);
         stage.show();
     }

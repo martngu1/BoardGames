@@ -1,0 +1,45 @@
+/* Title styling */
+.label.title {
+    -fx-font-size: 68px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4CAF50;
+    -fx-effect: dropshadow(gaussian, black, 6, 0.7, 0, 0);
+    -fx-letter-spacing: 1.5px;
+}
+
+
+.label {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4CAF50;
+    -fx-effect: dropshadow(gaussian, black, 3, 0.5, 0, 0);
+}
+
+.button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, black, 6, 0.5, 0, 0);
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 10 20;
+}
+
+.button:hover {
+    -fx-background-color: #45A049;
+}
+
+.button:pressed {
+    -fx-background-color: #388E3C;
+}
+.text-field {
+    -fx-background-color: -fx-text-box-border, -fx-background ;
+    -fx-background-insets: 0, 0 0 1 0 ;
+    -fx-background-radius: 0 ;
+    -fx-effect: dropshadow(gaussian, green, 6, 0.75, 0, 0);
+}
+.text-field:focused {
+    -fx-background-color: -fx-focus-color, -fx-background ;
+    -fx-effect: dropshadow(gaussian, green, 6, 0.75, 0, 0);
+}

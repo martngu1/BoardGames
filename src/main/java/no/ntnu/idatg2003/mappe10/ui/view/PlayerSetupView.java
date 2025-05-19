@@ -28,10 +28,8 @@ public class PlayerSetupView {
 
 
     public PlayerSetupView() {
-
         this.controller = new PlayerSetupController(this);
         this.soundController = SoundController.getInstance();
-
     }
 
 
@@ -58,7 +56,7 @@ public class PlayerSetupView {
             controller.doBack(stage);
         });
 
-        VBox topSection = new VBox(10, backButton, continueButton, titleLabel); 
+        VBox topSection = new VBox(10, backButton, continueButton, titleLabel);
         topSection.setAlignment(Pos.TOP_LEFT);
 
         root.getChildren().add(topSection);
@@ -71,6 +69,7 @@ public class PlayerSetupView {
         ScrollPane scrollPane = new ScrollPane(root);
 
         Scene scene = new Scene(scrollPane, 800, 600);
+        scene.getStylesheets().add((getClass().getResource("/css/style.css")).toExternalForm());
         stage.setScene(scene);
     }
 

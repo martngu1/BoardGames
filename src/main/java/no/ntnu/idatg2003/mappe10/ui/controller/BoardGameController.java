@@ -18,6 +18,8 @@ import no.ntnu.idatg2003.mappe10.model.tile.tileaction.LadderAction;
 import no.ntnu.idatg2003.mappe10.model.tile.tileaction.PrisonAction;
 import no.ntnu.idatg2003.mappe10.model.tile.tileaction.TileAction;
 import no.ntnu.idatg2003.mappe10.ui.view.BoardGameView;
+import no.ntnu.idatg2003.mappe10.ui.view.renderer.LadderGameRenderer;
+import no.ntnu.idatg2003.mappe10.ui.view.renderer.Renderer;
 
 import java.io.InputStream;
 import java.util.*;
@@ -40,11 +42,13 @@ public class BoardGameController {
     this.playerQueue = new ArrayDeque<>();
   }
 
-  public void initBoardGame(String selectedBoard) {
+  public Renderer initBoardGame(String selectedBoard, Canvas canvas) {
     roller = new Roller();
     if (selectedBoard.equals("Ladder Game")) {
       initLadderGame();
+      return new LadderGameRenderer(this, canvas);
     }
+    return null;
   }
 
   public void arrangePlayerTurns() {
@@ -54,6 +58,7 @@ public class BoardGameController {
   }
 
   public void initLadderGame() {
+
     boardGame = boardGame.getFactory().createLadderGame();
   }
 
@@ -63,7 +68,8 @@ public class BoardGameController {
 
   public void addPlayerToQueue(String playerName) {
     if (playerQueue.contains(playerName)) {
-      System.out.println("Player: " + playerName + " is already in the queue. Aborting...");
+      // ADD LOGGER
+      // boardGameView.addToLog("Player: " + playerName + " is already in the queue. Aborting...");
       return;
     }
     playerQueue.add(playerName);
@@ -80,15 +86,15 @@ public class BoardGameController {
 
       Player currentPlayer = boardGame.getCurrentPlayer();
       int diceValue = boardGame.rollDice();
-      System.out.println("Dice 1: " + boardGame.getDieValue(0) + " Dice 2: " + boardGame.getDieValue(1));
-
+      boardGameView.addToLog(currentPlayer.getName() + " rolled " + boardGame.getDieValue(0)
+              + " and " + boardGame.getDieValue(1) + " for a total of " + diceValue);
       if (currentPlayer.shouldSkipTurn()) {
         if (rolledDouble()) {
-          System.out.println(currentPlayer.getName() + " rolled doubles and is released from prison!");
+          boardGameView.addToLog(currentPlayer.getName() + " rolled doubles and is released from prison!");
           play(currentPlayer, diceValue);
           currentPlayer.decrementSkipTurns();
         } else {
-          System.out.println(currentPlayer.getName() + " is in prison and cannot play this turn.");
+          boardGameView.addToLog(currentPlayer.getName() + " is in prison and skips this turn.");
           currentPlayer.decrementSkipTurns();
           displayDiceResults();
           playerQueue.add(currentPlayer.getName());
@@ -98,7 +104,6 @@ public class BoardGameController {
       }
 
       boardGameView.setCurrentPlayerLabel(playerQueue.peek());
-      System.out.println("Current player: " + boardGame.getCurrentPlayer().getName());
     });
   }
 
@@ -107,7 +112,6 @@ public class BoardGameController {
     List<Integer> diceResults = new ArrayList<>();
     for (int i = 0; i < boardGame.getDiceAmount(); i++) {
       diceResults.add(boardGame.getDieValue(i));
-      System.out.println("Die " + (i + 1) + ": " + diceResults.get(i));
     }
     // Check if all dice have the same value
     return diceResults.stream().distinct().count() == 1;
@@ -117,7 +121,6 @@ public class BoardGameController {
       boardGame.performLandAction();
       playerQueue.add(currentPlayer.getName());
       boardGameView.setCurrentPlayerLabel(playerQueue.peek());
-      System.out.println("Current player: " + currentPlayer.getName());
     });
   }
 
@@ -218,7 +221,7 @@ public class BoardGameController {
 
     @Override
     public void handle(long now) {
-      if (now - startTime > 1_500_000_000L) { // 1 second duration
+      if (now - startTime > 1_000_000_000L) { // 1 second duration
         stop();
         if (onFinished != null) onFinished.run(); // Do real roll after animation ends
         return;

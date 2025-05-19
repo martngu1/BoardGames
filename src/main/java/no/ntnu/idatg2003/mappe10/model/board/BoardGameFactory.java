@@ -32,19 +32,19 @@ public class BoardGameFactory {
         boardGame.createBoard(90, 9, 10);
 
         // Set up ladder actions on specific tiles
-        boardGame.getBoard().getTile(3).setLandAction(new LadderAction(17, "Climb: 17" ));
-        boardGame.getBoard().getTile(11).setLandAction(new LadderAction(25, "Climb: 25" ));
-        boardGame.getBoard().getTile(29).setLandAction(new LadderAction(9, "Fall: 9" ));
-        boardGame.getBoard().getTile(41).setLandAction(new LadderAction(21, "Fall: 21" ));
-        boardGame.getBoard().getTile(46).setLandAction(new LadderAction(63, "Climb: 63" ));
-        boardGame.getBoard().getTile(56).setLandAction(new LadderAction(33, "Fall: 33" ));
-        boardGame.getBoard().getTile(72).setLandAction(new LadderAction(26, "Climb: 26" ));
-        boardGame.getBoard().getTile(87).setLandAction(new LadderAction(55, "Fall: 55" ));
+        boardGame.getBoard().getTile(3).setLandAction(new LadderAction(17, "Climb to tile 17" ));
+        boardGame.getBoard().getTile(11).setLandAction(new LadderAction(25, "Climb to tile 25" ));
+        boardGame.getBoard().getTile(29).setLandAction(new LadderAction(9, "Fall to tile 9" ));
+        boardGame.getBoard().getTile(41).setLandAction(new LadderAction(21, "Fall to tile 21" ));
+        boardGame.getBoard().getTile(46).setLandAction(new LadderAction(63, "Climb to tile 63" ));
+        boardGame.getBoard().getTile(56).setLandAction(new LadderAction(33, "Fall to tile 33" ));
+        boardGame.getBoard().getTile(72).setLandAction(new LadderAction(26, "Climb to tile 26" ));
+        boardGame.getBoard().getTile(87).setLandAction(new LadderAction(55, "Fall to tile 55" ));
 
         // Set up prison action on board
 
         for (int i : new int[]{10, 32, 77}) {
-            boardGame.getBoard().getTile(i).setLandAction(new PrisonAction("Prison for 1 turn" ));
+            boardGame.getBoard().getTile(i).setLandAction(new PrisonAction("has been jailed for 1 turn" ));
         }
 
         // Set tile coords for canvas

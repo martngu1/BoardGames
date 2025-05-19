@@ -19,7 +19,7 @@ public class Die {
      */
     public int roll() {
         // Generate a random number between 1 and 6
-        lastRolledValue = random.nextInt(1, 4);
+        lastRolledValue = random.nextInt(1, 7);
         return lastRolledValue;
     }
 
