@@ -108,6 +108,18 @@ public class BoardGame {
     Tile currentTile = currentPlayer.getCurrentTile();
     if (currentTile.getLandAction() != null) {
       currentTile.getLandAction().performAction(currentPlayer, this);
+
+      String description = currentTile.getLandAction().getDescription();
+        if (description != null) {
+            notifyTileActionPerformed(currentPlayer, description);
+        }
+
+      notifyObservers();
+    }
+  }
+  private void notifyTileActionPerformed(Player player, String description) {
+    for (BoardGameObserver observer : observers) {
+      observer.onTileAction(player, description);
     }
   }
 
