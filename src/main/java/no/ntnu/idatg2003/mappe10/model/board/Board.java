@@ -12,6 +12,7 @@ public class Board {
     private Map<Integer, Tile> tilesList;
     private int numberOfRows;
     private int numberOfColumns;
+    private int numberOfTiles;
 
     /**
      * Constructor for the Board class.
@@ -25,6 +26,7 @@ public class Board {
         initBoard(numberOfTiles);
         this.numberOfRows = numberOfRows;
         this.numberOfColumns = numberOfColumns;
+        this.numberOfTiles = numberOfTiles;
     }
 
     /**
@@ -37,7 +39,7 @@ public class Board {
      */
     public void initBoard(int numberOfTiles) {
         Tile dummy = null;
-        for (int i = numberOfTiles; i >= 1; i--) {
+        for (int i = numberOfTiles + 1; i >= 1; i--) {
             Tile tile = new Tile(i);
             tile.setNextTile(dummy);
             addTile(tile);
@@ -63,6 +65,15 @@ public class Board {
      */
     public Tile getTile(int tileId) {
         return tilesList.get(tileId);
+    }
+
+    /**
+     * Returns the number of tiles in the board.
+     *
+     * @return the number of tiles in the board
+     */
+    public int getNumberOfTiles() {
+        return numberOfTiles;
     }
 
     /**

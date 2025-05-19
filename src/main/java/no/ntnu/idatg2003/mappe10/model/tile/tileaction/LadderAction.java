@@ -1,5 +1,7 @@
-package no.ntnu.idatg2003.mappe10.model.tile;
+package no.ntnu.idatg2003.mappe10.model.tile.tileaction;
 
+import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
+import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
 
 public class LadderAction implements TileAction {
@@ -18,9 +20,10 @@ public class LadderAction implements TileAction {
         return description;
     }
 
-    public void performAction(Player player){
-        System.out.println("LadderAction performed");
-    }
 
+    @Override
+    public void performAction(Player player, BoardGame game) {
+        player.placeOnTile(game.getTileById(destinationTileId));
+    }
 
 }
