@@ -30,14 +30,18 @@ class PlayerTest {
   @Test
   void moveCorrectAmountOfTiles() {
     testPlayer.placeOnTile(boardGame.getBoard().getTile(1));
-    testPlayer.move(3);
+    for (int i = 0; i < 4; i++) {
+      testPlayer.move();
+    }
     assertEquals(4, testPlayer.getCurrentTile().getTileId());
   }
 
   @Test
   void movePositiveTestNoOutOfBound() {
     testPlayer.placeOnTile(boardGame.getBoard().getTile(2));
-    testPlayer.move(4);
+    for (int i = 0; i < 3; i++) {
+      testPlayer.move();
+    }
     assertEquals(4, testPlayer.getCurrentTile().getTileId()); //Tile4 is the last tile
   }
 }

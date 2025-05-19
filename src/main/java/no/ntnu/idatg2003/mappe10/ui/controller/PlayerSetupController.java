@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import no.ntnu.idatg2003.mappe10.ui.view.Alerts;
 import no.ntnu.idatg2003.mappe10.ui.view.BoardGameView;
 import no.ntnu.idatg2003.mappe10.ui.view.GameSetupView;
 import no.ntnu.idatg2003.mappe10.ui.view.PlayerSetupView;
@@ -39,7 +40,9 @@ public class PlayerSetupController {
                 String selectedPiece = pieceBox.getValue();
 
                 if (playerName.isEmpty() || selectedPiece == null) {
-                    System.out.println("Please enter name and select a piece for all players.");
+                    Alerts alerts = new Alerts();
+                    alerts.showAlert("Invalid Input", "Please enter a name and select a piece for all players.",
+                            "All players must have a name and a selected piece.");
                     return;
                 }
 

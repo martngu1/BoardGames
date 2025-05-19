@@ -1,6 +1,7 @@
 package no.ntnu.idatg2003.mappe10.model.tile;
 
 import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
+import no.ntnu.idatg2003.mappe10.model.tile.tileaction.TileAction;
 
 /**
  * Represents a tile on the board. Each tile has a unique id and a reference to the next tile. The
@@ -54,7 +55,6 @@ public class Tile {
     public Coordinate getBoardCoords() {
         return this.boardCoords;
     }
-
 
     /**
      * Sets the action of the tile when a player lands on it.

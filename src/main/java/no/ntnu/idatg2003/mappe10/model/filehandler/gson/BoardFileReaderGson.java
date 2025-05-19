@@ -5,15 +5,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import no.ntnu.idatg2003.mappe10.model.board.Board;
-import no.ntnu.idatg2003.mappe10.model.tile.LadderAction;
+import no.ntnu.idatg2003.mappe10.model.tile.tileaction.LadderAction;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
-import no.ntnu.idatg2003.mappe10.model.tile.TileAction;
+import no.ntnu.idatg2003.mappe10.model.tile.tileaction.TileAction;
 import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileReader;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -75,11 +73,11 @@ public class BoardFileReaderGson implements BoardFileReader {
         if (tileJson.has("action")){
             JsonObject actionJson = tileJson.getAsJsonObject("action");
             String actionType = actionJson.get("type").getAsString();
-            int destinationTileId = actionJson.get("destinationTileID").getAsInt();
             String description = actionJson.get("description").getAsString();
             TileAction action = null;
             switch (actionType){
                 case "LadderAction":
+                    int destinationTileId = actionJson.get("destinationTileID").getAsInt();
                     action = new LadderAction(destinationTileId, description);
                     break;
                 case "WinAction":
