@@ -22,12 +22,12 @@ public class CSVFileHandler{
 
     public List<Player> loadPlayers(String filename, BoardGame game) {
         List <Player> players = new ArrayList<>();
+
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                Player player = new Player(parts[0],"TODO: addplaying piece to CSV, save and laod", game);
-                player.setPlayingPiece(parts[1]);
+                Player player = new Player(parts[0],parts[0], game);
                 players.add(player);
             }
         } catch (IOException e) {
