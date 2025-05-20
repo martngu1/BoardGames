@@ -149,6 +149,7 @@ public class BoardGameController {
 
   public void placePlayerOnStartTile() {
     boardGame.placeAllPlayersOnTile(boardGame.getBoard().getFirstTile());
+    //boardGame.placeAllPlayersOnTile(boardGame.getTileById(80));
   }
 
   public double getTileWidth(double canvasWidth) {

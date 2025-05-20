@@ -274,17 +274,18 @@ public class BoardGameView implements BoardGameObserver {
   public void onGameOver(String name) {
     CustomDialog gameOverDialog = new CustomDialog(WINDOW_HEIGHT/2, WINDOW_WIDTH/2);
     gameOverDialog.setExitBtnAction(() -> {
-      gameOverDialog.close();
+      gameOverDialog.closeDialog();
       Stage stage = (Stage) canvas.getScene().getWindow();
       stage.close();
       new StartPageView().start(new Stage());
     });
     gameOverDialog.setRestartBtnAction(() -> {
-      gameOverDialog.close();
+      gameOverDialog.closeDialog();
       controller.restartGame();
     });
     gameOverDialog.setWinner(name);
-    gameOverDialog.show();
+    gameOverDialog.showDialog();
+    soundController.playWinSound();
   }
 
   public void setCurrentPlayerLabel(String playerName) {
