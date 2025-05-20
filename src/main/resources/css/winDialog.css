@@ -1,0 +1,29 @@
+.win-dialog {
+    -fx-background-color: #E8F5E9;
+    -fx-background-radius: 24;
+}
+
+.win-label {
+    -fx-font-size: 25px;
+    -fx-text-fill: #2E7D32;
+    -fx-font-weight: bold;
+}
+
+.win-button {
+    -fx-background-color: white;
+    -fx-text-fill: #2E7D32;
+    -fx-background-radius: 10;
+    -fx-border-color: #1B5E20;
+    -fx-border-width: 2;
+    -fx-border-radius: 10;
+    -fx-cursor: hand;
+    -fx-padding: 8 16;
+}
+
+.win-button:hover {
+    -fx-background-color: #f5f5f5;
+}
+
+.win-button:pressed {
+    -fx-background-color: #eeeeee;
+}

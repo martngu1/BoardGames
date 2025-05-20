@@ -4,6 +4,7 @@ import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
 import no.ntnu.idatg2003.mappe10.model.filehandler.gson.BoardFileReaderGson;
 import no.ntnu.idatg2003.mappe10.model.tile.tileaction.LadderAction;
 import no.ntnu.idatg2003.mappe10.model.tile.tileaction.PrisonAction;
+import no.ntnu.idatg2003.mappe10.model.tile.tileaction.WinAction;
 
 
 /**
@@ -42,10 +43,12 @@ public class BoardGameFactory {
         boardGame.getBoard().getTile(87).setLandAction(new LadderAction(55, "Fall to tile 55" ));
 
         // Set up prison action on board
-
         for (int i : new int[]{10, 32, 77}) {
             boardGame.getBoard().getTile(i).setLandAction(new PrisonAction("has been jailed for 1 turn" ));
         }
+
+        // Set up win action on the last tile
+        boardGame.getBoard().getLastTile().setLandAction(new WinAction("You win!"));
 
         // Set tile coords for canvas
         int rows = boardGame.getBoard().getNumberOfRows();
