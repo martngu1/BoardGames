@@ -61,30 +61,22 @@ public class CustomDialog extends Stage {
     this.setScene(scene);
   }
 
-  public void showDialog() {
-    this.show();
-  }
-
-  public void closeDialog() {
-    this.close();
-  }
-
   public void setRestartBtnAction(Runnable action) {
     restartBtn.setOnAction(e -> {
       action.run();
-      closeDialog();
+      this.close();
     });
   }
 
   public void setExitBtnAction(Runnable action) {
     exitBtn.setOnAction(e -> {
       action.run();
-      closeDialog();
+      this.close();
     });
   }
 
-  public void setWinnerLabel(Player player) {
-    winnerLabel.setText("Winner: " + player.getName());
+  public void setWinner(String name) {
+    winnerLabel.setText("Winner: " + name);
   }
 
   private ImageView getTrophyImage() {

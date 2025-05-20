@@ -270,6 +270,23 @@ public class BoardGameView implements BoardGameObserver {
     addToLog(logMessage);
   }
 
+  @Override
+  public void onGameOver(String name) {
+    CustomDialog gameOverDialog = new CustomDialog(WINDOW_HEIGHT/2, WINDOW_WIDTH/2);
+    gameOverDialog.setExitBtnAction(() -> {
+      gameOverDialog.close();
+      Stage stage = (Stage) canvas.getScene().getWindow();
+      stage.close();
+      new StartPageView().start(new Stage());
+    });
+    gameOverDialog.setRestartBtnAction(() -> {
+      gameOverDialog.close();
+      controller.restartGame();
+    });
+    gameOverDialog.setWinner(name);
+    gameOverDialog.show();
+  }
+
   public void setCurrentPlayerLabel(String playerName) {
     currentPlayerLabel.setText("Current Players turn: " + playerName);
   }

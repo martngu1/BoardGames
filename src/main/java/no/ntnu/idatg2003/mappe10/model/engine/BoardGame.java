@@ -95,9 +95,9 @@ public class BoardGame {
 
   public void setCurrentPlayer(String playerName) {
     playerList.stream()
-        .filter(player -> player.getName().equals(playerName))
-        .findFirst()
-        .ifPresent(player -> currentPlayer = player);
+          .filter(player -> player.getName().equals(playerName))
+          .findFirst()
+          .ifPresent(player -> currentPlayer = player);
   }
 
   public Tile getTileById(int tileId) {
@@ -110,16 +110,11 @@ public class BoardGame {
       currentTile.getLandAction().performAction(currentPlayer, this);
 
       String description = currentTile.getLandAction().getDescription();
-        if (description != null) {
-            notifyTileActionPerformed(currentPlayer.getName(), description);
-        }
+      if (description != null) {
+        notifyTileActionPerformed(currentPlayer.getName(), description);
+      }
 
       notifyObservers();
-    }
-  }
-  private void notifyTileActionPerformed(String name, String description) {
-    for (BoardGameObserver observer : observers) {
-      observer.onTileAction(name, description);
     }
   }
 
@@ -164,6 +159,14 @@ public class BoardGame {
    */
   public Player getWinner() {
     return winner;
+  }
+
+  /**
+   * Sets the winner of the game as the given Player.
+   */
+  public void setWinner(Player player) {
+    winner = player;
+    notifyGameOver();
   }
 
   /**
@@ -236,6 +239,18 @@ public class BoardGame {
   private void notifyObservers() {
     for (BoardGameObserver observer : observers) {
       observer.updatePosition();
+    }
+  }
+
+  private void notifyTileActionPerformed(String name, String description) {
+    for (BoardGameObserver observer : observers) {
+      observer.onTileAction(name, description);
+    }
+  }
+
+  public void notifyGameOver() {
+    for (BoardGameObserver observer : observers) {
+      observer.onGameOver(winner.getName());
     }
   }
 }
