@@ -120,10 +120,10 @@ public class BoardGameController {
   }
   public void play(Player currentPlayer, int diceValue) {
     animatePlayerMove(diceValue, () -> {
+      boardGameView.setRollButtonEnabled(true);
       boardGame.performLandAction();
       playerQueue.add(currentPlayer.getName());
       boardGameView.setCurrentPlayerLabel(playerQueue.peek());
-      boardGameView.setRollButtonEnabled(true);
     });
   }
 
