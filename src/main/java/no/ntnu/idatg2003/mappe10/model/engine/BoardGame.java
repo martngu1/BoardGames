@@ -111,15 +111,15 @@ public class BoardGame {
 
       String description = currentTile.getLandAction().getDescription();
         if (description != null) {
-            notifyTileActionPerformed(currentPlayer, description);
+            notifyTileActionPerformed(currentPlayer.getName(), description);
         }
 
       notifyObservers();
     }
   }
-  private void notifyTileActionPerformed(Player player, String description) {
+  private void notifyTileActionPerformed(String name, String description) {
     for (BoardGameObserver observer : observers) {
-      observer.onTileAction(player, description);
+      observer.onTileAction(name, description);
     }
   }
 
@@ -195,6 +195,11 @@ public class BoardGame {
       default -> throw new IllegalArgumentException("Unsupported format type: " + formatType);
     }
     writer.writeBoard(this.boardPath + fileName, this.board);
+  }
+
+  public void restartGame() {
+    winner = null;
+    currentPlayer = null;
   }
 
   /**
