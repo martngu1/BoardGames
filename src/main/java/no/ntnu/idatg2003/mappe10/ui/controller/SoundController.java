@@ -7,7 +7,8 @@ import javafx.scene.media.MediaPlayer;
 
 public class SoundController {
     private MediaPlayer backgroundMusicPlayer;
-    private final String bgMusicPath = "/sounds/background_music.mp3";
+    private final String basePath = "/sounds/";
+    private final String bgMusicPath = basePath + "background_music.mp3";
     private MediaPlayer mediaPlayer;
     private static SoundController instance;
 
@@ -20,7 +21,7 @@ public class SoundController {
 
     public void playDiceRollSound() {
         try {
-            String path = "/sounds/dice_roll.mp3";
+            String path = basePath + "dice_roll.mp3";
             mediaPlayer = new MediaPlayer(new Media(getClass().getResource(path).toString()));
 
             mediaPlayer.play();
@@ -32,7 +33,7 @@ public class SoundController {
 
     public void playButtonSound() {
         try {
-            String path = "/sounds/button_press.mp3";
+            String path = basePath + "button_press.mp3";
             mediaPlayer = new MediaPlayer(new Media(getClass().getResource(path).toString()));
 
             mediaPlayer.play();
@@ -59,7 +60,7 @@ public class SoundController {
 
     public void quitSound() {
         try {
-            String path = "/sounds/quit_sound.mp3";
+            String path = basePath + "quit_sound.mp3";
             mediaPlayer = new MediaPlayer(new Media(getClass().getResource(path).toString()));
 
             mediaPlayer.play();
@@ -68,6 +69,15 @@ public class SoundController {
         }
     }
 
+    public void playWinSound() {
+        try {
+            String path = basePath + "win_sound.mp3";
+            mediaPlayer = new MediaPlayer(new Media(getClass().getResource(path).toString()));
+            mediaPlayer.play();
+        } catch (Exception e) {
+            System.out.println("Error playing sound: " + e.getMessage());
+        }
+    }
 
     public void stopBackgroundMusic() {
         if (backgroundMusicPlayer != null) {

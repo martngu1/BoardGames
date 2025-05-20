@@ -24,6 +24,7 @@
     -fx-border-radius: 5px;
     -fx-background-radius: 5px;
     -fx-padding: 10 20;
+    -fx-cursor: hand;
 }
 
 .button:hover {
