@@ -254,10 +254,20 @@ public class BoardGameView implements BoardGameObserver {
       controller.savePlayersToCSV();
     });
     MenuItem addPlayer = new MenuItem("Add Player");
+    MenuItem restartGame = new MenuItem("Restart Game");
+    restartGame.setOnAction(e -> {
+      controller.restartGame();
+    });
 
+    MenuItem exitGame = new MenuItem("Exit Game");
+    exitGame.setOnAction(e -> {
+      Stage stage = (Stage) canvas.getScene().getWindow();
+      stage.close();
+      new StartPageView().start(new Stage());
+    });
     loadMenu.getItems().addAll(loadBoard, loadPlayers);
     saveMenu.getItems().addAll(saveBoard, savePlayers);
-    settingsMenu.getItems().addAll(addPlayer);
+    settingsMenu.getItems().addAll(addPlayer, new SeparatorMenuItem(), restartGame, exitGame);
 
     MenuBar menuBar = new MenuBar();
     menuBar.getMenus().addAll(loadMenu, saveMenu, settingsMenu);
@@ -267,6 +277,10 @@ public class BoardGameView implements BoardGameObserver {
 
   public void setRollButtonEnabled(boolean enabled) {
     rollButton1.setDisable(!enabled);
+  }
+
+  public void setLogTextArea(String txt) {
+    logTextArea.setText(txt);
   }
 
   @Override
