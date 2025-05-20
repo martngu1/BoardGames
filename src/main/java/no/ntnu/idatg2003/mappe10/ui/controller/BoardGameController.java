@@ -80,6 +80,7 @@ public class BoardGameController {
       roller = new Roller();
     }
 
+    boardGameView.setRollButtonEnabled(false);
     roller.start(() -> {
       String currentPlayerName = playerQueue.poll();
       boardGame.setCurrentPlayer(currentPlayerName);
@@ -105,6 +106,7 @@ public class BoardGameController {
 
       boardGameView.setCurrentPlayerLabel(playerQueue.peek());
     });
+
   }
 
 
@@ -121,6 +123,7 @@ public class BoardGameController {
       boardGame.performLandAction();
       playerQueue.add(currentPlayer.getName());
       boardGameView.setCurrentPlayerLabel(playerQueue.peek());
+      boardGameView.setRollButtonEnabled(true);
     });
   }
 
@@ -146,6 +149,7 @@ public class BoardGameController {
     }
       boardGameView.showDiceResults(diceResults, boardGame.getDiceAmount());
   }
+
 
   public void placePlayerOnStartTile() {
     boardGame.placeAllPlayersOnTile(boardGame.getBoard().getTile(1));
