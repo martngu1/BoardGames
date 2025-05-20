@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 public class BoardGameView implements BoardGameObserver {
-  private static final int WINDOW_WIDTH = 1000;
-  private static final int WINDOW_HEIGHT = 700;
+  private static final double WINDOW_WIDTH = 1000;
+  private static final double WINDOW_HEIGHT = 700;
   private Canvas canvas;
   private BoardGameController controller;
   private SoundController soundController;
@@ -101,20 +101,21 @@ public class BoardGameView implements BoardGameObserver {
 
     return leftBox;
   }
+
   public VBox createDiceAndLogBox() {
     VBox rollingBox = createRollingBox();
     VBox logBox = createLogBox();
 
     VBox rightBox = new VBox(5);
     rightBox.setBorder(
-            new Border(
-                    new BorderStroke(
-                            Color.BLACK,
-                            BorderStrokeStyle.SOLID,
-                            null,
-                            new BorderWidths(0, 3, 3, 3)
-                    )
-            )
+          new Border(
+                new BorderStroke(
+                      Color.BLACK,
+                      BorderStrokeStyle.SOLID,
+                      null,
+                      new BorderWidths(0, 3, 3, 3)
+                )
+          )
     );
 
     // Set preferred sizes here if needed
@@ -124,17 +125,18 @@ public class BoardGameView implements BoardGameObserver {
     rightBox.getChildren().addAll(rollingBox, logBox);
     return rightBox;
   }
+
   private VBox createRollingBox() {
     currentPlayerLabel.setStyle("-fx-font-size: 16px; -fx-padding: 10px;");
     currentPlayerLabel.setBorder(
-            new Border(
-                    new BorderStroke(
-                            Color.BLACK,
-                            BorderStrokeStyle.SOLID,
-                            null,
-                            new BorderWidths(0, 3, 3, 3)
-                    )
-            )
+          new Border(
+                new BorderStroke(
+                      Color.BLACK,
+                      BorderStrokeStyle.SOLID,
+                      null,
+                      new BorderWidths(0, 3, 3, 3)
+                )
+          )
     );
     currentPlayerLabel.setAlignment(Pos.CENTER);
 
@@ -183,6 +185,7 @@ public class BoardGameView implements BoardGameObserver {
 
     return rollingBox;
   }
+
   private VBox createLogBox() {
     VBox logBox = new VBox(10);
     logBox.setAlignment(Pos.BOTTOM_CENTER);
@@ -198,14 +201,14 @@ public class BoardGameView implements BoardGameObserver {
     VBox.setVgrow(logBox, Priority.ALWAYS); // Allow the log box to grow
     logTextArea.setStyle("-fx-font-size: 14px; -fx-padding: 10px;");
     logTextArea.setBorder(
-            new Border(
-                    new BorderStroke(
-                            Color.BLACK,
-                            BorderStrokeStyle.SOLID,
-                            null,
-                            new BorderWidths(0, 3, 3, 3)
-                    )
-            )
+          new Border(
+                new BorderStroke(
+                      Color.BLACK,
+                      BorderStrokeStyle.SOLID,
+                      null,
+                      new BorderWidths(0, 3, 3, 3)
+                )
+          )
     );
 
     logBox.getChildren().addAll(logLabel, logTextArea);
@@ -267,17 +270,36 @@ public class BoardGameView implements BoardGameObserver {
   }
 
   @Override
-  public void onTileAction(Player player, String actionDescription) {
-    String logMessage = player.getName() + " " + actionDescription;
+  public void onTileAction(String name, String actionDescription) {
+    String logMessage = name + " " + actionDescription;
     addToLog(logMessage);
+  }
+
+  @Override
+  public void onGameOver(String name) {
+    CustomDialog gameOverDialog = new CustomDialog(WINDOW_HEIGHT/2, WINDOW_WIDTH/2);
+    gameOverDialog.setExitBtnAction(() -> {
+      gameOverDialog.closeDialog();
+      Stage stage = (Stage) canvas.getScene().getWindow();
+      stage.close();
+      new StartPageView().start(new Stage());
+    });
+    gameOverDialog.setRestartBtnAction(() -> {
+      gameOverDialog.closeDialog();
+      controller.restartGame();
+    });
+    gameOverDialog.setWinner(name);
+    gameOverDialog.showDialog();
+    soundController.playWinSound();
   }
 
   public void setCurrentPlayerLabel(String playerName) {
     currentPlayerLabel.setText("Current Players turn: " + playerName);
   }
-    public void addToLog(String logMessage) {
-        logTextArea.appendText(logMessage + "\n");
-    }
+
+  public void addToLog(String logMessage) {
+    logTextArea.appendText(logMessage + "\n");
+  }
 
   /**
    * A resizable canvas that redraws itself when the size changes.

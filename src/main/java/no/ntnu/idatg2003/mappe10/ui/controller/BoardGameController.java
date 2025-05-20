@@ -58,7 +58,6 @@ public class BoardGameController {
   }
 
   public void initLadderGame() {
-
     boardGame = boardGame.getFactory().createLadderGame();
   }
 
@@ -110,7 +109,7 @@ public class BoardGameController {
   }
 
 
-  public boolean rolledDouble() {
+  private boolean rolledDouble() {
     List<Integer> diceResults = new ArrayList<>();
     for (int i = 0; i < boardGame.getDiceAmount(); i++) {
       diceResults.add(boardGame.getDieValue(i));
@@ -118,7 +117,8 @@ public class BoardGameController {
     // Check if all dice have the same value
     return diceResults.stream().distinct().count() == 1;
   }
-  public void play(Player currentPlayer, int diceValue) {
+
+  private void play(Player currentPlayer, int diceValue) {
     animatePlayerMove(diceValue, () -> {
       boardGameView.setRollButtonEnabled(true);
       boardGame.performLandAction();
@@ -127,7 +127,7 @@ public class BoardGameController {
     });
   }
 
-  public void animatePlayerMove(int diceRoll, Runnable onFinished) {
+  private void animatePlayerMove(int diceRoll, Runnable onFinished) {
     displayDiceResults();
     Timeline timeline = new Timeline();
     for (int i = 0; i < diceRoll; i++) {
@@ -141,7 +141,7 @@ public class BoardGameController {
     timeline.play();
   }
 
-  public void displayDiceResults() {
+  private void displayDiceResults() {
     List <Integer> diceResults = new ArrayList<>();
     for (int i = 0; i < boardGame.getDiceAmount(); i++) {
       int diceResult = boardGame.getDieValue(i);
@@ -152,7 +152,8 @@ public class BoardGameController {
 
 
   public void placePlayerOnStartTile() {
-    boardGame.placeAllPlayersOnTile(boardGame.getBoard().getTile(1));
+    boardGame.placeAllPlayersOnTile(boardGame.getBoard().getFirstTile());
+    //boardGame.placeAllPlayersOnTile(boardGame.getTileById(80));
   }
 
   public double getTileWidth(double canvasWidth) {
@@ -203,6 +204,13 @@ public class BoardGameController {
    */
   public void addPlayer(String playerName, String playingPiece) {
     new Player(playerName, playingPiece, boardGame);
+  }
+
+  public void restartGame() {
+    boardGame.restartGame();
+    arrangePlayerTurns();
+    placePlayerOnStartTile();
+    boardGameView.updatePosition();
   }
 
   /**

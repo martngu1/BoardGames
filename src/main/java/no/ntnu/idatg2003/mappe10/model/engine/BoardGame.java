@@ -95,9 +95,9 @@ public class BoardGame {
 
   public void setCurrentPlayer(String playerName) {
     playerList.stream()
-        .filter(player -> player.getName().equals(playerName))
-        .findFirst()
-        .ifPresent(player -> currentPlayer = player);
+          .filter(player -> player.getName().equals(playerName))
+          .findFirst()
+          .ifPresent(player -> currentPlayer = player);
   }
 
   public Tile getTileById(int tileId) {
@@ -110,16 +110,11 @@ public class BoardGame {
       currentTile.getLandAction().performAction(currentPlayer, this);
 
       String description = currentTile.getLandAction().getDescription();
-        if (description != null) {
-            notifyTileActionPerformed(currentPlayer, description);
-        }
+      if (description != null) {
+        notifyTileActionPerformed(currentPlayer.getName(), description);
+      }
 
       notifyObservers();
-    }
-  }
-  private void notifyTileActionPerformed(Player player, String description) {
-    for (BoardGameObserver observer : observers) {
-      observer.onTileAction(player, description);
     }
   }
 
@@ -167,6 +162,14 @@ public class BoardGame {
   }
 
   /**
+   * Sets the winner of the game as the given Player.
+   */
+  public void setWinner(Player player) {
+    winner = player;
+    notifyGameOver();
+  }
+
+  /**
    * Set the board of the BoardGame to a given Board object.
    *
    * @param board the Board object to load
@@ -195,6 +198,11 @@ public class BoardGame {
       default -> throw new IllegalArgumentException("Unsupported format type: " + formatType);
     }
     writer.writeBoard(this.boardPath + fileName, this.board);
+  }
+
+  public void restartGame() {
+    winner = null;
+    currentPlayer = null;
   }
 
   /**
@@ -231,6 +239,18 @@ public class BoardGame {
   private void notifyObservers() {
     for (BoardGameObserver observer : observers) {
       observer.updatePosition();
+    }
+  }
+
+  private void notifyTileActionPerformed(String name, String description) {
+    for (BoardGameObserver observer : observers) {
+      observer.onTileAction(name, description);
+    }
+  }
+
+  public void notifyGameOver() {
+    for (BoardGameObserver observer : observers) {
+      observer.onGameOver(winner.getName());
     }
   }
 }
