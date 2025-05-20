@@ -39,7 +39,7 @@ public class Board {
      */
     public void initBoard(int numberOfTiles) {
         Tile dummy = null;
-        for (int i = numberOfTiles + 1; i >= 1; i--) {
+        for (int i = numberOfTiles; i >= 1; i--) {
             Tile tile = new Tile(i);
             tile.setNextTile(dummy);
             addTile(tile);
