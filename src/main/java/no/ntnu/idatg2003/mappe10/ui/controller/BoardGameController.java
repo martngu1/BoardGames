@@ -101,6 +101,7 @@ public class BoardGameController {
           currentPlayer.decrementSkipTurns();
         } else {
           boardGameView.addToLog(currentPlayer.getName() + " is in prison and skips this turn.");
+          boardGameView.setRollButtonEnabled(true);
           currentPlayer.decrementSkipTurns();
           displayDiceResults();
           playerQueue.add(currentPlayer.getName());
@@ -243,6 +244,7 @@ public class BoardGameController {
     arrangePlayerTurns();
     placePlayerOnStartTile();
     boardGameView.updatePosition();
+    boardGameView.setLogTextArea("");
   }
 
   /**
