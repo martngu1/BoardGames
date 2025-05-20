@@ -8,19 +8,24 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
 import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
 import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
+import no.ntnu.idatg2003.mappe10.model.filehandler.CSVFileHandler;
+import no.ntnu.idatg2003.mappe10.model.filehandler.gson.BoardFileWriterGson;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 import no.ntnu.idatg2003.mappe10.model.tile.tileaction.LadderAction;
 import no.ntnu.idatg2003.mappe10.model.tile.tileaction.PrisonAction;
 import no.ntnu.idatg2003.mappe10.model.tile.tileaction.TileAction;
+import no.ntnu.idatg2003.mappe10.model.tile.tileaction.WinAction;
 import no.ntnu.idatg2003.mappe10.ui.view.BoardGameView;
 import no.ntnu.idatg2003.mappe10.ui.view.renderer.LadderGameRenderer;
 import no.ntnu.idatg2003.mappe10.ui.view.renderer.Renderer;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.*;
 
@@ -58,6 +63,7 @@ public class BoardGameController {
   }
 
   public void initLadderGame() {
+
     boardGame = boardGame.getFactory().createLadderGame();
   }
 
@@ -79,6 +85,7 @@ public class BoardGameController {
       roller = new Roller();
     }
 
+    boardGameView.setRollButtonEnabled(false);
     roller.start(() -> {
       String currentPlayerName = playerQueue.poll();
       boardGame.setCurrentPlayer(currentPlayerName);
@@ -104,10 +111,11 @@ public class BoardGameController {
 
       boardGameView.setCurrentPlayerLabel(playerQueue.peek());
     });
+
   }
 
 
-  private boolean rolledDouble() {
+  public boolean rolledDouble() {
     List<Integer> diceResults = new ArrayList<>();
     for (int i = 0; i < boardGame.getDiceAmount(); i++) {
       diceResults.add(boardGame.getDieValue(i));
@@ -118,6 +126,7 @@ public class BoardGameController {
 
   private void play(Player currentPlayer, int diceValue) {
     animatePlayerMove(diceValue, () -> {
+      boardGameView.setRollButtonEnabled(true);
       boardGame.performLandAction();
       playerQueue.add(currentPlayer.getName());
       boardGameView.setCurrentPlayerLabel(playerQueue.peek());
@@ -146,6 +155,7 @@ public class BoardGameController {
     }
       boardGameView.showDiceResults(diceResults, boardGame.getDiceAmount());
   }
+
 
   public void placePlayerOnStartTile() {
     boardGame.placeAllPlayersOnTile(boardGame.getBoard().getFirstTile());
@@ -184,6 +194,8 @@ public class BoardGameController {
       return "Ladder";
     } else if (action instanceof PrisonAction) {
       return "Prison";
+    } else if (action instanceof WinAction) {
+      return "Winner";
     }
 
     return "null";
@@ -200,6 +212,30 @@ public class BoardGameController {
    */
   public void addPlayer(String playerName, String playingPiece) {
     new Player(playerName, playingPiece, boardGame);
+  }
+  public void savePlayersToCSV() {
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Save Players");
+    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+    File file = fileChooser.showSaveDialog(null);
+
+    if (file != null) {
+      List<Player> players = new ArrayList<>();
+      boardGame.getPlayerListIterator().forEachRemaining(players::add);
+      new CSVFileHandler().savePlayers(file.getAbsolutePath(), players);
+      boardGameView.addToLog("Players saved to " + file.getAbsolutePath());
+    }
+  }
+  public void saveBoardToJson(){
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Save Board");
+    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON Files", "*.json"));
+    File file = fileChooser.showSaveDialog(null);
+
+    if (file != null) {
+      new BoardFileWriterGson().writeBoard(file.getAbsolutePath(), boardGame.getBoard());
+      boardGameView.addToLog("Board saved to " + file.getAbsolutePath());
+    }
   }
 
   public void restartGame() {

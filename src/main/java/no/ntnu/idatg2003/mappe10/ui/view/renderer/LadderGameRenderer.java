@@ -101,6 +101,8 @@ public class LadderGameRenderer implements Renderer {
                 colorLadderTiles(tileId, destTileId, startX, startY, endX, endY, tileWidth, tileHeight, gc);
             } else if (controller.checkIfTileAction(tileId).equals("Prison")) {
                 colorPrisonTiles(tileId, canvasWidth, canvasHeight, tileWidth, tileHeight);
+            } else if (controller.checkIfTileAction(tileId).equals("Winner")) {
+                colorWinnerTile(tileId, canvasWidth, canvasHeight, tileWidth, tileHeight);
             }
         }
     }
@@ -142,6 +144,15 @@ public class LadderGameRenderer implements Renderer {
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(1);
         gc.strokeRect(x, y, tileWidth, tileHeight);
+    }
+    private void colorWinnerTile(int tileId, double canvasWidth, double canvasHeight,
+                                 double tileWidth, double tileHeight) {
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        Coordinate rectCoords = controller.getCanvasCoords(tileId, canvasWidth, canvasHeight);
+        double x = rectCoords.getX0();
+        double y = rectCoords.getX1();
+        gc.setFill(Color.YELLOW);
+        gc.fillRect(x, y, tileWidth, tileHeight);
     }
 
 
@@ -213,18 +224,8 @@ private void drawLadders(int tileId, int destTileId,
 
     if (destTileId > tileId) {
         gc.setStroke(Color.GREEN);
-
-        // gc.setFill(Color.BLACK);
-        // gc.setLineWidth(1);
-        //gc.fillText(String.valueOf(tileId), startX + tileWidth / 4 + tileWidth / 8, startY + tileHeight / 4 + tileHeight / 8);/
-        // gc.fillText(String.valueOf(destTileId),endX + tileWidth / 4 + tileWidth / 8, endY + tileHeight / 4 + tileHeight / 8);
     } else {
         gc.setStroke(Color.MEDIUMVIOLETRED);
-
-        //gc.setFill(Color.BLACK);
-        //gc.setLineWidth(1);
-        //gc.fillText(String.valueOf(tileId), startX + tileWidth / 4 + tileWidth / 8, startY + tileHeight / 4 + tileHeight / 8);
-        //gc.fillText(String.valueOf(destTileId), endX + tileWidth / 4 + tileWidth / 8, endY + tileHeight / 4 + tileHeight / 8);
     }
     double scaledDestX = endX - tileWidth / 8;
     double scaledDestY = endY - tileHeight / 8;

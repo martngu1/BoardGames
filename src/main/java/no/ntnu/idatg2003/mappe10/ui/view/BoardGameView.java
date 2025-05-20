@@ -29,6 +29,7 @@ public class BoardGameView implements BoardGameObserver {
   private HBox diceBox;
   private Renderer gameRenderer;
   private TextArea logTextArea;
+  private Button rollButton1;
 
   public BoardGameView() {
     soundController = new SoundController();
@@ -36,6 +37,7 @@ public class BoardGameView implements BoardGameObserver {
     canvas = new ResizableCanvas();
     currentPlayerLabel = new Label();
     logTextArea = new TextArea();
+    rollButton1 = new Button("Roll Dice");
     gameRenderer = null;
   }
 
@@ -142,10 +144,10 @@ public class BoardGameView implements BoardGameObserver {
     diceBox.setAlignment(Pos.CENTER);
     diceBox.setVisible(false);
 
-    Button rollButton1 = new Button("Roll Dice");
     rollButton1.setOnAction(e -> {
       soundController.playDiceRollSound();
       controller.playTurn();
+
     });
     rollButton1.setScaleShape(true);
     rollButton1.setMinWidth(150);
@@ -244,7 +246,13 @@ public class BoardGameView implements BoardGameObserver {
     MenuItem loadBoard = new MenuItem("New Board");
     MenuItem loadPlayers = new MenuItem("Players");
     MenuItem saveBoard = new MenuItem("Board");
+    saveBoard.setOnAction(e -> {
+      controller.saveBoardToJson();
+    });
     MenuItem savePlayers = new MenuItem("Players");
+    savePlayers.setOnAction(e -> {
+      controller.savePlayersToCSV();
+    });
     MenuItem addPlayer = new MenuItem("Add Player");
 
     loadMenu.getItems().addAll(loadBoard, loadPlayers);
@@ -257,6 +265,9 @@ public class BoardGameView implements BoardGameObserver {
     return menuBar;
   }
 
+  public void setRollButtonEnabled(boolean enabled) {
+    rollButton1.setDisable(!enabled);
+  }
 
   @Override
   public void updatePosition() {
