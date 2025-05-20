@@ -246,7 +246,13 @@ public class BoardGameView implements BoardGameObserver {
     MenuItem loadBoard = new MenuItem("New Board");
     MenuItem loadPlayers = new MenuItem("Players");
     MenuItem saveBoard = new MenuItem("Board");
+    saveBoard.setOnAction(e -> {
+      controller.saveBoardToJson();
+    });
     MenuItem savePlayers = new MenuItem("Players");
+    savePlayers.setOnAction(e -> {
+      controller.savePlayersToCSV();
+    });
     MenuItem addPlayer = new MenuItem("Add Player");
 
     loadMenu.getItems().addAll(loadBoard, loadPlayers);

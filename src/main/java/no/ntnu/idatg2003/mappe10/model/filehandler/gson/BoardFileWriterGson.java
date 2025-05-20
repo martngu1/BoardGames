@@ -64,8 +64,13 @@ public class BoardFileWriterGson implements BoardFileWriter {
             tileJson.addProperty("nextTile", tile.getNextTile().getTileId());
         }
 
-        tileJson.addProperty("row", tile.getBoardCoords().getX0());
-        tileJson.addProperty("column", tile.getBoardCoords().getX1());
+        if (tile.getBoardCoords() != null) {
+            tileJson.addProperty("row", tile.getBoardCoords().getX0());
+            tileJson.addProperty("column", tile.getBoardCoords().getX1());
+        } else {
+            tileJson.addProperty("row", "null");
+            tileJson.addProperty("column", "null");
+        }
 
         if (tile.getLandAction() != null){
             JsonObject actionJson = new JsonObject();
