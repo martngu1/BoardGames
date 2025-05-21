@@ -49,6 +49,7 @@ public class MonopolyGameRenderer extends Renderer {
     colorTiles(gc);
     super.drawTiles();
     super.numerateTiles();
+    drawPropertyOwners(gc);
     super.drawPlayers();
   }
 
@@ -80,7 +81,7 @@ public class MonopolyGameRenderer extends Renderer {
         gc.fillRect(x, y, super.getTileWidth(), super.getTileHeight());
 
         if (imagePath != null) {
-          drawTileImage(gc, imagePath, x, y, super.getTileWidth(), super.getTileHeight());
+          drawTileImage(gc, imagePath, x, y);
         }
         double price = monopolyTile.getProperty().getPrice();
         gc.setFill(Color.BLACK);
@@ -91,42 +92,37 @@ public class MonopolyGameRenderer extends Renderer {
         String imagePath = specialTileImages.get(actionClassName);
 
         if (imagePath != null) {
-          drawTileImage(gc, imagePath, x, y, super.getTileWidth(), super.getTileHeight());
+          drawTileImage(gc, imagePath, x, y);
         }
       } else if (tileId == 1) { // Start Tile
         Color color = Color.GREEN;
         gc.setFill(color);
         gc.fillRect(x, y, super.getTileWidth(), super.getTileHeight());
       } else {
-        gc.fillRect(x, y, super.getTileWidth(), super.getTileHeight());
-      } else{ // Free Parking and special tiles gets color lightgray
+        // Free Parking and special tiles gets color lightgray
         gc.setFill(Color.LIGHTGRAY);
         gc.fillRect(x, y, super.getTileWidth(), super.getTileHeight());
         gc.fillRect(x, y, super.getTileWidth(), super.getTileHeight());
 
         String imagePath = specialTileImages.get("FreeParking");
         if (imagePath != null) {
-          drawTileImage(gc, imagePath, x, y, super.getTileWidth(), super.getTileHeight());
+          drawTileImage(gc, imagePath, x, y);
         }
       }
     }
   }
 
-  private void drawTileImage(GraphicsContext gc, String imagePath, double x, double y, double tileWidth, double tileHeight) {
+  private void drawTileImage(GraphicsContext gc, String imagePath, double x, double y) {
     InputStream stream = getClass().getResourceAsStream(imagePath);
     if (stream == null) {
       System.err.println("Image not found: " + imagePath);
       return;
     }
     Image image = new Image(stream);
-    gc.drawImage(image, x, y, tileWidth, tileHeight);
+    gc.drawImage(image, x, y, super.getTileWidth(), super.getTileHeight());
   }
 
-  private void drawPropertyOwners(double width, double height, double tileWidth, double tileHeight, GraphicsContext gc) {
-
-    double offsetWidth = width - tileWidth;
-    double offsetHeight = height - tileHeight;
-
+  private void drawPropertyOwners(GraphicsContext gc) {
     for (int tileId = 1; tileId <= super.getController().getNumberOfTiles(); tileId++) {
       Tile tile = super.getController().getTileById(tileId);
       MonopolyTile monopolyTile = tile.getMonopolyTile();
@@ -141,13 +137,16 @@ public class MonopolyGameRenderer extends Renderer {
             continue;
           }
 
-          Coordinate canvasCoords = super.getController().getCanvasCoords(tileId, offsetWidth, offsetHeight);
+          Coordinate canvasCoords = super.getController().
+                getCanvasCoords(tileId, super.getOffsetWidth(), super.getOffsetHeight());
           double x = canvasCoords.getX0();
           double y = canvasCoords.getX1();
 
           Image image = new Image(inputStream);
 
-          gc.drawImage(image, x + tileWidth * 0.7, y + tileHeight * 0.05, tileWidth * 0.25, tileHeight * 0.25);
+          gc.drawImage(image,
+                x + super.getTileWidth() * 0.7, y + super.getTileHeight() * 0.05,
+                super.getTileWidth() * 0.25, super.getTileHeight() * 0.25);
         }
       }
     }

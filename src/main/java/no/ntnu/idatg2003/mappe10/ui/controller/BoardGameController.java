@@ -16,6 +16,7 @@ import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
 import no.ntnu.idatg2003.mappe10.model.filehandler.CSVFileHandler;
 import no.ntnu.idatg2003.mappe10.model.filehandler.gson.BoardFileWriterGson;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
+import no.ntnu.idatg2003.mappe10.model.tile.Property;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 import no.ntnu.idatg2003.mappe10.model.tile.tileaction.LadderAction;
 import no.ntnu.idatg2003.mappe10.model.tile.tileaction.PrisonAction;
@@ -23,6 +24,7 @@ import no.ntnu.idatg2003.mappe10.model.tile.tileaction.TileAction;
 import no.ntnu.idatg2003.mappe10.model.tile.tileaction.WinAction;
 import no.ntnu.idatg2003.mappe10.ui.view.BoardGameView;
 import no.ntnu.idatg2003.mappe10.ui.view.renderer.LadderGameRenderer;
+import no.ntnu.idatg2003.mappe10.ui.view.renderer.LostDiamondGameRenderer;
 import no.ntnu.idatg2003.mappe10.ui.view.renderer.MonopolyGameRenderer;
 import no.ntnu.idatg2003.mappe10.ui.view.renderer.Renderer;
 
@@ -150,6 +152,37 @@ public class BoardGameController {
       boardGameView.setCurrentPlayerLabel(playerQueue.peek());
     });
   }
+
+  public void playerWantsToBuyProperty(String playerName, String propertyName) {
+    Player player = boardGame.getPlayerByName(playerName);
+    Property property = player.getCurrentTile().getMonopolyTile().getPropertyByName(propertyName);
+
+    player.subtractFromBalance(property.getPrice());
+    property.setOwner(player);
+
+    boardGameView.updatePlayerBalance(player.getName(), player.getBalance());
+    boardGameView.addToLog(player.getName() + " bought " + property.getName() + " for " + property.getPrice());
+  }
+
+  private void updateAllPlayerBalances() {
+    boardGame.getPlayerListIterator().forEachRemaining(player ->
+      boardGameView.updatePlayerBalance(player.getName(), player.getBalance())
+    );
+  }
+
+  public void onOfferToBuy(Player player, Property property) {
+    Runnable onAccept = () -> {
+      playerWantsToBuyProperty(player.getName(), property.getName());
+      updateAllPlayerBalances();
+    };
+    Runnable onDecline = () -> {
+      System.out.println(player.getName() + " declined to buy " + property.getName());
+      boardGameView.addToLog(player.getName() + " declined to buy " + property.getName());
+    };
+
+    boardGameView.viewOfferProperty(player, property, onAccept, onDecline);
+  }
+
 
   private void animatePlayerMove(int diceRoll, Runnable onFinished) {
     displayDiceResults();
