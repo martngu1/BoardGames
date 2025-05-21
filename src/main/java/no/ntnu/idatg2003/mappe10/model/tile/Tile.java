@@ -16,6 +16,7 @@ public class Tile {
     private TileAction landAction;
     private Coordinate boardCoords;
     private HashMap<String, Tile> connections;
+    private MonopolyTile monopolyTile;
 
     /**
      * Creates a new tile with the given id.
@@ -106,5 +107,13 @@ public class Tile {
     public void addConnection(String direction, Tile tile) {
         connections.put(direction, tile);
     }
+    public void setMonopolyTile(MonopolyTile monopolyTile) {
+        this.monopolyTile = monopolyTile;
+    }
+
+    public MonopolyTile getMonopolyTile() {
+        return monopolyTile;
+    }
+
 }
 

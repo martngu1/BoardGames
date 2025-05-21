@@ -10,6 +10,7 @@ import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 public class Player {
 
   private String name;
+  private int balance;
   private String playingPiece;
   private Tile currentTile;
   private BoardGame game;
@@ -28,6 +29,7 @@ public class Player {
     this.game = game;
     game.addPlayer(this);
     this.turnsToSkip = 0;
+    this.balance = 1500;
   }
 
   /**
@@ -93,6 +95,21 @@ public class Player {
     if (turnsToSkip > 0) {
       turnsToSkip--;
     }
+  }
+  public int getBalance() {
+    return balance;
+  }
+  public void setBalance(int balance) {
+      this.balance = balance;
+  }
+  public void addToBalance(int amount) {
+      this.balance += amount;
+  }
+  public void subtractFromBalance(int amount) {
+      this.balance -= amount;
+  }
+  public boolean canAfford(int amount) {
+    return balance >= amount;
   }
 }
 

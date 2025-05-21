@@ -56,17 +56,7 @@ public class GameSetupView {
     playerVbox.getChildren().add(playerTable);
 
     continueBtn = new Button("Continue");
-    continueBtn.setOnAction(e -> {
-      soundController.playButtonSound();
-      if (playerList.isEmpty() || selectedBoard == null) {
-        doShowPlayerAndBoardAlert();
-        return;
-      }
-      for (PlayerPiece player : playerList) {
-        controller.addPlayerPiece(player.getName(), player.getPieceName());
-      }
-      controller.doContinue(stage, selectedBoard);
-    });
+    continueBtn.setOnAction(e -> doContinue());
 
     backBtn = new Button("Back");
     backBtn.setOnAction(e -> {
@@ -92,6 +82,16 @@ public class GameSetupView {
     Scene scene = new Scene(root, 800, 600);
     scene.getStylesheets().add((getClass().getResource("/css/style.css")).toExternalForm());
     stage.setScene(scene);
+  }
+
+  private void doContinue() {
+    soundController.playButtonSound();
+    if (playerList.isEmpty() || selectedBoard == null) {
+      doShowPlayerAndBoardAlert();
+      return;
+    }
+    playerList.forEach(player -> controller.addPlayerPiece(player.getName(), player.getPieceName()));
+    controller.doContinue(stage, selectedBoard);
   }
 
   private void setupTableView() {
