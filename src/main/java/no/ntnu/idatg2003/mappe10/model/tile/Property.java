@@ -10,7 +10,9 @@ public class Property {
         this.name = name;
         this.country = country;
         this.owner = null;
-        country.addProperty(this);
+        if (country != null) {
+            country.addProperty(this);
+        }
     }
 
     public String getName() {
@@ -18,6 +20,7 @@ public class Property {
     }
 
     public int getPrice() {
+
         return country.getPrice();
     }
 
@@ -35,5 +38,11 @@ public class Property {
     }
     public Country getCountry() {
         return country;
+    }
+    public Property getPropertyByName(String name) {
+        if (this.name.equals(name)) {
+            return this;
+        }
+        return null;
     }
 }
