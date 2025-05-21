@@ -200,7 +200,7 @@ public class GameSetupView {
     RadioButton board2Radio = new RadioButton("The Lost Diamond");
     board2Radio.setToggleGroup(boardToggleGroup);
 
-    RadioButton board3Radio = new RadioButton("Monopoly");
+    RadioButton board3Radio = new RadioButton("Monopoly Game");
     board3Radio.setToggleGroup(boardToggleGroup);
 
     boardToggleGroup.selectedToggleProperty().addListener(e -> {
