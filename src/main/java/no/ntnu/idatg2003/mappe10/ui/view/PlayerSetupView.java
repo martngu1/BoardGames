@@ -5,17 +5,12 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import no.ntnu.idatg2003.mappe10.model.board.Board;
-import no.ntnu.idatg2003.mappe10.model.board.BoardGameFactory;
 import no.ntnu.idatg2003.mappe10.ui.controller.PlayerSetupController;
 import no.ntnu.idatg2003.mappe10.ui.controller.SoundController;
-import org.w3c.dom.Text;
 
 import java.util.*;
 

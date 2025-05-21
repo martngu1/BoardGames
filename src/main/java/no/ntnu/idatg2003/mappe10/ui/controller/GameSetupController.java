@@ -1,9 +1,6 @@
 package no.ntnu.idatg2003.mappe10.ui.controller;
 
 import javafx.stage.Stage;
-import no.ntnu.idatg2003.mappe10.model.board.Board;
-import no.ntnu.idatg2003.mappe10.model.board.BoardGameFactory;
-import no.ntnu.idatg2003.mappe10.ui.view.BoardGameView;
 import no.ntnu.idatg2003.mappe10.ui.view.GameSetupView;
 import no.ntnu.idatg2003.mappe10.ui.view.PlayerSetupView;
 import no.ntnu.idatg2003.mappe10.ui.view.StartPageView;

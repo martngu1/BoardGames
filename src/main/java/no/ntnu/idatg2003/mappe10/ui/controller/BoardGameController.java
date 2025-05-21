@@ -23,6 +23,7 @@ import no.ntnu.idatg2003.mappe10.model.tile.tileaction.TileAction;
 import no.ntnu.idatg2003.mappe10.model.tile.tileaction.WinAction;
 import no.ntnu.idatg2003.mappe10.ui.view.BoardGameView;
 import no.ntnu.idatg2003.mappe10.ui.view.renderer.LadderGameRenderer;
+import no.ntnu.idatg2003.mappe10.ui.view.renderer.MonopolyGameRenderer;
 import no.ntnu.idatg2003.mappe10.ui.view.renderer.Renderer;
 
 import java.io.File;
@@ -49,11 +50,17 @@ public class BoardGameController {
 
   public Renderer initBoardGame(String selectedBoard, Canvas canvas) {
     roller = new Roller();
-    if (selectedBoard.equals("Ladder Game")) {
-      initLadderGame();
-      return new LadderGameRenderer(this, canvas);
+
+    switch (selectedBoard) {
+      case "Monopoly Game":
+        initMonopolyGame();
+        return new MonopolyGameRenderer(this, canvas);
+      case "Ladder Game":
+        initLadderGame();
+        return new LadderGameRenderer(this, canvas);
+      default:
+        throw new IllegalArgumentException("Invalid board game selected: " + selectedBoard);
     }
-    return null;
   }
 
   public void arrangePlayerTurns() {
@@ -63,8 +70,10 @@ public class BoardGameController {
   }
 
   public void initLadderGame() {
-
     boardGame = boardGame.getFactory().createLadderGame();
+  }
+  public void initMonopolyGame() {
+    boardGame = boardGame.getFactory().createMonopolyGame();
   }
 
   public void registerObserver(BoardGameObserver observer) {
@@ -160,6 +169,9 @@ public class BoardGameController {
   public void placePlayerOnStartTile() {
     boardGame.placeAllPlayersOnTile(boardGame.getBoard().getFirstTile());
     //boardGame.placeAllPlayersOnTile(boardGame.getTileById(80));
+  }
+  public Tile getTileById(int tileId) {
+    return boardGame.getTileById(tileId);
   }
 
   public double getTileWidth(double canvasWidth) {

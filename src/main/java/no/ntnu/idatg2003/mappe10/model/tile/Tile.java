@@ -13,6 +13,7 @@ public class Tile {
     private final int tileId;
     private TileAction landAction;
     private Coordinate boardCoords;
+    private MonopolyTile monopolyTile;
 
     /**
      * Creates a new tile with the given id.
@@ -91,5 +92,13 @@ public class Tile {
     public TileAction getLandAction() {
         return landAction;
     }
+    public void setMonopolyTile(MonopolyTile monopolyTile) {
+        this.monopolyTile = monopolyTile;
+    }
+
+    public MonopolyTile getMonopolyTile() {
+        return monopolyTile;
+    }
+
 }
 

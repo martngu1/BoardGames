@@ -4,7 +4,6 @@ import no.ntnu.idatg2003.mappe10.model.board.Board;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameFactory;
 import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
 import no.ntnu.idatg2003.mappe10.model.dice.Dice;
-import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileReader;
 import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileWriter;
 import no.ntnu.idatg2003.mappe10.model.filehandler.gson.BoardFileWriterGson;
 import no.ntnu.idatg2003.mappe10.model.player.Player;

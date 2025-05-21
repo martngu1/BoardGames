@@ -2,9 +2,12 @@ package no.ntnu.idatg2003.mappe10.model.board;
 
 import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
 import no.ntnu.idatg2003.mappe10.model.filehandler.gson.BoardFileReaderGson;
-import no.ntnu.idatg2003.mappe10.model.tile.tileaction.LadderAction;
-import no.ntnu.idatg2003.mappe10.model.tile.tileaction.PrisonAction;
-import no.ntnu.idatg2003.mappe10.model.tile.tileaction.WinAction;
+import no.ntnu.idatg2003.mappe10.model.tile.Country;
+import no.ntnu.idatg2003.mappe10.model.tile.MonopolyTile;
+import no.ntnu.idatg2003.mappe10.model.tile.Tile;
+import no.ntnu.idatg2003.mappe10.model.tile.tileaction.*;
+
+import java.util.List;
 
 
 /**
@@ -70,4 +73,120 @@ public class BoardGameFactory {
 
         return boardGame;
     }
+
+    public BoardGame createMonopolyGame() {
+        BoardGame boardGame = new BoardGame();
+        boardGame.createDice(2);
+        boardGame.createBoard(40, 11, 11);
+
+        CountryFactory countryFactory = new CountryFactory();
+
+
+        for (int i = 0; i < 3; i++) {
+            int tileId = 2 + i;
+            boardGame.getBoard().getTile(tileId).setMonopolyTile(new MonopolyTile(tileId, countryFactory.getPropertyByCountryAndIndex("Mongolia", i)));
+            boardGame.getBoard().getTile(tileId).setLandAction(new PropertyAction("Property action for Mongolia"));
+        }
+
+        boardGame.getBoard().getTile(5).setLandAction(new ChanceCardAction("Chance"));
+
+
+        for (int i = 0; i < 3; i++) {
+            int tileId = 6 + i;
+            boardGame.getBoard().getTile(tileId).setMonopolyTile(new MonopolyTile(tileId, countryFactory.getPropertyByCountryAndIndex("Philippines", i)));
+            boardGame.getBoard().getTile(tileId).setLandAction(new PropertyAction("Property action for Philippines"));
+        }
+
+        boardGame.getBoard().getTile(9).setLandAction(new ChanceCardAction("Chance"));
+
+
+        for (int i = 0; i < 3; i++) {
+            int tileId = 10 + i;
+            boardGame.getBoard().getTile(tileId).setMonopolyTile(new MonopolyTile(tileId, countryFactory.getPropertyByCountryAndIndex("Vietnam", i)));
+            boardGame.getBoard().getTile(tileId).setLandAction(new PropertyAction("Property action for Vietnam"));
+        }
+
+        boardGame.getBoard().getTile(13).setLandAction(new ChanceCardAction("Chance"));
+
+
+        for (int i = 0; i < 3; i++) {
+            int tileId = 14 + i;
+            boardGame.getBoard().getTile(tileId).setMonopolyTile(new MonopolyTile(tileId, countryFactory.getPropertyByCountryAndIndex("Thailand", i)));
+            boardGame.getBoard().getTile(tileId).setLandAction(new PropertyAction("Property action for Thailand"));
+        }
+
+
+        boardGame.getBoard().getTile(17).setLandAction(new ChanceCardAction("Chance"));
+
+
+        for (int i = 0; i < 3; i++) {
+            int tileId = 18 + i;
+            boardGame.getBoard().getTile(tileId).setMonopolyTile(new MonopolyTile(tileId, countryFactory.getPropertyByCountryAndIndex("Indonesia", i)));
+            boardGame.getBoard().getTile(tileId).setLandAction(new PropertyAction("Property action for Indonesia"));
+        }
+
+        boardGame.getBoard().getTile(21).setLandAction(new ChanceCardAction("Chance"));
+
+        for (int i = 0; i < 3; i++) {
+            int tileId = 22 + i;
+            boardGame.getBoard().getTile(tileId).setMonopolyTile(new MonopolyTile(tileId, countryFactory.getPropertyByCountryAndIndex("China", i)));
+            boardGame.getBoard().getTile(tileId).setLandAction(new PropertyAction("Property action for China"));
+        }
+
+
+        boardGame.getBoard().getTile(25).setLandAction(new ChanceCardAction("Chance"));
+        for (int i = 0; i < 3; i++) {
+            int tileId = 26 + i;
+            boardGame.getBoard().getTile(tileId).setMonopolyTile(new MonopolyTile(tileId, countryFactory.getPropertyByCountryAndIndex("South Korea", i)));
+            boardGame.getBoard().getTile(tileId).setLandAction(new PropertyAction("Property action for South Korea"));
+        }
+
+        boardGame.getBoard().getTile(29).setLandAction(new ChanceCardAction("Chance"));
+
+        for (int i = 0; i < 3; i++) {
+            int tileId = 30 + i;
+            boardGame.getBoard().getTile(tileId).setMonopolyTile(new MonopolyTile(tileId, countryFactory.getPropertyByCountryAndIndex("Japan", i)));
+            boardGame.getBoard().getTile(tileId).setLandAction(new PropertyAction("Property action for Japan"));
+        }
+
+        setTileCoordinates(boardGame);
+
+        return boardGame;
+    }
+
+    private void setTileCoordinates(BoardGame boardGame) {
+        int rows = boardGame.getBoard().getNumberOfRows();
+        int columns = boardGame.getBoard().getNumberOfColumns();
+        int numberOfTiles = boardGame.getBoard().getLastTile().getTileId();
+        int tileId = 1;
+
+        // Top row
+        for (int c = 0; c < columns; c++) {
+            if (tileId > numberOfTiles) break;
+            boardGame.getBoard().getTile(tileId).setCoordinate(0, c);
+            tileId++;
+        }
+
+        // Right column
+        for (int r = 1; r < rows; r++) {
+            if (tileId > numberOfTiles) break;
+            boardGame.getBoard().getTile(tileId).setCoordinate(r, columns - 1);
+            tileId++;
+        }
+
+        // Bottom row
+        for (int c = columns - 2; c >= 0; c--) {
+            if (tileId > numberOfTiles) break;
+            boardGame.getBoard().getTile(tileId).setCoordinate(rows - 1, c);
+            tileId++;
+        }
+
+        // Left column
+        for (int r = rows - 2; r > 0; r--) {
+            if (tileId > numberOfTiles) break;
+            boardGame.getBoard().getTile(tileId).setCoordinate(r, 0);
+            tileId++;
+        }
+    }
+
 }

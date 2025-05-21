@@ -6,9 +6,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import no.ntnu.idatg2003.mappe10.model.board.Board;
-import no.ntnu.idatg2003.mappe10.model.board.BoardGameFactory;
-import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
 import no.ntnu.idatg2003.mappe10.ui.controller.GameSetupController;
 import no.ntnu.idatg2003.mappe10.ui.controller.SoundController;
 
@@ -39,15 +36,18 @@ public class GameSetupView {
         board1Radio.setToggleGroup(boardToggleGroup);
         board1Radio.setSelected(true);
 
+        RadioButton board2Radio = new RadioButton("Monopoly Game");
+        board2Radio.setToggleGroup(boardToggleGroup);
+        board2Radio.setSelected(false);
+
         Button backButton = new Button("Back");
         backButton.setOnAction(e -> {
             soundController.playButtonSound();
             controller.doBack(stage);
         });
 
-
         // Add more boards senere
-        VBox boardOptions = new VBox(10, board1Radio);
+        VBox boardOptions = new VBox(10, board1Radio, board2Radio);
         boardOptions.setPadding(new Insets(10, 0, 10, 0));
 
         Button continueButton = new Button("Continue");
