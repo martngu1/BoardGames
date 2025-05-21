@@ -1,381 +1,598 @@
 {
-  "numberOfRows": 10,
+  "numberOfRows": 9,
   "numberOfColumns": 10,
   "tiles": [
     {
       "tileId": 1,
       "nextTile": 2,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 0.0,
+      "column": 0.0
     },
     {
       "tileId": 2,
       "nextTile": 3,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 0.0,
+      "column": 1.0
     },
     {
       "tileId": 3,
       "nextTile": 4,
-      "xCoordinate": 0,
-      "yCoordinate": 0,
+      "row": 0.0,
+      "column": 2.0,
       "action": {
         "type": "LadderAction",
-        "destinationTileID": 10,
-        "description": "Climb to tile 10"
+        "destinationTileID": 17,
+        "description": "Climb to tile 17"
       }
     },
     {
       "tileId": 4,
       "nextTile": 5,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 0.0,
+      "column": 3.0
     },
     {
       "tileId": 5,
       "nextTile": 6,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 0.0,
+      "column": 4.0
     },
     {
       "tileId": 6,
       "nextTile": 7,
-      "xCoordinate": 0,
-      "yCoordinate": 0,
-      "action": {
-        "type": "LadderAction",
-        "destinationTileID": 14,
-        "description": "Climb to tile 14"
-      }
+      "row": 0.0,
+      "column": 5.0
     },
     {
       "tileId": 7,
       "nextTile": 8,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 0.0,
+      "column": 6.0
     },
     {
       "tileId": 8,
       "nextTile": 9,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 0.0,
+      "column": 7.0
     },
     {
       "tileId": 9,
       "nextTile": 10,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 0.0,
+      "column": 8.0
     },
     {
       "tileId": 10,
       "nextTile": 11,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 0.0,
+      "column": 9.0,
+      "action": {
+        "type": "PrisonAction"
+      }
     },
     {
       "tileId": 11,
       "nextTile": 12,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 1.0,
+      "column": 9.0,
+      "action": {
+        "type": "LadderAction",
+        "destinationTileID": 25,
+        "description": "Climb to tile 25"
+      }
     },
     {
       "tileId": 12,
       "nextTile": 13,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 1.0,
+      "column": 8.0
     },
     {
       "tileId": 13,
       "nextTile": 14,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 1.0,
+      "column": 7.0
     },
     {
       "tileId": 14,
       "nextTile": 15,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 1.0,
+      "column": 6.0
     },
     {
       "tileId": 15,
       "nextTile": 16,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 1.0,
+      "column": 5.0
     },
     {
       "tileId": 16,
       "nextTile": 17,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 1.0,
+      "column": 4.0
     },
     {
       "tileId": 17,
       "nextTile": 18,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 1.0,
+      "column": 3.0
     },
     {
       "tileId": 18,
       "nextTile": 19,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 1.0,
+      "column": 2.0
     },
     {
       "tileId": 19,
       "nextTile": 20,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 1.0,
+      "column": 1.0
     },
     {
       "tileId": 20,
       "nextTile": 21,
-      "xCoordinate": 0,
-      "yCoordinate": 0,
-      "action": {
-        "type": "LadderAction",
-        "destinationTileID": 38,
-        "description": "Climb to tile 38"
-      }
+      "row": 1.0,
+      "column": 0.0
     },
     {
       "tileId": 21,
       "nextTile": 22,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 2.0,
+      "column": 0.0
     },
     {
       "tileId": 22,
       "nextTile": 23,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 2.0,
+      "column": 1.0
     },
     {
       "tileId": 23,
       "nextTile": 24,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 2.0,
+      "column": 2.0
     },
     {
       "tileId": 24,
       "nextTile": 25,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 2.0,
+      "column": 3.0
     },
     {
       "tileId": 25,
       "nextTile": 26,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 2.0,
+      "column": 4.0
     },
     {
       "tileId": 26,
       "nextTile": 27,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 2.0,
+      "column": 5.0
     },
     {
       "tileId": 27,
       "nextTile": 28,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 2.0,
+      "column": 6.0
     },
     {
       "tileId": 28,
       "nextTile": 29,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 2.0,
+      "column": 7.0
     },
     {
       "tileId": 29,
       "nextTile": 30,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 2.0,
+      "column": 8.0,
+      "action": {
+        "type": "LadderAction",
+        "destinationTileID": 9,
+        "description": "Fall to tile 9"
+      }
     },
     {
       "tileId": 30,
       "nextTile": 31,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 2.0,
+      "column": 9.0
     },
     {
       "tileId": 31,
       "nextTile": 32,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 3.0,
+      "column": 9.0
     },
     {
       "tileId": 32,
       "nextTile": 33,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 3.0,
+      "column": 8.0,
+      "action": {
+        "type": "PrisonAction"
+      }
     },
     {
       "tileId": 33,
       "nextTile": 34,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 3.0,
+      "column": 7.0
     },
     {
       "tileId": 34,
       "nextTile": 35,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 3.0,
+      "column": 6.0
     },
     {
       "tileId": 35,
       "nextTile": 36,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 3.0,
+      "column": 5.0
     },
     {
       "tileId": 36,
       "nextTile": 37,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 3.0,
+      "column": 4.0
     },
     {
       "tileId": 37,
       "nextTile": 38,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 3.0,
+      "column": 3.0
     },
     {
       "tileId": 38,
       "nextTile": 39,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 3.0,
+      "column": 2.0
     },
     {
       "tileId": 39,
       "nextTile": 40,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 3.0,
+      "column": 1.0
     },
     {
       "tileId": 40,
       "nextTile": 41,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 3.0,
+      "column": 0.0
     },
     {
       "tileId": 41,
       "nextTile": 42,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 4.0,
+      "column": 0.0,
+      "action": {
+        "type": "LadderAction",
+        "destinationTileID": 21,
+        "description": "Fall to tile 21"
+      }
     },
     {
       "tileId": 42,
       "nextTile": 43,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 4.0,
+      "column": 1.0
     },
     {
       "tileId": 43,
       "nextTile": 44,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 4.0,
+      "column": 2.0
     },
     {
       "tileId": 44,
       "nextTile": 45,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 4.0,
+      "column": 3.0
     },
     {
       "tileId": 45,
       "nextTile": 46,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 4.0,
+      "column": 4.0
     },
     {
       "tileId": 46,
       "nextTile": 47,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 4.0,
+      "column": 5.0,
+      "action": {
+        "type": "LadderAction",
+        "destinationTileID": 63,
+        "description": "Climb to tile 63"
+      }
     },
     {
       "tileId": 47,
       "nextTile": 48,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 4.0,
+      "column": 6.0
     },
     {
       "tileId": 48,
       "nextTile": 49,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 4.0,
+      "column": 7.0
     },
     {
       "tileId": 49,
       "nextTile": 50,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 4.0,
+      "column": 8.0
     },
     {
       "tileId": 50,
       "nextTile": 51,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 4.0,
+      "column": 9.0
     },
     {
       "tileId": 51,
       "nextTile": 52,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 5.0,
+      "column": 9.0
     },
     {
       "tileId": 52,
       "nextTile": 53,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 5.0,
+      "column": 8.0
     },
     {
       "tileId": 53,
       "nextTile": 54,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 5.0,
+      "column": 7.0
     },
     {
       "tileId": 54,
       "nextTile": 55,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 5.0,
+      "column": 6.0
     },
     {
       "tileId": 55,
       "nextTile": 56,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 5.0,
+      "column": 5.0
     },
     {
       "tileId": 56,
       "nextTile": 57,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 5.0,
+      "column": 4.0,
+      "action": {
+        "type": "LadderAction",
+        "destinationTileID": 33,
+        "description": "Fall to tile 33"
+      }
     },
     {
       "tileId": 57,
       "nextTile": 58,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 5.0,
+      "column": 3.0
     },
     {
       "tileId": 58,
       "nextTile": 59,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 5.0,
+      "column": 2.0
     },
     {
       "tileId": 59,
       "nextTile": 60,
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 5.0,
+      "column": 1.0
     },
     {
       "tileId": 60,
+      "nextTile": 61,
+      "row": 5.0,
+      "column": 0.0
+    },
+    {
+      "tileId": 61,
+      "nextTile": 62,
+      "row": 6.0,
+      "column": 0.0
+    },
+    {
+      "tileId": 62,
+      "nextTile": 63,
+      "row": 6.0,
+      "column": 1.0
+    },
+    {
+      "tileId": 63,
+      "nextTile": 64,
+      "row": 6.0,
+      "column": 2.0
+    },
+    {
+      "tileId": 64,
+      "nextTile": 65,
+      "row": 6.0,
+      "column": 3.0
+    },
+    {
+      "tileId": 65,
+      "nextTile": 66,
+      "row": 6.0,
+      "column": 4.0
+    },
+    {
+      "tileId": 66,
+      "nextTile": 67,
+      "row": 6.0,
+      "column": 5.0
+    },
+    {
+      "tileId": 67,
+      "nextTile": 68,
+      "row": 6.0,
+      "column": 6.0
+    },
+    {
+      "tileId": 68,
+      "nextTile": 69,
+      "row": 6.0,
+      "column": 7.0
+    },
+    {
+      "tileId": 69,
+      "nextTile": 70,
+      "row": 6.0,
+      "column": 8.0
+    },
+    {
+      "tileId": 70,
+      "nextTile": 71,
+      "row": 6.0,
+      "column": 9.0
+    },
+    {
+      "tileId": 71,
+      "nextTile": 72,
+      "row": 7.0,
+      "column": 9.0
+    },
+    {
+      "tileId": 72,
+      "nextTile": 73,
+      "row": 7.0,
+      "column": 8.0,
+      "action": {
+        "type": "LadderAction",
+        "destinationTileID": 26,
+        "description": "Climb to tile 26"
+      }
+    },
+    {
+      "tileId": 73,
+      "nextTile": 74,
+      "row": 7.0,
+      "column": 7.0
+    },
+    {
+      "tileId": 74,
+      "nextTile": 75,
+      "row": 7.0,
+      "column": 6.0
+    },
+    {
+      "tileId": 75,
+      "nextTile": 76,
+      "row": 7.0,
+      "column": 5.0
+    },
+    {
+      "tileId": 76,
+      "nextTile": 77,
+      "row": 7.0,
+      "column": 4.0
+    },
+    {
+      "tileId": 77,
+      "nextTile": 78,
+      "row": 7.0,
+      "column": 3.0,
+      "action": {
+        "type": "PrisonAction"
+      }
+    },
+    {
+      "tileId": 78,
+      "nextTile": 79,
+      "row": 7.0,
+      "column": 2.0
+    },
+    {
+      "tileId": 79,
+      "nextTile": 80,
+      "row": 7.0,
+      "column": 1.0
+    },
+    {
+      "tileId": 80,
+      "nextTile": 81,
+      "row": 7.0,
+      "column": 0.0
+    },
+    {
+      "tileId": 81,
+      "nextTile": 82,
+      "row": 8.0,
+      "column": 0.0
+    },
+    {
+      "tileId": 82,
+      "nextTile": 83,
+      "row": 8.0,
+      "column": 1.0
+    },
+    {
+      "tileId": 83,
+      "nextTile": 84,
+      "row": 8.0,
+      "column": 2.0
+    },
+    {
+      "tileId": 84,
+      "nextTile": 85,
+      "row": 8.0,
+      "column": 3.0
+    },
+    {
+      "tileId": 85,
+      "nextTile": 86,
+      "row": 8.0,
+      "column": 4.0
+    },
+    {
+      "tileId": 86,
+      "nextTile": 87,
+      "row": 8.0,
+      "column": 5.0
+    },
+    {
+      "tileId": 87,
+      "nextTile": 88,
+      "row": 8.0,
+      "column": 6.0,
+      "action": {
+        "type": "LadderAction",
+        "destinationTileID": 55,
+        "description": "Fall to tile 55"
+      }
+    },
+    {
+      "tileId": 88,
+      "nextTile": 89,
+      "row": 8.0,
+      "column": 7.0
+    },
+    {
+      "tileId": 89,
+      "nextTile": 90,
+      "row": 8.0,
+      "column": 8.0
+    },
+    {
+      "tileId": 90,
       "nextTile": "null",
-      "xCoordinate": 0,
-      "yCoordinate": 0
+      "row": 8.0,
+      "column": 9.0,
+      "action": {
+        "type": "WinAction"
+      }
     }
   ]
 }

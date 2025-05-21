@@ -221,9 +221,7 @@ public class BoardGameController {
     File file = fileChooser.showSaveDialog(null);
 
     if (file != null) {
-      List<Player> players = new ArrayList<>();
-      boardGame.getPlayerListIterator().forEachRemaining(players::add);
-      new CSVFileHandler().savePlayers(file.getAbsolutePath(), players);
+      boardGame.savePlayers(file.getAbsolutePath());
       boardGameView.addToLog("Players saved to " + file.getAbsolutePath());
     }
   }
@@ -234,7 +232,7 @@ public class BoardGameController {
     File file = fileChooser.showSaveDialog(null);
 
     if (file != null) {
-      new BoardFileWriterGson().writeBoard(file.getAbsolutePath(), boardGame.getBoard());
+      boardGame.saveBoard(file.getAbsolutePath(), "json");
       boardGameView.addToLog("Board saved to " + file.getAbsolutePath());
     }
   }
