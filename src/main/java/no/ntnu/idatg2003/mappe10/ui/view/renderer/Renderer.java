@@ -29,6 +29,21 @@ public abstract class Renderer {
         gc.fillRect(0, 0, getCanvasWidth(), getCanvasHeight());
     }
 
+    public void drawTiles() {
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        // Draw the board
+        int numberOfTiles = controller.getNumberOfTiles();
+        for (int i = 1; i <= numberOfTiles; i++) {
+            Coordinate canvasCoords = controller.getCanvasCoords(i, getOffsetWidth(), getOffsetHeight());
+            double x = canvasCoords.getX0();
+            double y = canvasCoords.getX1();
+
+            gc.setLineWidth(2);
+            gc.setStroke(Color.BLACK);
+            gc.strokeRect(x, y, getTileWidth(), getTileHeight());
+        }
+    }
+
     public void drawPlayers() {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         controller.getPlayerListIterator().forEachRemaining(player -> {

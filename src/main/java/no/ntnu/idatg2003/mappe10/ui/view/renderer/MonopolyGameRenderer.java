@@ -38,7 +38,7 @@ public class MonopolyGameRenderer extends Renderer {
 
         super.drawBackground();
         colorTiles(gc);
-        drawTiles(gc);
+        super.drawTiles();
         numerateTiles(gc);
         super.drawPlayers();
     }
@@ -66,22 +66,6 @@ public class MonopolyGameRenderer extends Renderer {
                 gc.setFill(Color.LIGHTGRAY);
                 gc.fillRect(x, y, super.getTileWidth(), super.getTileHeight());
             }
-        }
-    }
-
-    private void drawTiles(GraphicsContext gc) {
-        int numberOfTiles = super.getController().getNumberOfTiles();
-
-        gc.setLineWidth(2);
-        gc.setStroke(Color.BLACK);
-
-        for (int tileId = 1; tileId <= numberOfTiles; tileId++) {
-            Coordinate canvasCoords = super.getController()
-                  .getCanvasCoords(tileId, super.getOffsetWidth(), super.getOffsetHeight());
-            double x = canvasCoords.getX0();
-            double y = canvasCoords.getX1();
-
-            gc.strokeRect(x, y, super.getTileWidth(), super.getTileHeight());
         }
     }
 

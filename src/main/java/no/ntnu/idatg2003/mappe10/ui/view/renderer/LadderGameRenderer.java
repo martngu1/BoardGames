@@ -21,7 +21,7 @@ public class LadderGameRenderer extends Renderer {
 
     super.drawBackground();
     colorActionTiles(gc);
-    drawTiles(gc);
+    super.drawTiles();
     drawActionTiles();
     numerateTiles(gc);
     super.drawPlayers();
@@ -93,21 +93,6 @@ public class LadderGameRenderer extends Renderer {
     double y = rectCoords.getX1();
     gc.setFill(Color.YELLOW);
     gc.fillRect(x, y, super.getTileWidth(), super.getTileHeight());
-  }
-
-  private void drawTiles(GraphicsContext gc) {
-    // Draw the board
-    int numberOfTiles = super.getController().getNumberOfTiles();
-    for (int i = 1; i <= numberOfTiles; i++) {
-      Coordinate canvasCoords = super.getController()
-            .getCanvasCoords(i, super.getOffsetWidth(), super.getOffsetHeight());
-      double x = canvasCoords.getX0();
-      double y = canvasCoords.getX1();
-
-      gc.setLineWidth(2);
-      gc.setStroke(Color.BLACK);
-      gc.strokeRect(x, y, super.getTileWidth(), super.getTileHeight());
-    }
   }
 
   private void drawActionTiles() {
