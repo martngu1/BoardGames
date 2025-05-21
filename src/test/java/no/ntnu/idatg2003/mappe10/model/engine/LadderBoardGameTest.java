@@ -10,7 +10,7 @@ import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class BoardGameTest {
+class LadderBoardGameTest {
 
   private BoardGame boardGame;
 

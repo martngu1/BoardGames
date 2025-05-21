@@ -19,7 +19,7 @@ public class PrisonAction implements TileAction {
         // Only imprison if no one is currently in prison
         if (currentPrisoner == null || currentPrisoner.shouldSkipTurn() == false) {
             currentPrisoner = player;
-            player.skipNextTurns(1);
+            player.setTurnsToSkip(1);
             System.out.println(player.getName() + " has been sent to prison and will skip their next turn.");
         } else {
             System.out.println(player.getName() + " avoided prison because it's already occupied by " + currentPrisoner.getName());

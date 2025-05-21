@@ -28,9 +28,7 @@ public class GameSetupController {
     }
 
     public void addPlayerPiece(String playerName, String piece) {
-        if (playerName == null || playerName.isEmpty() || piece == null || piece.isEmpty()) {
-            return;
-        }
+
         playersAndPieces.put(playerName, piece);
     }
 
@@ -54,3 +52,4 @@ public class GameSetupController {
         }
     }
 }
+

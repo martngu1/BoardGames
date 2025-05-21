@@ -10,6 +10,7 @@ import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 public class Player {
 
   private String name;
+  private int balance;
   private String playingPiece;
   private Tile currentTile;
   private BoardGame game;
@@ -28,6 +29,7 @@ public class Player {
     this.game = game;
     game.addPlayer(this);
     this.turnsToSkip = 0;
+    this.balance = 1500;
   }
 
   /**
@@ -41,13 +43,20 @@ public class Player {
    * Move the player to the next tile.
    */
   public void move() {
-    if (currentTile.getNextTile() == null) {
+    Tile oldTile = currentTile;
+    Tile nextTile = currentTile.getNextTile();
+
+    if (nextTile == null) {
       this.placeOnTile(currentTile);
       return;
     }
-    this.placeOnTile(currentTile.getNextTile());
-  }
 
+    this.placeOnTile(nextTile);
+
+    if (nextTile.getTileId() == 1 || nextTile.getTileId() < oldTile.getTileId()) {
+      game.onPassStartTile(this);
+    }
+  }
   /**
    * Returns the current tile the player is standing on.
    *
@@ -86,13 +95,28 @@ public class Player {
   public boolean shouldSkipTurn() {
     return turnsToSkip > 0;
   }
-  public void skipNextTurns(int count) {
+  public void setTurnsToSkip(int count) {
     this.turnsToSkip = count;
   }
   public void decrementSkipTurns() {
     if (turnsToSkip > 0) {
       turnsToSkip--;
     }
+  }
+  public int getBalance() {
+    return balance;
+  }
+  public void setBalance(int balance) {
+      this.balance = balance;
+  }
+  public void addToBalance(int amount) {
+      this.balance += amount;
+  }
+  public void subtractFromBalance(int amount) {
+      this.balance -= amount;
+  }
+  public boolean canAfford(int amount) {
+    return balance >= amount;
   }
 }
 
