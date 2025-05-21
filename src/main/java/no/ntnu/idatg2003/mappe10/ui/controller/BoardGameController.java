@@ -38,6 +38,8 @@ public class BoardGameController {
   private Queue<String> playerQueue;
   private Roller roller;
 
+  private final int START_BALANCE = 1800;
+
 
   /**
    * Creates a new BoardGameController with the given BoardGameView.
@@ -289,7 +291,7 @@ public class BoardGameController {
       }
     }
     public void setStarterBalance(Player player) {
-        player.setBalance(1800);
+        player.setBalance(START_BALANCE);
       }
     public void savePlayersToCSV() {
       FileChooser fileChooser = new FileChooser();
