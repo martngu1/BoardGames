@@ -8,8 +8,10 @@ import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileWriter;
 import no.ntnu.idatg2003.mappe10.model.filehandler.CSVFileHandler;
 import no.ntnu.idatg2003.mappe10.model.filehandler.gson.BoardFileWriterGson;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
+import no.ntnu.idatg2003.mappe10.model.tile.Property;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
+import no.ntnu.idatg2003.mappe10.ui.view.BoardGameView;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -222,6 +224,15 @@ public class BoardGame {
           canvasMax.getX1() - canvasMax.getX1() / boardMax.getX0() * rc.getX0()
     );
   }
+  public void onPassStartTile(Player player){
+
+  }
+
+  public void notifyOfferToBuyProperty(Player player, Property property) {
+    for (BoardGameObserver observer : observers) {
+      observer.onOfferToBuyProperty(player, property);
+    }
+  }
 
   /**
    * Returns the transformed coordinates from the canvas (x, y) to the board (r, c).
@@ -254,6 +265,12 @@ public class BoardGame {
   public void removeObserver(BoardGameObserver observer) {
     observers.remove(observer);
   }
+  public Player getPlayerByName(String playerName) {
+    return playerList.stream()
+          .filter(player -> player.getName().equals(playerName))
+          .findFirst()
+          .orElse(null);
+  }
 
   private void notifyObservers() {
     for (BoardGameObserver observer : observers) {
@@ -261,7 +278,7 @@ public class BoardGame {
     }
   }
 
-  private void notifyTileActionPerformed(String name, String description) {
+  public void notifyTileActionPerformed(String name, String description) {
     for (BoardGameObserver observer : observers) {
       observer.onTileAction(name, description);
     }

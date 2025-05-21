@@ -31,22 +31,29 @@ public class ChanceCardAction implements TileAction{
             switch (selectedCard) {
                 case "Gain 200":
                     player.addToBalance(200);
+                    setDescription("Chance card: " + selectedCard + " - You gain 200");
                     break;
                 case "Go to jail":
-                    player.skipNextTurns(1);
+                    player.setTurnsToSkip(1);
                     player.placeOnTile(game.getTileById(20));
+                    setDescription("Chance card: " + selectedCard + " - You go to jail");
                     break;
                 case "Jail free card":
-                    player.skipNextTurns(-1);
+                    player.setTurnsToSkip(-1);
+                    setDescription("Chance card: " + selectedCard + " - You get a 'Get out of jail free' card");
                     break;
                 case "Go to start":
                     player.placeOnTile(game.getTileById(1));
+                    player.addToBalance(200);
+                    setDescription("Chance card: " + selectedCard + " - You go to start and collect 200");
                     break;
                 case "Pay 100":
                     player.subtractFromBalance(100);
+                    setDescription("Chance card: " + selectedCard + " - You pay 100");
                     break;
                 case "Pay 200":
                     player.subtractFromBalance(200);
+                    setDescription("Chance card: " + selectedCard + " - You pay 200");
                     break;
             }
         }
@@ -54,5 +61,8 @@ public class ChanceCardAction implements TileAction{
         @Override
         public String getDescription() {
             return description;
+        }
+        public void setDescription(String description) {
+            this.description = description;
         }
 }

@@ -23,7 +23,6 @@ import no.ntnu.idatg2003.mappe10.model.tile.tileaction.TileAction;
 import no.ntnu.idatg2003.mappe10.model.tile.tileaction.WinAction;
 import no.ntnu.idatg2003.mappe10.ui.view.BoardGameView;
 import no.ntnu.idatg2003.mappe10.ui.view.renderer.LadderGameRenderer;
-import no.ntnu.idatg2003.mappe10.ui.view.renderer.LostDiamondGameRenderer;
 import no.ntnu.idatg2003.mappe10.ui.view.renderer.MonopolyGameRenderer;
 import no.ntnu.idatg2003.mappe10.ui.view.renderer.Renderer;
 
@@ -232,20 +231,38 @@ public class BoardGameController {
     return boardGame.getPlayerListIterator();
   }
 
-  /**
-   * Adds a new player to the game with the given name.
-   *
-   * @param playerName the name of the player
-   */
-  public void addPlayer(String playerName, String playingPiece) {
-    new Player(playerName, playingPiece, boardGame);
-  }
+    /**
+     * Adds a new player to the game with the given name.
+     *
+     * @param playerName the name of the player
+     */
+    public void addPlayer(String playerName, String playingPiece) {
+      new Player(playerName, playingPiece, boardGame);
+    }
 
-  public void savePlayersToCSV() {
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Save Players");
-    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
-    File file = fileChooser.showSaveDialog(null);
+    public void initBalanceView(String playerName, String selectedGame) {
+      Player player = boardGame.getPlayerByName(playerName);
+      if (player == null) {
+        System.out.println("Player not found: " + playerName);
+          boardGameView.addToLog("Player not found: " + playerName);
+        return;
+      }
+      setStarterBalance(player);
+      boardGameView.updatePlayerBalance(player.getName(), player.getBalance());
+      if (selectedGame.equals("Monopoly")) {
+        boardGameView.setBalanceLabelVisible(true);
+      } else if (selectedGame.equals("Ladder Game")) {
+        boardGameView.setBalanceLabelVisible(false);
+      }
+    }
+    public void setStarterBalance(Player player) {
+        player.setBalance(1800);
+      }
+    public void savePlayersToCSV() {
+      FileChooser fileChooser = new FileChooser();
+      fileChooser.setTitle("Save Players");
+      fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+      File file = fileChooser.showSaveDialog(null);
 
     if (file != null) {
       boardGame.savePlayers(file.getAbsolutePath());
@@ -267,8 +284,8 @@ public class BoardGameController {
 
   public void restartGame() {
     boardGame.restartGame();
-    placePlayerOnStartTile();
     arrangePlayerTurns();
+    placePlayerOnStartTile();
     boardGameView.updatePosition();
     boardGameView.setLogTextArea("");
   }

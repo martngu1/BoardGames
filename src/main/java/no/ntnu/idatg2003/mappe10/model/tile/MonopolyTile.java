@@ -19,5 +19,11 @@ public class MonopolyTile extends Tile{
     public Property getProperty() {
         return property;
     }
+    public Property getPropertyByName(String name) {
+        if (property.getName().equals(name)) {
+            return property;
+        }
+        return null;
+    }
 
 }

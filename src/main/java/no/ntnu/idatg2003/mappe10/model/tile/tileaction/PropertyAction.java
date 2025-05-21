@@ -1,14 +1,17 @@
 package no.ntnu.idatg2003.mappe10.model.tile.tileaction;
 
+import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
 import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
 import no.ntnu.idatg2003.mappe10.model.tile.MonopolyTile;
 import no.ntnu.idatg2003.mappe10.model.tile.Property;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
+import no.ntnu.idatg2003.mappe10.ui.view.BoardGameView;
+import no.ntnu.idatg2003.mappe10.ui.view.renderer.MonopolyGameRenderer;
 
 import java.awt.*;
 
-public class PropertyAction implements TileAction{
+public class PropertyAction implements TileAction {
     private String description;
 
     public PropertyAction(String description) {
@@ -24,18 +27,17 @@ public class PropertyAction implements TileAction{
     public void performAction(Player player, BoardGame game) {
 
         Tile currentTile = player.getCurrentTile();
+        MonopolyTile monopolyTile = currentTile.getMonopolyTile();
 
-        if (currentTile instanceof MonopolyTile monopolyTile) {
+        if (monopolyTile != null) {
             // Get the property associated with the tile
             Property property = monopolyTile.getProperty();
 
-            // Check if property is owned
+            // Check if property is owned or not
             if (!property.isOwned()) {
                 if (player.getBalance() >= property.getPrice()) {
-                    // TO DO: make it so that the player has a choice to buy the property or not
-                    player.subtractFromBalance(property.getPrice());
-                    property.setOwner(player);
-                    System.out.println(player.getName() + " bought " + property.getName() + " for " + property.getPrice());
+                    // Tell the controller a property is available to buy
+                    game.notifyOfferToBuyProperty(player, property);
                 } else {
                     System.out.println(player.getName() + " does not have enough money to buy " + property.getName());
                 }
@@ -51,4 +53,6 @@ public class PropertyAction implements TileAction{
             System.out.println("This tile is not a property.");
         }
     }
+
 }
+

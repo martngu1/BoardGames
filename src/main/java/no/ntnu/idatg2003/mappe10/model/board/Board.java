@@ -9,10 +9,10 @@ import java.util.Map;
  * Represents a map with all the tiles used for the board.
  */
 public class Board{
-  private Map<Integer, Tile> tilesList;
-  private int numberOfRows;
-  private int numberOfColumns;
-  private int numberOfTiles;
+    private Map<Integer, Tile> tilesList;
+    private int numberOfRows;
+    private int numberOfColumns;
+    private int numberOfTiles;
 
   /**
    * Constructor for the Board class.

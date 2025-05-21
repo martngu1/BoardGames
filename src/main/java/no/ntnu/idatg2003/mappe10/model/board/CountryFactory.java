@@ -1,6 +1,7 @@
 package no.ntnu.idatg2003.mappe10.model.board;
 
 import no.ntnu.idatg2003.mappe10.model.tile.Country;
+import no.ntnu.idatg2003.mappe10.model.tile.CruiseDock;
 import no.ntnu.idatg2003.mappe10.model.tile.Property;
 
 import java.util.ArrayList;
@@ -8,9 +9,11 @@ import java.util.List;
 
 public class CountryFactory {
     private final List<Country> countries = new ArrayList<>();
+    private final List<CruiseDock> cruiseDocks = new ArrayList<>();
 
     public CountryFactory(){
         createCountries();
+        createCruiseDocks();
     }
 
 
@@ -23,6 +26,20 @@ public class CountryFactory {
         countries.add(createCountry("China", 550, 150, List.of("Beijing", "Shanghai", "Guangzhou")));
         countries.add(createCountry("South Korea", 700, 205, List.of("Seoul", "Busan", "Incheon")));
         countries.add(createCountry("Japan", 850, 245, List.of("Tokyo", "Osaka", "Kyoto")));
+    }
+    public void createCruiseDocks(){
+        cruiseDocks.add(new CruiseDock("Yokohoma Harbour Terminal", 200, 50));
+        cruiseDocks.add(new CruiseDock("Jade Lotus Dock", 200, 50));
+        cruiseDocks.add(new CruiseDock("Marina Bay Cruise Center", 200, 50));
+        cruiseDocks.add(new CruiseDock("Dragon Pearl Port", 200, 50));
+    }
+    public CruiseDock getCruiseDockByName(String name) {
+        for (CruiseDock cruiseDock : cruiseDocks) {
+            if (cruiseDock.getName().equals(name)) {
+                return cruiseDock;
+            }
+        }
+        return null;
     }
 
     private Country createCountry(String name, int price, int rent,List<String> cityNames) {
@@ -46,7 +63,7 @@ public class CountryFactory {
         if (country == null) {
             throw new IllegalArgumentException("Country not found: " + countryName);
         }
-        return country.getProperty(cityIndex);
+        return new Property(country.getProperty(cityIndex).getName(), country);
     }
 
 

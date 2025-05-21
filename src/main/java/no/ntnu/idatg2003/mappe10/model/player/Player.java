@@ -43,13 +43,20 @@ public class Player {
    * Move the player to the next tile.
    */
   public void move() {
-    if (currentTile.getNextTile() == null) {
+    Tile oldTile = currentTile;
+    Tile nextTile = currentTile.getNextTile();
+
+    if (nextTile == null) {
       this.placeOnTile(currentTile);
       return;
     }
-    this.placeOnTile(currentTile.getNextTile());
-  }
 
+    this.placeOnTile(nextTile);
+
+    if (nextTile.getTileId() == 1 || nextTile.getTileId() < oldTile.getTileId()) {
+      game.onPassStartTile(this);
+    }
+  }
   /**
    * Returns the current tile the player is standing on.
    *
@@ -88,7 +95,7 @@ public class Player {
   public boolean shouldSkipTurn() {
     return turnsToSkip > 0;
   }
-  public void skipNextTurns(int count) {
+  public void setTurnsToSkip(int count) {
     this.turnsToSkip = count;
   }
   public void decrementSkipTurns() {

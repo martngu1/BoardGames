@@ -12,11 +12,14 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
+import no.ntnu.idatg2003.mappe10.model.player.Player;
+import no.ntnu.idatg2003.mappe10.model.tile.Property;
 import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
 import no.ntnu.idatg2003.mappe10.ui.controller.SoundController;
 import no.ntnu.idatg2003.mappe10.ui.view.renderer.Renderer;
 
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -32,6 +35,7 @@ public class BoardGameView implements BoardGameObserver {
   private Renderer gameRenderer;
   private TextArea logTextArea;
   private Button rollButton1;
+  private Map<String, Label> playerBalanceLabels;
   private int nodeNr;
 
   public BoardGameView() {
@@ -42,6 +46,7 @@ public class BoardGameView implements BoardGameObserver {
     logTextArea = new TextArea();
     rollButton1 = new Button("Roll Dice");
     gameRenderer = null;
+    playerBalanceLabels = new HashMap<>();
     nodeNr = 1;
   }
 
@@ -54,13 +59,24 @@ public class BoardGameView implements BoardGameObserver {
   public void initBoardGame(String selectedBoard, Map<String, String> playersAndPieces) {
     // Initialize the board game with the selected board and players
     gameRenderer = controller.initBoardGame(selectedBoard, canvas);
+
     playersAndPieces.keySet().forEach(playerName -> {
       String playingPiece = playersAndPieces.get(playerName);
+      createPlayerBalanceLabel(playerName);
       controller.addPlayer(playerName, playingPiece);
       controller.addPlayerToQueue(playerName);
+      controller.initBalanceView(playerName, selectedBoard);
+
     });
     controller.placePlayerOnStartTile();
     controller.arrangePlayerTurns();
+  }
+
+  private void createPlayerBalanceLabel(String playerName) {
+    // Create the label
+    Label balanceLabel = new Label();
+    // Store it in the map
+    playerBalanceLabels.put(playerName, balanceLabel);
   }
 
   /**
@@ -177,10 +193,13 @@ public class BoardGameView implements BoardGameObserver {
         pieceView.setFitHeight(24);
       }
 
+      Label balanceLabel = playerBalanceLabels.get(player.getName());
+
       Label nameLabel = new Label(player.getName());
       nameLabel.setStyle("-fx-font-size: 14px;");
 
-      playerRow.getChildren().addAll(pieceView, nameLabel);
+      playerRow.getChildren().addAll(pieceView, nameLabel, balanceLabel);
+
       playerListBox.getChildren().add(playerRow);
     });
 
@@ -296,6 +315,14 @@ public class BoardGameView implements BoardGameObserver {
     logTextArea.appendText(logMessage + "\n");
   }
 
+  public void updatePlayerBalance(String playerName, int newBalance) {
+    playerBalanceLabels.get(playerName).setText("Balance: " + newBalance);
+  }
+  public void setBalanceLabelVisible(boolean visible) {
+    playerBalanceLabels.values()
+          .forEach(label -> label.setVisible(visible));
+  }
+
   /**
    * Gets the x and y coordinates of the point where the mouse is clicked on the canvas.
    * Used to help make the Lost Diamond Board.
@@ -348,6 +375,17 @@ public class BoardGameView implements BoardGameObserver {
     gameOverDialog.setWinner(name);
     gameOverDialog.showDialog();
     soundController.playWinSound();
+  }
+
+
+  @Override
+  public void onOfferToBuyProperty(Player player, Property property) {
+    controller.onOfferToBuy(player, property);
+  }
+
+  public void viewOfferProperty(Player player, Property property, Runnable onAccept, Runnable onDecline) {
+    BuyPropertyDialog dialog = new BuyPropertyDialog(player, property, onAccept, onDecline);
+    dialog.showDialog();
   }
 
   /**

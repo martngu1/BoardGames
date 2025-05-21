@@ -6,6 +6,7 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
 import no.ntnu.idatg2003.mappe10.model.tile.Country;
+import no.ntnu.idatg2003.mappe10.model.tile.CruiseDock;
 import no.ntnu.idatg2003.mappe10.model.tile.MonopolyTile;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
@@ -15,57 +16,140 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MonopolyGameRenderer extends Renderer {
-    // Map countries to colors for tile coloring
-    private final Map<String, Color> countryColors = new HashMap<>();
+  // Map countries to colors for tile coloring
+  private final Map<String, Color> propertyColors = new HashMap<>();
+  private final Map<String, String> specialTileImages = new HashMap<>();
 
-    public MonopolyGameRenderer(BoardGameController controller, Canvas canvas) {
-        super(controller, canvas);
+  public MonopolyGameRenderer(BoardGameController controller, Canvas canvas) {
+    super(controller, canvas);
 
-        // Assign each country a distinct color (feel free to change these)
-        countryColors.put("Mongolia", Color.SKYBLUE);
-        countryColors.put("Philippines", Color.LIGHTPINK);
-        countryColors.put("Vietnam", Color.LIGHTGREEN);
-        countryColors.put("Thailand", Color.GOLD);
-        countryColors.put("Indonesia", Color.ORANGE);
-        countryColors.put("China", Color.LIGHTCORAL);
-        countryColors.put("South Korea", Color.PLUM);
-        countryColors.put("Japan", Color.LIGHTYELLOW);
-    }
+    // Assign each country a distinct color (feel free to change these)
+    propertyColors.put("Mongolia", Color.LIGHTSEAGREEN);
+    propertyColors.put("Philippines", Color.MEDIUMPURPLE);
+    propertyColors.put("Vietnam", Color.YELLOW);
+    propertyColors.put("Thailand", Color.DARKCYAN);
+    propertyColors.put("Indonesia", Color.ORANGE);
+    propertyColors.put("China", Color.RED);
+    propertyColors.put("South Korea", Color.PLUM);
+    propertyColors.put("Japan", Color.WHITESMOKE);
+    propertyColors.put("CruiseDock", Color.BLUE);
 
-    @Override
-    public void drawBoard() {
-        GraphicsContext gc = super.getCanvas().getGraphicsContext2D();
+    specialTileImages.put("ChanceCardAction", "/tileIcons/fortuneCookie.png");
+    specialTileImages.put("TaxAction", "/tileIcons/taxIcon.png");
+    specialTileImages.put("PrisonAction", "/tileIcons/prisonBars.png");
+    specialTileImages.put("FreeParking", "/tileIcons/freeParking.png");
 
-        super.drawBackground();
-        colorTiles(gc);
-        super.drawTiles();
-        super.numerateTiles();
-        super.drawPlayers();
-    }
+  }
 
-    private void colorTiles(GraphicsContext gc) {
-        int numberOfTiles = super.getController().getNumberOfTiles();
+  @Override
+  public void drawBoard() {
+    GraphicsContext gc = super.getCanvas().getGraphicsContext2D();
 
-        for (int tileId = 1; tileId <= numberOfTiles; tileId++) {
-            Coordinate canvasCoords = super.getController()
-                  .getCanvasCoords(tileId, super.getOffsetWidth(), super.getOffsetHeight());
-            double x = canvasCoords.getX0();
-            double y = canvasCoords.getX1();
+    super.drawBackground();
+    colorTiles(gc);
+    super.drawTiles();
+    super.numerateTiles();
+    super.drawPlayers();
+  }
 
-            Tile tile = super.getController().getTileById(tileId);
-            MonopolyTile monopolyTile = tile.getMonopolyTile();
+  private void colorTiles(GraphicsContext gc) {
+    int numberOfTiles = super.getController().getNumberOfTiles();
 
-            if (monopolyTile != null && monopolyTile.getProperty() != null) {
-                String country = monopolyTile.getProperty().getCountry().getName();
-                System.out.println("Tile " + tileId + " country: " + country);
-                Color color = countryColors.getOrDefault(country, Color.WHITE);
+    for (int tileId = 1; tileId <= numberOfTiles; tileId++) {
+      Coordinate canvasCoords = super.getController()
+            .getCanvasCoords(tileId, super.getOffsetWidth(), super.getOffsetHeight());
+      double x = canvasCoords.getX0();
+      double y = canvasCoords.getX1();
 
-                gc.setFill(color);
-                gc.fillRect(x, y, super.getTileWidth(), super.getTileHeight());
-            } else {
-                gc.setFill(Color.LIGHTGRAY);
-                gc.fillRect(x, y, super.getTileWidth(), super.getTileHeight());
-            }
+      Tile tile = super.getController().getTileById(tileId);
+      MonopolyTile monopolyTile = tile.getMonopolyTile();
+
+      if (monopolyTile != null && monopolyTile.getProperty() != null) {
+        Color color;
+        String imagePath = null;
+
+        if (monopolyTile.getProperty() instanceof CruiseDock) { // Cruise Docks
+          color = propertyColors.getOrDefault("CruiseDock", Color.LIGHTBLUE);
+          imagePath = "/tileIcons/cruiseDock.png";
+        } else { // Get the color based on the country
+          String country = monopolyTile.getProperty().getCountry().getName();
+          color = propertyColors.getOrDefault(country, Color.WHITE);
         }
+
+        gc.setFill(color);
+        gc.fillRect(x, y, super.getTileWidth(), super.getTileHeight());
+
+        if (imagePath != null) {
+          drawTileImage(gc, imagePath, x, y, super.getTileWidth(), super.getTileHeight());
+        }
+        double price = monopolyTile.getProperty().getPrice();
+        gc.setFill(Color.BLACK);
+        gc.setLineWidth(0.75);
+        gc.fillText("$" + price, x + super.getTileWidth() * 0.05, y + super.getTileHeight() * 0.20);
+      } else if (tile.getLandAction() != null) { // Special Tiles
+        String actionClassName = tile.getLandAction().getClass().getSimpleName();
+        String imagePath = specialTileImages.get(actionClassName);
+
+        if (imagePath != null) {
+          drawTileImage(gc, imagePath, x, y, super.getTileWidth(), super.getTileHeight());
+        }
+      } else if (tileId == 1) { // Start Tile
+        Color color = Color.GREEN;
+        gc.setFill(color);
+        gc.fillRect(x, y, super.getTileWidth(), super.getTileHeight());
+      } else {
+        gc.fillRect(x, y, super.getTileWidth(), super.getTileHeight());
+      } else{ // Free Parking and special tiles gets color lightgray
+        gc.setFill(Color.LIGHTGRAY);
+        gc.fillRect(x, y, super.getTileWidth(), super.getTileHeight());
+        gc.fillRect(x, y, super.getTileWidth(), super.getTileHeight());
+
+        String imagePath = specialTileImages.get("FreeParking");
+        if (imagePath != null) {
+          drawTileImage(gc, imagePath, x, y, super.getTileWidth(), super.getTileHeight());
+        }
+      }
     }
+  }
+
+  private void drawTileImage(GraphicsContext gc, String imagePath, double x, double y, double tileWidth, double tileHeight) {
+    InputStream stream = getClass().getResourceAsStream(imagePath);
+    if (stream == null) {
+      System.err.println("Image not found: " + imagePath);
+      return;
+    }
+    Image image = new Image(stream);
+    gc.drawImage(image, x, y, tileWidth, tileHeight);
+  }
+
+  private void drawPropertyOwners(double width, double height, double tileWidth, double tileHeight, GraphicsContext gc) {
+
+    double offsetWidth = width - tileWidth;
+    double offsetHeight = height - tileHeight;
+
+    for (int tileId = 1; tileId <= super.getController().getNumberOfTiles(); tileId++) {
+      Tile tile = super.getController().getTileById(tileId);
+      MonopolyTile monopolyTile = tile.getMonopolyTile();
+
+      if (monopolyTile != null && monopolyTile.getProperty() != null) {
+        if (monopolyTile.getProperty().isOwned()) {
+          String playingPiece = monopolyTile.getProperty().getOwner().getPlayingPiece();
+          InputStream inputStream = getClass().getResourceAsStream("/playingPieces/" + playingPiece + ".png");
+
+          if (inputStream == null) {
+            System.out.println("Image not found for owner: " + playingPiece);
+            continue;
+          }
+
+          Coordinate canvasCoords = super.getController().getCanvasCoords(tileId, offsetWidth, offsetHeight);
+          double x = canvasCoords.getX0();
+          double y = canvasCoords.getX1();
+
+          Image image = new Image(inputStream);
+
+          gc.drawImage(image, x + tileWidth * 0.7, y + tileHeight * 0.05, tileWidth * 0.25, tileHeight * 0.25);
+        }
+      }
+    }
+  }
 }
