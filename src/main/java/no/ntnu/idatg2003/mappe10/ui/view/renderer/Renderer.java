@@ -63,6 +63,25 @@ public abstract class Renderer {
         });
     }
 
+    public void drawPlayers(double scale) {
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        controller.getPlayerListIterator().forEachRemaining(player -> {
+            int currentTileId = player.getCurrentTile().getTileId();
+            Coordinate canvasCoords = controller.getCanvasCoords(currentTileId, getOffsetWidth(), getOffsetHeight());
+            double x = canvasCoords.getX0() + getTileWidth() / 4;
+            double y = canvasCoords.getX1() + getTileHeight() / 4;
+
+            InputStream inputStream = getClass().getResourceAsStream("/playingPieces/" + player.getPlayingPiece() + ".png");
+            if (inputStream == null) {
+                System.out.println("Image not found: " + player.getPlayingPiece());
+                return;
+            }
+
+            Image image = new Image(inputStream);
+            gc.drawImage(image, x, y, getTileWidth() / 2 * scale, getTileHeight() / 2 * scale);
+        });
+    }
+
     public void numerateTiles() {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         int numberOfTiles = controller.getNumberOfTiles();

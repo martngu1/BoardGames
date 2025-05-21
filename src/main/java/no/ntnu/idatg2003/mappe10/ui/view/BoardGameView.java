@@ -3,14 +3,15 @@ package no.ntnu.idatg2003.mappe10.ui.view;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
-import no.ntnu.idatg2003.mappe10.model.player.Player;
 import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
 import no.ntnu.idatg2003.mappe10.ui.controller.SoundController;
 import no.ntnu.idatg2003.mappe10.ui.view.renderer.Renderer;
@@ -18,6 +19,7 @@ import no.ntnu.idatg2003.mappe10.ui.view.renderer.Renderer;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class BoardGameView implements BoardGameObserver {
   private static final double WINDOW_WIDTH = 1000;
@@ -30,6 +32,7 @@ public class BoardGameView implements BoardGameObserver {
   private Renderer gameRenderer;
   private TextArea logTextArea;
   private Button rollButton1;
+  private int nodeNr;
 
   public BoardGameView() {
     soundController = new SoundController();
@@ -39,6 +42,7 @@ public class BoardGameView implements BoardGameObserver {
     logTextArea = new TextArea();
     rollButton1 = new Button("Roll Dice");
     gameRenderer = null;
+    nodeNr = 1;
   }
 
   /**
@@ -98,6 +102,8 @@ public class BoardGameView implements BoardGameObserver {
     canvas.widthProperty().addListener(evt -> gameRenderer.drawBoard());
     canvas.heightProperty().addListener(evt -> gameRenderer.drawBoard());
 
+    // Get the x and y coordinates of the point where the mouse is clicked on the Canvas. - See onCanvasClick.
+    // canvas.setOnMouseClicked(this::onCanvasClick);
 
     return leftBox;
   }
@@ -290,10 +296,34 @@ public class BoardGameView implements BoardGameObserver {
     logTextArea.appendText(logMessage + "\n");
   }
 
+  /**
+   * Gets the x and y coordinates of the point where the mouse is clicked on the canvas.
+   * Used to help make the Lost Diamond Board.
+   *
+   * @param mouseEvent the mouse event that triggered the method
+   */
+  private void onCanvasClick(MouseEvent mouseEvent) {
+    double x = mouseEvent.getX();
+    double y = mouseEvent.getY();
+    System.out.println(nodeNr + " Clicked at: " + x + ", " + y);
+
+    GraphicsContext gc = canvas.getGraphicsContext2D();
+    Random rand = new Random();
+    gc.setFill(Color.rgb(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256)));
+    double diameter = 16;
+    double radius = diameter/2;
+    gc.fillOval(x-radius, y-radius, diameter,diameter);
+    gc.setStroke(Color.BLACK);
+    gc.setLineWidth(1);
+    gc.strokeText(String.valueOf(nodeNr), x,y);
+    nodeNr++;
+  }
+
   @Override
   public void updatePosition() {
     // Update the current position of the player in canvas.
     gameRenderer.drawBoard();
+    // System.out.println("Canvas (Width, Height): (" + canvas.getWidth() + ", " + canvas.getHeight() + ")"); // Find width and height of canvas (default size window)
   }
 
   @Override

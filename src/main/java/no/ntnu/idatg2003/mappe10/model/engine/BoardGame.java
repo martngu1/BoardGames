@@ -207,19 +207,33 @@ public class BoardGame {
     winner = null;
     currentPlayer = null;
     playerList.forEach(player -> player.skipNextTurns(0));
-    playerList.forEach(player -> player.placeOnTile(board.getFirstTile()));
   }
 
   /**
    * Returns the transformed coordinates from the board (r, c) to the canvas (x, y).
    *
-   * @param rc the (r, c) coordinates to transform to (x, y)
+   * @param rc        the (r, c) coordinates to transform to (x, y)
+   * @param canvasMax the maximum (x, y) coordinates of the canvas
    * @return the (x, y) coordinates corresponding to the given (r, c) coordinates
    */
   public Coordinate transformBoardToCanvas(Coordinate rc, Coordinate canvasMax) {
     return new Coordinate(
           canvasMax.getX0() / boardMax.getX1() * rc.getX1(),
           canvasMax.getX1() - canvasMax.getX1() / boardMax.getX0() * rc.getX0()
+    );
+  }
+
+  /**
+   * Returns the transformed coordinates from the canvas (x, y) to the board (r, c).
+   *
+   * @param xy        the (x, y) coordinates to transform to (r, c)
+   * @param canvasMax the maximum (x, y) coordinates of the canvas
+   * @return the (r, c) coordinates corresponding to the given (x, y) coordinates
+   */
+  public Coordinate transformCanvasToBoard(Coordinate xy, Coordinate canvasMax) {
+    return new Coordinate(
+          boardMax.getX1() / canvasMax.getX0() * xy.getX0(),
+          boardMax.getX0() - boardMax.getX0() / canvasMax.getX1() * xy.getX1()
     );
   }
 

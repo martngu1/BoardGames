@@ -23,6 +23,7 @@ import no.ntnu.idatg2003.mappe10.model.tile.tileaction.TileAction;
 import no.ntnu.idatg2003.mappe10.model.tile.tileaction.WinAction;
 import no.ntnu.idatg2003.mappe10.ui.view.BoardGameView;
 import no.ntnu.idatg2003.mappe10.ui.view.renderer.LadderGameRenderer;
+import no.ntnu.idatg2003.mappe10.ui.view.renderer.LostDiamondGameRenderer;
 import no.ntnu.idatg2003.mappe10.ui.view.renderer.MonopolyGameRenderer;
 import no.ntnu.idatg2003.mappe10.ui.view.renderer.Renderer;
 
@@ -58,6 +59,9 @@ public class BoardGameController {
       case "Ladder Game":
         initLadderGame();
         return new LadderGameRenderer(this, canvas);
+      case "The Lost Diamond":
+        initLostDiamondGame();
+        return new LostDiamondGameRenderer(this, canvas);
       default:
         throw new IllegalArgumentException("Invalid board game selected: " + selectedBoard);
     }
@@ -72,8 +76,13 @@ public class BoardGameController {
   public void initLadderGame() {
     boardGame = boardGame.getFactory().createLadderGame();
   }
+
   public void initMonopolyGame() {
     boardGame = boardGame.getFactory().createMonopolyGame();
+  }
+
+  public void initLostDiamondGame() {
+    boardGame = boardGame.getFactory().createLostDiamondGame();
   }
 
   public void registerObserver(BoardGameObserver observer) {
@@ -90,7 +99,7 @@ public class BoardGameController {
   }
 
   public void playTurn() {
-    if (roller == null){
+    if (roller == null) {
       roller = new Roller();
     }
 
@@ -102,7 +111,7 @@ public class BoardGameController {
       Player currentPlayer = boardGame.getCurrentPlayer();
       int diceValue = boardGame.rollDice();
       boardGameView.addToLog(currentPlayer.getName() + " rolled " + boardGame.getDieValue(0)
-              + " and " + boardGame.getDieValue(1) + " for a total of " + diceValue);
+            + " and " + boardGame.getDieValue(1) + " for a total of " + diceValue);
       if (currentPlayer.shouldSkipTurn()) {
         if (rolledDouble()) {
           boardGameView.addToLog(currentPlayer.getName() + " rolled doubles and is released from prison!");
@@ -148,7 +157,7 @@ public class BoardGameController {
     Timeline timeline = new Timeline();
     for (int i = 0; i < diceRoll; i++) {
       timeline.getKeyFrames().add(
-            new KeyFrame(Duration.seconds(0.3*i), e -> boardGame.doTurn())
+            new KeyFrame(Duration.seconds(0.3 * i), e -> boardGame.doTurn())
       );
     }
     timeline.setOnFinished(e -> {
@@ -158,12 +167,12 @@ public class BoardGameController {
   }
 
   private void displayDiceResults() {
-    List <Integer> diceResults = new ArrayList<>();
+    List<Integer> diceResults = new ArrayList<>();
     for (int i = 0; i < boardGame.getDiceAmount(); i++) {
       int diceResult = boardGame.getDieValue(i);
       diceResults.add(diceResult);
     }
-      boardGameView.showDiceResults(diceResults, boardGame.getDiceAmount());
+    boardGameView.showDiceResults(diceResults, boardGame.getDiceAmount());
   }
 
 
@@ -171,6 +180,11 @@ public class BoardGameController {
     boardGame.placeAllPlayersOnTile(boardGame.getBoard().getFirstTile());
     //boardGame.placeAllPlayersOnTile(boardGame.getTileById(80));
   }
+
+  public void placeAllPlayersOnTile(int tileID) {
+    boardGame.placeAllPlayersOnTile(boardGame.getTileById(tileID));
+  }
+
   public Tile getTileById(int tileId) {
     return boardGame.getTileById(tileId);
   }
@@ -200,7 +214,7 @@ public class BoardGameController {
 
   public String checkIfTileAction(int tileId) {
     TileAction action = boardGame.getTileById(tileId).getLandAction();
-    if (action == null){
+    if (action == null) {
       return "";
     }
     if (action instanceof LadderAction) {
@@ -226,6 +240,7 @@ public class BoardGameController {
   public void addPlayer(String playerName, String playingPiece) {
     new Player(playerName, playingPiece, boardGame);
   }
+
   public void savePlayersToCSV() {
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Save Players");
@@ -237,7 +252,8 @@ public class BoardGameController {
       boardGameView.addToLog("Players saved to " + file.getAbsolutePath());
     }
   }
-  public void saveBoardToJson(){
+
+  public void saveBoardToJson() {
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Save Board");
     fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON Files", "*.json"));
@@ -251,6 +267,7 @@ public class BoardGameController {
 
   public void restartGame() {
     boardGame.restartGame();
+    placePlayerOnStartTile();
     arrangePlayerTurns();
     boardGameView.updatePosition();
     boardGameView.setLogTextArea("");
@@ -284,13 +301,13 @@ public class BoardGameController {
 
       if (now - lastUpdate > 100_000_000L) { // update every 100ms
         int diceAmount = boardGame.getDiceAmount();
-        List <Integer> diceResults = new ArrayList<>();
+        List<Integer> diceResults = new ArrayList<>();
         for (int i = 0; i < diceAmount; i++) {
           diceResults.add(1 + (int) (Math.random() * 6));
         }
-          boardGameView.showDiceResults(diceResults,boardGame.getDiceAmount() );
-          lastUpdate = now;
-        }
+        boardGameView.showDiceResults(diceResults, boardGame.getDiceAmount());
+        lastUpdate = now;
       }
     }
   }
+}
