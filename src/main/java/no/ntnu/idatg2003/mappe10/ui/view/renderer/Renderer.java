@@ -63,6 +63,23 @@ public abstract class Renderer {
         });
     }
 
+    public void numerateTiles() {
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        int numberOfTiles = controller.getNumberOfTiles();
+
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(0.75);
+
+        for (int tileId = 1; tileId <= numberOfTiles; tileId++) {
+            Coordinate canvasCoords = controller
+                  .getCanvasCoords(tileId, getOffsetWidth(), getOffsetHeight());
+            double x = canvasCoords.getX0();
+            double y = canvasCoords.getX1();
+
+            gc.strokeText(String.valueOf(tileId), x + getTileWidth() / 4, y + getTileHeight() / 3);
+        }
+    }
+
     protected Canvas getCanvas() {
         return canvas;
     }

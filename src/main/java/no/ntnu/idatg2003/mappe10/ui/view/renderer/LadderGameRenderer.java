@@ -23,7 +23,7 @@ public class LadderGameRenderer extends Renderer {
     colorActionTiles(gc);
     super.drawTiles();
     drawActionTiles();
-    numerateTiles(gc);
+    super.numerateTiles();
     super.drawPlayers();
   }
 
@@ -171,21 +171,6 @@ public class LadderGameRenderer extends Renderer {
     // Help from chatGPT
     gc.strokeLine(destX, destY, destX - arrowSize * Math.cos(angle - arrowAngle), destY - arrowSize * Math.sin(angle - arrowAngle));
     gc.strokeLine(destX, destY, destX - arrowSize * Math.cos(angle + arrowAngle), destY - arrowSize * Math.sin(angle + arrowAngle));
-  }
-
-  private void numerateTiles(GraphicsContext gc) {
-    gc.setStroke(Color.BLACK);
-    // Numerate tiles
-    int numberOfTiles = super.getController().getNumberOfTiles();
-    for (int i = 1; i <= numberOfTiles; i++) {
-      Coordinate canvasCoords = super.getController()
-            .getCanvasCoords(i, super.getOffsetWidth(), super.getOffsetHeight());
-      double x = canvasCoords.getX0();
-      double y = canvasCoords.getX1();
-
-      gc.setLineWidth(0.75);
-      gc.strokeText(String.valueOf(i), x + super.getTileWidth() / 2, y + super.getTileHeight() / 2);
-    }
   }
 
 }
