@@ -282,6 +282,14 @@ public class BoardGameView implements BoardGameObserver {
     logTextArea.setText(txt);
   }
 
+  public void setCurrentPlayerLabel(String playerName) {
+    currentPlayerLabel.setText("Current Players turn: " + playerName);
+  }
+
+  public void addToLog(String logMessage) {
+    logTextArea.appendText(logMessage + "\n");
+  }
+
   @Override
   public void updatePosition() {
     // Update the current position of the player in canvas.
@@ -310,14 +318,6 @@ public class BoardGameView implements BoardGameObserver {
     gameOverDialog.setWinner(name);
     gameOverDialog.showDialog();
     soundController.playWinSound();
-  }
-
-  public void setCurrentPlayerLabel(String playerName) {
-    currentPlayerLabel.setText("Current Players turn: " + playerName);
-  }
-
-  public void addToLog(String logMessage) {
-    logTextArea.appendText(logMessage + "\n");
   }
 
   /**
