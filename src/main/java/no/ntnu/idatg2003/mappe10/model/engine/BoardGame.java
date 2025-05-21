@@ -207,6 +207,8 @@ public class BoardGame {
   public void restartGame() {
     winner = null;
     currentPlayer = null;
+    playerList.forEach(player -> player.skipNextTurns(0));
+    playerList.forEach(player -> player.placeOnTile(board.getFirstTile()));
   }
 
   /**

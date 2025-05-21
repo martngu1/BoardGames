@@ -240,7 +240,6 @@ public class BoardGameController {
   public void restartGame() {
     boardGame.restartGame();
     arrangePlayerTurns();
-    placePlayerOnStartTile();
     boardGameView.updatePosition();
     boardGameView.setLogTextArea("");
   }

@@ -1,27 +1,16 @@
 package no.ntnu.idatg2003.mappe10.ui.controller;
 
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import no.ntnu.idatg2003.mappe10.ui.view.Alerts;
 import no.ntnu.idatg2003.mappe10.ui.view.BoardGameView;
 import no.ntnu.idatg2003.mappe10.ui.view.GameSetupView;
 import no.ntnu.idatg2003.mappe10.ui.view.StartPageView;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
 
 public class GameSetupController {
 
     private GameSetupView gameSetupView;
     private final HashMap<String, String> playersAndPieces = new HashMap<>();
-    private boolean alert = false;
 
     public GameSetupController(GameSetupView gameSetupView) {
         this.gameSetupView = gameSetupView;
