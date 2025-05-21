@@ -14,17 +14,12 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MonopolyGameRenderer implements Renderer {
-
-    private BoardGameController controller;
-    private Canvas canvas;
-
+public class MonopolyGameRenderer extends Renderer {
     // Map countries to colors for tile coloring
     private final Map<String, Color> countryColors = new HashMap<>();
 
     public MonopolyGameRenderer(BoardGameController controller, Canvas canvas) {
-        this.controller = controller;
-        this.canvas = canvas;
+        super(controller, canvas);
 
         // Assign each country a distinct color (feel free to change these)
         countryColors.put("Mongolia", Color.SKYBLUE);
@@ -37,24 +32,27 @@ public class MonopolyGameRenderer implements Renderer {
         countryColors.put("Japan", Color.LIGHTYELLOW);
     }
 
-    private void drawCanvas(double width, double height, GraphicsContext gc) {
-        gc.clearRect(0, 0, width, height);
-        gc.setFill(Color.LIGHTGRAY);
-        gc.fillRect(0, 0, width, height);
+    @Override
+    public void drawBoard() {
+        GraphicsContext gc = super.getCanvas().getGraphicsContext2D();
+
+        super.drawBackground();
+        colorTiles(gc);
+        drawTiles(gc);
+        numerateTiles(gc);
+        super.drawPlayers();
     }
 
-    private void colorTiles(double width, double height, double tileWidth, double tileHeight, GraphicsContext gc) {
-        int numberOfTiles = controller.getNumberOfTiles();
-
-        double offsetWidth = width - tileWidth;
-        double offsetHeight = height - tileHeight;
+    private void colorTiles(GraphicsContext gc) {
+        int numberOfTiles = super.getController().getNumberOfTiles();
 
         for (int tileId = 1; tileId <= numberOfTiles; tileId++) {
-            Coordinate canvasCoords = controller.getCanvasCoords(tileId, offsetWidth, offsetHeight);
+            Coordinate canvasCoords = super.getController()
+                  .getCanvasCoords(tileId, super.getOffsetWidth(), super.getOffsetHeight());
             double x = canvasCoords.getX0();
             double y = canvasCoords.getX1();
 
-            Tile tile = controller.getTileById(tileId);
+            Tile tile = super.getController().getTileById(tileId);
             MonopolyTile monopolyTile = tile.getMonopolyTile();
 
             if (monopolyTile != null && monopolyTile.getProperty() != null) {
@@ -63,83 +61,43 @@ public class MonopolyGameRenderer implements Renderer {
                 Color color = countryColors.getOrDefault(country, Color.WHITE);
 
                 gc.setFill(color);
-                gc.fillRect(x, y, tileWidth, tileHeight);
+                gc.fillRect(x, y, super.getTileWidth(), super.getTileHeight());
             } else {
                 gc.setFill(Color.LIGHTGRAY);
-                gc.fillRect(x, y, tileWidth, tileHeight);
+                gc.fillRect(x, y, super.getTileWidth(), super.getTileHeight());
             }
         }
     }
 
-
-    private void drawTiles(double width, double height, double tileWidth, double tileHeight, GraphicsContext gc) {
-        int numberOfTiles = controller.getNumberOfTiles();
-
-        double offsetWidth = width - tileWidth;
-        double offsetHeight = height - tileHeight;
+    private void drawTiles(GraphicsContext gc) {
+        int numberOfTiles = super.getController().getNumberOfTiles();
 
         gc.setLineWidth(2);
         gc.setStroke(Color.BLACK);
 
         for (int tileId = 1; tileId <= numberOfTiles; tileId++) {
-            Coordinate canvasCoords = controller.getCanvasCoords(tileId, offsetWidth, offsetHeight);
+            Coordinate canvasCoords = super.getController()
+                  .getCanvasCoords(tileId, super.getOffsetWidth(), super.getOffsetHeight());
             double x = canvasCoords.getX0();
             double y = canvasCoords.getX1();
 
-            gc.strokeRect(x, y, tileWidth, tileHeight);
+            gc.strokeRect(x, y, super.getTileWidth(), super.getTileHeight());
         }
     }
 
-    private void numerateTiles(double width, double height, double tileWidth, double tileHeight, GraphicsContext gc) {
-        int numberOfTiles = controller.getNumberOfTiles();
-
-        double offsetWidth = width - tileWidth;
-        double offsetHeight = height - tileHeight;
+    private void numerateTiles(GraphicsContext gc) {
+        int numberOfTiles = super.getController().getNumberOfTiles();
 
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(0.75);
 
         for (int tileId = 1; tileId <= numberOfTiles; tileId++) {
-            Coordinate canvasCoords = controller.getCanvasCoords(tileId, offsetWidth, offsetHeight);
+            Coordinate canvasCoords = super.getController()
+                  .getCanvasCoords(tileId, super.getOffsetWidth(), super.getOffsetHeight());
             double x = canvasCoords.getX0();
             double y = canvasCoords.getX1();
 
-            gc.strokeText(String.valueOf(tileId), x + tileWidth / 4, y + tileHeight / 3);
+            gc.strokeText(String.valueOf(tileId), x + super.getTileWidth() / 4, y + super.getTileHeight() / 3);
         }
-    }
-
-    private void drawPlayers(double offsetWidth, double offsetHeight, double tileWidth, double tileHeight, GraphicsContext gc) {
-        controller.getPlayerListIterator().forEachRemaining(player -> {
-            int currentTileId = player.getCurrentTile().getTileId();
-            Coordinate canvasCoords = controller.getCanvasCoords(currentTileId, offsetWidth, offsetHeight);
-            double x = canvasCoords.getX0() + tileWidth / 4;
-            double y = canvasCoords.getX1() + tileHeight / 4;
-
-            InputStream inputStream = getClass().getResourceAsStream("/playingPieces/" + player.getPlayingPiece() + ".png");
-            if (inputStream == null) {
-                System.out.println("Image not found: " + player.getPlayingPiece());
-                return;
-            }
-
-            Image image = new Image(inputStream);
-            gc.drawImage(image, x, y, tileWidth / 2, tileHeight / 2);
-        });
-    }
-
-    @Override
-    public void drawBoard() {
-        double width = canvas.getWidth();
-        double height = canvas.getHeight();
-
-        double tileWidth = controller.getTileWidth(width);
-        double tileHeight = controller.getTileHeight(height);
-
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-
-        drawCanvas(width, height, gc);
-        colorTiles(width, height, tileWidth, tileHeight, gc);
-        drawTiles(width, height, tileWidth, tileHeight, gc);
-        numerateTiles(width, height, tileWidth, tileHeight, gc);
-        drawPlayers(width - tileWidth, height - tileHeight, tileWidth, tileHeight, gc);
     }
 }
