@@ -56,7 +56,7 @@ public class GameSetupView {
     playerVbox.getChildren().add(playerTable);
 
     continueBtn = new Button("Continue");
-    continueBtn.setOnAction(e -> doContinue());
+    continueBtn.setOnAction(e -> doContinue(stage));
 
     backBtn = new Button("Back");
     backBtn.setOnAction(e -> {
@@ -84,7 +84,7 @@ public class GameSetupView {
     stage.setScene(scene);
   }
 
-  private void doContinue() {
+  private void doContinue(Stage stage) {
     soundController.playButtonSound();
     if (playerList.isEmpty() || selectedBoard == null) {
       doShowPlayerAndBoardAlert();
