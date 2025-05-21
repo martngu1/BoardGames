@@ -22,6 +22,14 @@ public class BoardGameFactory {
     this.gsonReader = new BoardFileReaderGson();
   }
 
+  private void connectTilesLinear(int numberOfTiles, BoardGame boardGame) {
+    for (int i = 1; i <= numberOfTiles; i++) {
+      Tile currentTile = boardGame.getBoard().getTile(i);
+      Tile nextTile = boardGame.getBoard().getTile(i + 1);
+      currentTile.setNextTile(nextTile);
+    }
+  }
+
   /**
    * Creates a BoardGame instance with a ladder game configuration.
    * The game has 90 tiles, 9 rows, and 10 columns. Some tiles are configured
@@ -37,11 +45,7 @@ public class BoardGameFactory {
     boardGame.createDice(2);
     boardGame.createBoard(numberOfTiles, rows, columns);
 
-    for (int i = 1; i <= numberOfTiles; i++) {
-      Tile currentTile = boardGame.getBoard().getTile(i);
-      Tile nextTile = boardGame.getBoard().getTile(i + 1);
-      currentTile.setNextTile(nextTile);
-    }
+    connectTilesLinear(numberOfTiles, boardGame);
 
     // Set up ladder actions on specific tiles
     boardGame.getBoard().getTile(3).setLandAction(new LadderAction(17, "Climb to tile 17"));
@@ -80,6 +84,7 @@ public class BoardGameFactory {
     boardGame.createDice(2);
     boardGame.createBoard(40, 11, 11);
 
+    connectTilesLinear(boardGame.getBoard().getNumberOfTiles(), boardGame);
     CountryFactory countryFactory = new CountryFactory();
 
 
