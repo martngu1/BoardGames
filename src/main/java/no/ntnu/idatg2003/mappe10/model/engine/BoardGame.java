@@ -6,6 +6,7 @@ import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
 import no.ntnu.idatg2003.mappe10.model.dice.Dice;
 import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileReader;
 import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileWriter;
+import no.ntnu.idatg2003.mappe10.model.filehandler.CSVFileHandler;
 import no.ntnu.idatg2003.mappe10.model.filehandler.gson.BoardFileWriterGson;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
@@ -24,7 +25,6 @@ public class BoardGame {
   private Dice dice;
   private List<BoardGameObserver> observers;
   private BoardGameFactory boardGameFactory;
-  private String boardPath;
 
   /**
    * Creates a new BoardGame object.
@@ -33,7 +33,6 @@ public class BoardGame {
   public BoardGame() {
     this.observers = new ArrayList<>();
     this.boardGameFactory = new BoardGameFactory();
-    this.boardPath = "./src/main/resources/board/";
     this.playerList = new ArrayList<>();
   }
 
@@ -191,13 +190,18 @@ public class BoardGame {
     return boardGameFactory;
   }
 
-  public void saveBoard(String fileName, String formatType) {
+  public void saveBoard(String filePath, String formatType) {
     BoardFileWriter writer;
     switch (formatType.toLowerCase()) {
       case "json" -> writer = new BoardFileWriterGson();
       default -> throw new IllegalArgumentException("Unsupported format type: " + formatType);
     }
-    writer.writeBoard(this.boardPath + fileName, this.board);
+    writer.writeBoard(filePath, this.board);
+  }
+
+  public void savePlayers(String filePath) {
+    CSVFileHandler csvFileHandler = new CSVFileHandler();
+    csvFileHandler.savePlayers(filePath, playerList);
   }
 
   public void restartGame() {
