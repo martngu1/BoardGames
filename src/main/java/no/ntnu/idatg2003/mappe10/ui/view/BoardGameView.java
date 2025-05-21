@@ -253,11 +253,20 @@ public class BoardGameView implements BoardGameObserver {
     savePlayers.setOnAction(e -> {
       controller.savePlayersToCSV();
     });
-    MenuItem addPlayer = new MenuItem("Add Player");
+    MenuItem restartGame = new MenuItem("Restart Game");
+    restartGame.setOnAction(e -> {
+      controller.restartGame();
+    });
 
+    MenuItem exitGame = new MenuItem("Exit Game");
+    exitGame.setOnAction(e -> {
+      Stage stage = (Stage) canvas.getScene().getWindow();
+      stage.close();
+      new StartPageView().start(new Stage());
+    });
     loadMenu.getItems().addAll(loadBoard, loadPlayers);
     saveMenu.getItems().addAll(saveBoard, savePlayers);
-    settingsMenu.getItems().addAll(addPlayer);
+    settingsMenu.getItems().addAll(restartGame, exitGame);
 
     MenuBar menuBar = new MenuBar();
     menuBar.getMenus().addAll(loadMenu, saveMenu, settingsMenu);
@@ -267,6 +276,18 @@ public class BoardGameView implements BoardGameObserver {
 
   public void setRollButtonEnabled(boolean enabled) {
     rollButton1.setDisable(!enabled);
+  }
+
+  public void setLogTextArea(String txt) {
+    logTextArea.setText(txt);
+  }
+
+  public void setCurrentPlayerLabel(String playerName) {
+    currentPlayerLabel.setText("Current Players turn: " + playerName);
+  }
+
+  public void addToLog(String logMessage) {
+    logTextArea.appendText(logMessage + "\n");
   }
 
   @Override
@@ -297,14 +318,6 @@ public class BoardGameView implements BoardGameObserver {
     gameOverDialog.setWinner(name);
     gameOverDialog.showDialog();
     soundController.playWinSound();
-  }
-
-  public void setCurrentPlayerLabel(String playerName) {
-    currentPlayerLabel.setText("Current Players turn: " + playerName);
-  }
-
-  public void addToLog(String logMessage) {
-    logTextArea.appendText(logMessage + "\n");
   }
 
   /**
