@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Represents a map with all the tiles used for the board.
  */
-public class Board {
+public class Board{
     private Map<Integer, Tile> tilesList;
     private int numberOfRows;
     private int numberOfColumns;
@@ -46,6 +46,7 @@ public class Board {
             dummy = tile;
         }
     }
+
 
     /**
      * Adds tiles to the Map tilesList with their own distinct tileID.
