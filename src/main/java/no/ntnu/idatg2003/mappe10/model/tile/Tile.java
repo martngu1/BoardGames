@@ -3,6 +3,8 @@ package no.ntnu.idatg2003.mappe10.model.tile;
 import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
 import no.ntnu.idatg2003.mappe10.model.tile.tileaction.TileAction;
 
+import java.util.HashMap;
+
 /**
  * Represents a tile on the board. Each tile has a unique id and a reference to the next tile. The
  * tile can also have an action that is performed when a player lands on it.
@@ -13,6 +15,7 @@ public class Tile {
     private final int tileId;
     private TileAction landAction;
     private Coordinate boardCoords;
+    private HashMap<String, Tile> connections;
     private MonopolyTile monopolyTile;
 
     /**
@@ -28,6 +31,7 @@ public class Tile {
         this.nextTile = null;
         this.landAction = null;
         this.boardCoords = null;
+        this.connections = new HashMap<>();
     }
 
     /**
@@ -91,6 +95,17 @@ public class Tile {
      */
     public TileAction getLandAction() {
         return landAction;
+    }
+
+    /**
+     * Adds a connection to another tile in the given direction.
+     * The direction is a string that can be "up", "down", "left", or "right".
+     *
+     * @param direction the direction of the connection (e.g., "up", "down", "left", "right")
+     * @param tile the tile to connect to
+     */
+    public void addConnection(String direction, Tile tile) {
+        connections.put(direction, tile);
     }
     public void setMonopolyTile(MonopolyTile monopolyTile) {
         this.monopolyTile = monopolyTile;
