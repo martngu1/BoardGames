@@ -146,18 +146,21 @@ public class BoardGameController {
     return diceResults.stream().distinct().count() == 1;
   }
 
-  private void play(Player currentPlayer, int diceValue) {
-    animatePlayerMove(diceValue, () -> {
-      boardGameView.setRollButtonEnabled(true);
-      boardGame.performLandAction();
-      playerQueue.add(currentPlayer.getName());
-      boardGameView.setCurrentPlayerLabel(playerQueue.peek());
-    });
-  }
+    private void play(Player currentPlayer, int diceValue) {
+      animatePlayerMove(diceValue, () -> {
+        boardGameView.setRollButtonEnabled(true);
 
-  public void playerWantsToBuyProperty(String playerName, String propertyName) {
-    Player player = boardGame.getPlayerByName(playerName);
-    Property property = player.getCurrentTile().getMonopolyTile().getPropertyByName(propertyName);
+        boardGame.performLandAction();
+        updateAllPlayerBalances();
+
+        playerQueue.add(currentPlayer.getName());
+        boardGameView.setCurrentPlayerLabel(playerQueue.peek());
+      });
+    }
+
+    public void playerWantsToBuyProperty(String playerName, String propertyName) {
+      Player player = boardGame.getPlayerByName(playerName);
+      Property property = player.getCurrentTile().getMonopolyTile().getPropertyByName(propertyName);
 
     player.subtractFromBalance(property.getPrice());
     property.setOwner(player);
@@ -182,8 +185,58 @@ public class BoardGameController {
       boardGameView.addToLog(player.getName() + " declined to buy " + property.getName());
     };
 
-    boardGameView.viewOfferProperty(player, property, onAccept, onDecline);
+      boardGameView.viewOfferProperty(player, property, onAccept, onDecline);
+    }
+
+    public void onOfferToSell(Player player, int rentAmount) {
+      List<Property> ownedProperties = new ArrayList<>();
+      int amountOfTiles = boardGame.getBoard().getNumberOfTiles();
+
+      for (int tileId = 1; tileId <= amountOfTiles; tileId++) {
+        Tile tile = boardGame.getTileById(tileId);
+        if (tile.getMonopolyTile() != null) {
+          Property property = tile.getMonopolyTile().getProperty();
+          if (property != null && property.getOwner() == player) {
+            ownedProperties.add(property);
+          }
+        }
+      }
+      if (ownedProperties.isEmpty()) {
+        boardGameView.addToLog(player.getName() + " has no properties to sell.");
+        return;
+      }
+      Runnable onSell = () -> {
+        System.out.println(player.getName() + " chose to sell properties");
+        boardGameView.updatePlayerBalance(player.getName(), player.getBalance());
+        boardGameView.addToLog(player.getName() + " sold a property");
+
+        if (player.getBalance() >= rentAmount) {
+          boardGameView.addToLog(player.getName() + " can now afford the rent.");
+          player.setBalance(player.getBalance() - rentAmount);
+          // Get owner of the tile and pay him
+            Player owner = boardGame.getCurrentPlayer().getCurrentTile().
+                    getMonopolyTile().getProperty().getOwner();
+            owner.setBalance(owner.getBalance() + rentAmount);
+            boardGameView.updatePlayerBalance(owner.getName(), owner.getBalance());
+        } else {
+          boardGameView.addToLog(player.getName() + " still cannot afford the rent. Selling more properties...");
+          onOfferToSell(player, rentAmount); // Show the dialog again
+        }
+      };
+
+    Runnable onFailure = () -> {
+
+      boardGameView.addToLog(player.getName() + " failed to sell properties.");
+      boardGame.removePlayer(player);
+
+    };
+
+  boardGameView.viewSellProperty(player, onSell, onFailure);
   }
+
+    private boolean playerNeedsToSellProperties(Player player) {
+      return player.getBalance() < 0;
+    }
 
 
   private void animatePlayerMove(int diceRoll, Runnable onFinished) {

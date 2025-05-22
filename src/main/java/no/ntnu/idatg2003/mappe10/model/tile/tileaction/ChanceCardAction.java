@@ -35,11 +35,11 @@ public class ChanceCardAction implements TileAction{
                     break;
                 case "Go to jail":
                     player.setTurnsToSkip(1);
-                    player.placeOnTile(game.getTileById(20));
+                    player.placeOnTile(game.getTileById(11));
                     setDescription("Chance card: " + selectedCard + " - You go to jail");
                     break;
                 case "Jail free card":
-                    player.setTurnsToSkip(-1);
+                    player.skipPrisonTurn(-1);
                     setDescription("Chance card: " + selectedCard + " - You get a 'Get out of jail free' card");
                     break;
                 case "Go to start":

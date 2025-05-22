@@ -315,14 +315,6 @@ public class BoardGameView implements BoardGameObserver {
     logTextArea.appendText(logMessage + "\n");
   }
 
-  public void updatePlayerBalance(String playerName, int newBalance) {
-    playerBalanceLabels.get(playerName).setText("Balance: " + newBalance);
-  }
-  public void setBalanceLabelVisible(boolean visible) {
-    playerBalanceLabels.values()
-          .forEach(label -> label.setVisible(visible));
-  }
-
   /**
    * Gets the x and y coordinates of the point where the mouse is clicked on the canvas.
    * Used to help make the Lost Diamond Board.
@@ -338,12 +330,46 @@ public class BoardGameView implements BoardGameObserver {
     Random rand = new Random();
     gc.setFill(Color.rgb(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256)));
     double diameter = 16;
-    double radius = diameter/2;
-    gc.fillOval(x-radius, y-radius, diameter,diameter);
+    double radius = diameter / 2;
+    gc.fillOval(x - radius, y - radius, diameter, diameter);
     gc.setStroke(Color.BLACK);
     gc.setLineWidth(1);
-    gc.strokeText(String.valueOf(nodeNr), x,y);
+    gc.strokeText(String.valueOf(nodeNr), x, y);
     nodeNr++;
+  }
+
+  public void updatePlayerBalance(String playerName, int newBalance) {
+    playerBalanceLabels.get(playerName).setText("Balance: " + newBalance);
+  }
+
+  public void setBalanceLabelVisible(boolean visible) {
+    playerBalanceLabels.values()
+          .forEach(label -> label.setVisible(visible));
+  }
+
+  public void viewOfferProperty(Player player, Property property, Runnable onAccept, Runnable onDecline) {
+    BuyPropertyDialog dialog = new BuyPropertyDialog(player, property, onAccept, onDecline);
+    dialog.showDialog();
+  }
+
+  public void viewSellProperty(Player player, Runnable onSell, Runnable onFailure) {
+    SellPropertyDialog dialog = new SellPropertyDialog(player, onSell, onFailure);
+    dialog.showDialog();
+  }
+
+  @Override
+  public void onBalanceUpdate(Player player) {
+    updatePlayerBalance(player.getName(), player.getBalance());
+  }
+
+  @Override
+  public void onOfferToBuyProperty(Player player, Property property) {
+    controller.onOfferToBuy(player, property);
+  }
+
+  @Override
+  public void onOfferToSellProperty(Player player, int rent) {
+    controller.onOfferToSell(player, rent);
   }
 
   @Override
@@ -361,7 +387,7 @@ public class BoardGameView implements BoardGameObserver {
 
   @Override
   public void onGameOver(String name) {
-    CustomDialog gameOverDialog = new CustomDialog(WINDOW_HEIGHT/2, WINDOW_WIDTH/2);
+    CustomDialog gameOverDialog = new CustomDialog(WINDOW_HEIGHT / 2, WINDOW_WIDTH / 2);
     gameOverDialog.setExitBtnAction(() -> {
       gameOverDialog.closeDialog();
       Stage stage = (Stage) canvas.getScene().getWindow();
@@ -377,16 +403,6 @@ public class BoardGameView implements BoardGameObserver {
     soundController.playWinSound();
   }
 
-
-  @Override
-  public void onOfferToBuyProperty(Player player, Property property) {
-    controller.onOfferToBuy(player, property);
-  }
-
-  public void viewOfferProperty(Player player, Property property, Runnable onAccept, Runnable onDecline) {
-    BuyPropertyDialog dialog = new BuyPropertyDialog(player, property, onAccept, onDecline);
-    dialog.showDialog();
-  }
 
   /**
    * A resizable canvas that redraws itself when the size changes.
