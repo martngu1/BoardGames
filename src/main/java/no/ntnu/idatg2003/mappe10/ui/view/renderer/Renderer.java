@@ -59,7 +59,7 @@ public abstract class Renderer {
       double scaledWidth = image.getWidth() * scale;
       double scaledHeight = image.getHeight() * scale;
 
-      Coordinate canvasCoords = getTransformedCoordinates(player);
+      Coordinate canvasCoords = getTransformedPlayerCoordinates(player);
       double x = canvasCoords.getX0();
       double y = canvasCoords.getX1();
 
@@ -70,7 +70,7 @@ public abstract class Renderer {
     });
   }
 
-  public Coordinate getTransformedCoordinates(Player player) {
+  public Coordinate getTransformedPlayerCoordinates(Player player) {
     int currentTileId = player.getCurrentTile().getTileId();
     return controller.getCanvasCoords(currentTileId, getOffsetWidth(), getOffsetHeight());
   }

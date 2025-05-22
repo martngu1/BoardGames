@@ -4,6 +4,7 @@ import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
 import no.ntnu.idatg2003.mappe10.model.tile.tileaction.TileAction;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Represents a tile on the board. Each tile has a unique id and a reference to the next tile. The
@@ -107,6 +108,11 @@ public class Tile {
     public void addConnection(String direction, Tile tile) {
         connections.put(direction, tile);
     }
+
+    public Map<String, Tile> getConnectedTiles() {
+        return connections;
+    }
+
     public void setMonopolyTile(MonopolyTile monopolyTile) {
         this.monopolyTile = monopolyTile;
     }

@@ -60,6 +60,7 @@ public class Player {
       game.onPassStartTile(this);
     }
   }
+
   /**
    * Returns the current tile the player is standing on.
    *
@@ -74,7 +75,7 @@ public class Player {
    *
    * @return the name of the player
    */
-  public String getName(){
+  public String getName() {
     return name;
   }
 
@@ -83,49 +84,59 @@ public class Player {
    *
    * @return the playing piece of the player as a String
    */
-  public String getPlayingPiece(){
+  public String getPlayingPiece() {
     return playingPiece;
   }
-    /**
-     * Set the playing piece of the player.
-     *
-     * @param playingPiece the new playing piece of the player
-     */
-  public void setPlayingPiece(String playingPiece){
+
+  /**
+   * Set the playing piece of the player.
+   *
+   * @param playingPiece the new playing piece of the player
+   */
+  public void setPlayingPiece(String playingPiece) {
     this.playingPiece = playingPiece;
   }
 
   public boolean shouldSkipTurn() {
     return turnsToSkip > 0;
   }
+
   public void setTurnsToSkip(int count) {
     for (int i = 0; i < count; i++) {
       turnsToSkip++;
     }
   }
+
   public void skipPrisonTurn(int count) {
     turnsToSkip = count;
   }
+
   public void decrementSkipTurns() {
     if (turnsToSkip > 0) {
       turnsToSkip--;
     }
   }
+
   public int getBalance() {
     return balance;
   }
+
   public void setBalance(int balance) {
-      this.balance = balance;
+    this.balance = balance;
   }
+
   public void addToBalance(int amount) {
-      this.balance += amount;
+    this.balance += amount;
   }
+
   public void subtractFromBalance(int amount) {
-      this.balance -= amount;
+    this.balance -= amount;
   }
+
   public boolean canAfford(int amount) {
     return balance >= amount;
   }
+
   public BoardGame getGame() {
     return game;
   }

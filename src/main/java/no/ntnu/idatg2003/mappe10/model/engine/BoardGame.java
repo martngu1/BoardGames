@@ -240,8 +240,8 @@ public class BoardGame {
     );
   }
 
-  public void onPassStartTile(Player player){
-
+  public void onPassStartTile(Player player) {
+    // Empty implementation. Override in subclasses if needed.
   }
 
   public void removePlayer(Player player) {

@@ -5,6 +5,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
+import no.ntnu.idatg2003.mappe10.model.tile.Tile;
+import no.ntnu.idatg2003.mappe10.model.tile.tileaction.WinAction;
 import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
 
 import java.io.InputStream;
@@ -13,7 +15,7 @@ public class LostDiamondGameRenderer extends Renderer {
 
   private final GraphicsContext gc = super.getCanvas().getGraphicsContext2D();
 
-  private final double diameter = 30;
+  private final double diameter = 26;
   private final double radius = diameter / 2;
 
   public LostDiamondGameRenderer(BoardGameController controller, Canvas canvas) {
@@ -24,8 +26,9 @@ public class LostDiamondGameRenderer extends Renderer {
   public void drawBoard() {
     drawBackground();
 
+    drawConnections();
     drawTiles();
-
+    numerateTiles();
     drawPlayers();
   }
 
@@ -45,10 +48,53 @@ public class LostDiamondGameRenderer extends Renderer {
       double x = canvasCoords.getX0();
       double y = canvasCoords.getX1();
 
-      gc.setFill(Color.YELLOW);
-
+      checkDistinctTile(getController().getTileById(i), x, y);
       gc.fillOval(x - radius, y - radius, diameter, diameter);
     }
+  }
+
+  private void checkDistinctTile(Tile tile, double x, double y) {
+    double outerRadius = radius + 4;
+    double outerDiameter = outerRadius * 2;
+
+    if (tile.getLandAction() != null && tile.getLandAction() instanceof WinAction) {
+      gc.setFill(Color.LIGHTBLUE);
+      gc.fillOval(x - outerRadius, y - outerRadius, outerDiameter, outerDiameter);
+      gc.setFill(Color.BLUE);
+    } else if (tile.getLandAction() != null) {
+      gc.setFill(Color.LIGHTGOLDENRODYELLOW);
+      gc.fillOval(x - outerRadius, y - outerRadius, outerDiameter, outerDiameter);
+      gc.setFill(Color.YELLOW);
+    } else {
+      gc.setFill(Color.GRAY);
+    }
+  }
+
+  private void drawConnections() {
+    int numberOfTiles = super.getController().getNumberOfTiles();
+    for (int i = 1; i <= numberOfTiles; i++) {
+      Coordinate currentTileCoords = super.getController().getCanvasCoords(i, getOffsetWidth(), getOffsetHeight());
+      super.getController()
+            .getTileById(i)
+            .getConnectedTiles()
+            .values()
+            .forEach(tile -> {
+              Coordinate tileCoords = super.getController()
+                    .getCanvasCoords(tile.getTileId(), super.getOffsetWidth(), super.getOffsetHeight());
+              drawConnectionLine(currentTileCoords, tileCoords);
+            });
+    }
+  }
+
+  private void drawConnectionLine(Coordinate start, Coordinate end) {
+    double startX = start.getX0();
+    double startY = start.getX1();
+    double endX = end.getX0();
+    double endY = end.getX1();
+
+    gc.setStroke(Color.DARKSLATEGRAY);
+    gc.setLineWidth(2);
+    gc.strokeLine(startX, startY, endX, endY);
   }
 
   @Override

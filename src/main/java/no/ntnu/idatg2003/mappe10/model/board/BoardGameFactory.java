@@ -2,11 +2,16 @@ package no.ntnu.idatg2003.mappe10.model.board;
 
 import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
 import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
+import no.ntnu.idatg2003.mappe10.model.engine.LostDiamondGame;
 import no.ntnu.idatg2003.mappe10.model.engine.MonopolyGame;
 import no.ntnu.idatg2003.mappe10.model.filehandler.gson.BoardFileReaderGson;
 import no.ntnu.idatg2003.mappe10.model.tile.MonopolyTile;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 import no.ntnu.idatg2003.mappe10.model.tile.tileaction.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 
 /**
@@ -17,9 +22,11 @@ import no.ntnu.idatg2003.mappe10.model.tile.tileaction.*;
 public class BoardGameFactory {
 
   private BoardFileReaderGson gsonReader;
+  private Random rand;
 
   public BoardGameFactory() {
     this.gsonReader = new BoardFileReaderGson();
+    rand = new Random();
   }
 
   private void connectTilesLinear(int numberOfTiles, BoardGame boardGame) {
@@ -63,7 +70,7 @@ public class BoardGameFactory {
     }
 
     // Set up win action on the last tile
-    boardGame.getBoard().getLastTile().setLandAction(new WinAction("You win!"));
+    boardGame.getBoard().getLastTile().setLandAction(new WinAction());
 
     // Set tile coords for canvas
     for (int r = 0; r < rows; r++) {
@@ -227,15 +234,21 @@ public class BoardGameFactory {
   }
 
   public BoardGame createLostDiamondGame() {
-    BoardGame boardGame = new BoardGame();
+    BoardGame boardGame = new LostDiamondGame();
     boardGame.createDice(2);
 
     boardGame.createBoard(26, 50, 60);
 
+    setLostDiamondTileCoordinates(boardGame);
+    setLostDiamondTileConnections(boardGame);
+    setLostDiamondTileActions(boardGame);
 
+    return boardGame;
+  }
+
+  private void setLostDiamondTileCoordinates(BoardGame boardGame) {
     // Canvas (Width, Height): (708.0, 637.6)
     // Canvas coords from clicking on the map - see BoardGameView
-
     Coordinate canvasMax = new Coordinate(708.0, 637.6);
 
     Coordinate tile1CoordT = boardGame.transformCanvasToBoard(new Coordinate(307.2, 24.0), canvasMax);
@@ -315,8 +328,114 @@ public class BoardGameFactory {
 
     Coordinate tile29CoordT = boardGame.transformCanvasToBoard(new Coordinate(304.8, 88.8), canvasMax);
     boardGame.getBoard().getTile(26).setCoordinate((int) Math.round(tile29CoordT.getX0()), (int) Math.round(tile29CoordT.getX1()));
-
-    return boardGame;
   }
 
+  private void setLostDiamondTileConnections(BoardGame boardGame) {
+    boardGame.getBoard().getTile(1).addConnection("left", boardGame.getTileById(26));
+    boardGame.getBoard().getTile(1).addConnection("up", boardGame.getTileById(3));
+
+    boardGame.getBoard().getTile(2).addConnection("up", boardGame.getTileById(26));
+    boardGame.getBoard().getTile(2).addConnection("left", boardGame.getTileById(4));
+    boardGame.getBoard().getTile(2).addConnection("down", boardGame.getTileById(7));
+
+    boardGame.getBoard().getTile(3).addConnection("up", boardGame.getTileById(15));
+    boardGame.getBoard().getTile(3).addConnection("left", boardGame.getTileById(16));
+    boardGame.getBoard().getTile(3).addConnection("down", boardGame.getTileById(9));
+
+    boardGame.getBoard().getTile(4).addConnection("up", boardGame.getTileById(26));
+    boardGame.getBoard().getTile(4).addConnection("left", boardGame.getTileById(8));
+    boardGame.getBoard().getTile(4).addConnection("down", boardGame.getTileById(7));
+    boardGame.getBoard().getTile(4).addConnection("right", boardGame.getTileById(2));
+
+    boardGame.getBoard().getTile(5).addConnection("up", boardGame.getTileById(7));
+    boardGame.getBoard().getTile(5).addConnection("left", boardGame.getTileById(11));
+    boardGame.getBoard().getTile(5).addConnection("right", boardGame.getTileById(6));
+
+    boardGame.getBoard().getTile(6).addConnection("up", boardGame.getTileById(7));
+    boardGame.getBoard().getTile(6).addConnection("left", boardGame.getTileById(5));
+
+    boardGame.getBoard().getTile(7).addConnection("up", boardGame.getTileById(4));
+    boardGame.getBoard().getTile(7).addConnection("down", boardGame.getTileById(5));
+
+    boardGame.getBoard().getTile(8).addConnection("up", boardGame.getTileById(12));
+    boardGame.getBoard().getTile(8).addConnection("right", boardGame.getTileById(4));
+    boardGame.getBoard().getTile(8).addConnection("left", boardGame.getTileById(11));
+
+    boardGame.getBoard().getTile(9).addConnection("up", boardGame.getTileById(3));
+    boardGame.getBoard().getTile(9).addConnection("left", boardGame.getTileById(12));
+    boardGame.getBoard().getTile(9).addConnection("right", boardGame.getTileById(10));
+
+    boardGame.getBoard().getTile(10).addConnection("left", boardGame.getTileById(9));
+    boardGame.getBoard().getTile(10).addConnection("down", boardGame.getTileById(13));
+    boardGame.getBoard().getTile(10).addConnection("right", boardGame.getTileById(16));
+
+    boardGame.getBoard().getTile(11).addConnection("up", boardGame.getTileById(12));
+    boardGame.getBoard().getTile(11).addConnection("right", boardGame.getTileById(8));
+    boardGame.getBoard().getTile(11).addConnection("down", boardGame.getTileById(19));
+    boardGame.getBoard().getTile(11).addConnection("left", boardGame.getTileById(5));
+
+    boardGame.getBoard().getTile(12).addConnection("down", boardGame.getTileById(8));
+    boardGame.getBoard().getTile(12).addConnection("right", boardGame.getTileById(9));
+    boardGame.getBoard().getTile(12).addConnection("left", boardGame.getTileById(11));
+    boardGame.getBoard().getTile(12).addConnection("up", boardGame.getTileById(13));
+
+    boardGame.getBoard().getTile(13).addConnection("down", boardGame.getTileById(12));
+    boardGame.getBoard().getTile(13).addConnection("up", boardGame.getTileById(21));
+    boardGame.getBoard().getTile(13).addConnection("right", boardGame.getTileById(10));
+
+    boardGame.getBoard().getTile(14).addConnection("right", boardGame.getTileById(15));
+    boardGame.getBoard().getTile(14).addConnection("down", boardGame.getTileById(16));
+    boardGame.getBoard().getTile(14).addConnection("left", boardGame.getTileById(17));
+
+    boardGame.getBoard().getTile(15).addConnection("left", boardGame.getTileById(14));
+    boardGame.getBoard().getTile(15).addConnection("down", boardGame.getTileById(3));
+
+    boardGame.getBoard().getTile(16).addConnection("up", boardGame.getTileById(14));
+    boardGame.getBoard().getTile(16).addConnection("left", boardGame.getTileById(10));
+    boardGame.getBoard().getTile(16).addConnection("right", boardGame.getTileById(3));
+
+    boardGame.getBoard().getTile(17).addConnection("right", boardGame.getTileById(14));
+    boardGame.getBoard().getTile(17).addConnection("down", boardGame.getTileById(18));
+
+    boardGame.getBoard().getTile(18).addConnection("up", boardGame.getTileById(17));
+    boardGame.getBoard().getTile(18).addConnection("left", boardGame.getTileById(24));
+    boardGame.getBoard().getTile(18).addConnection("down", boardGame.getTileById(21));
+
+    boardGame.getBoard().getTile(19).addConnection("up", boardGame.getTileById(11));
+    boardGame.getBoard().getTile(19).addConnection("left", boardGame.getTileById(23));
+    boardGame.getBoard().getTile(19).addConnection("right", boardGame.getTileById(20));
+
+    boardGame.getBoard().getTile(20).addConnection("left", boardGame.getTileById(19));
+    boardGame.getBoard().getTile(20).addConnection("up", boardGame.getTileById(13));
+    boardGame.getBoard().getTile(20).addConnection("right", boardGame.getTileById(22));
+
+    boardGame.getBoard().getTile(21).addConnection("up", boardGame.getTileById(18));
+    boardGame.getBoard().getTile(21).addConnection("down", boardGame.getTileById(13));
+    boardGame.getBoard().getTile(21).addConnection("left", boardGame.getTileById(22));
+
+    boardGame.getBoard().getTile(22).addConnection("left", boardGame.getTileById(25));
+    boardGame.getBoard().getTile(22).addConnection("right", boardGame.getTileById(21));
+    boardGame.getBoard().getTile(22).addConnection("down", boardGame.getTileById(20));
+
+    boardGame.getBoard().getTile(23).addConnection("right", boardGame.getTileById(19));
+    boardGame.getBoard().getTile(23).addConnection("up", boardGame.getTileById(25));
+
+    boardGame.getBoard().getTile(24).addConnection("right", boardGame.getTileById(18));
+    boardGame.getBoard().getTile(24).addConnection("down", boardGame.getTileById(25));
+
+    boardGame.getBoard().getTile(25).addConnection("up", boardGame.getTileById(24));
+    boardGame.getBoard().getTile(25).addConnection("right", boardGame.getTileById(22));
+    boardGame.getBoard().getTile(25).addConnection("down", boardGame.getTileById(23));
+
+    boardGame.getBoard().getTile(26).addConnection("down", boardGame.getTileById(1));
+    boardGame.getBoard().getTile(26).addConnection("left", boardGame.getTileById(3));
+    boardGame.getBoard().getTile(26).addConnection("right", boardGame.getTileById(4));
+    boardGame.getBoard().getTile(26).addConnection("down-right", boardGame.getTileById(2)); // optional label
+  }
+
+  private void setLostDiamondTileActions(BoardGame boardGame) {
+    boardGame.getBoard().getTile(1).setLandAction(new WinAction());
+    List<Integer> robberTiles = List.of(2, 5, 9, 13, 15, 24, 23);
+    robberTiles.forEach(tileID -> boardGame.getBoard().getTile(tileID).setLandAction(new RobberAction()));
+  }
 }

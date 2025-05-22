@@ -27,10 +27,10 @@ import java.util.*;
 
 public class BoardGameController {
   private BoardGameView boardGameView;
-  private BoardGame boardGame;
-  private Queue<String> playerQueue;
   private Roller roller;
 
+  private BoardGame boardGame = new BoardGame();
+  private Queue<String> playerQueue = new ArrayDeque<>();
   private final int START_BALANCE = 1800;
 
 
@@ -41,8 +41,6 @@ public class BoardGameController {
    */
   public BoardGameController(BoardGameView view) {
     this.boardGameView = view;
-    this.boardGame = new BoardGame();
-    this.playerQueue = new ArrayDeque<>();
   }
 
   public Renderer initBoardGame(String selectedBoard, Canvas canvas) {
