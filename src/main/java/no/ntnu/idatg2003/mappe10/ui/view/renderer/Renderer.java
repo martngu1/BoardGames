@@ -55,7 +55,7 @@ public abstract class Renderer {
       }
 
       Image image = new Image(inputStream);
-      double scale = 0.5 * Math.min(getTileWidth() / image.getWidth(), getTileHeight() / image.getHeight());
+      double scale = 0.6 * Math.min(getTileWidth() / image.getWidth(), getTileHeight() / image.getHeight());
       double scaledWidth = image.getWidth() * scale;
       double scaledHeight = image.getHeight() * scale;
 

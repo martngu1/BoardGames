@@ -12,8 +12,6 @@ import no.ntnu.idatg2003.mappe10.model.tile.MonopolyTile;
 import no.ntnu.idatg2003.mappe10.model.tile.Property;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
-import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
-import no.ntnu.idatg2003.mappe10.ui.view.BoardGameView;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -210,6 +208,9 @@ public class BoardGame {
   public void restartGame() {
     winner = null;
     currentPlayer = null;
+    playerList.forEach(this::removeAllOwnedMonopolyTile);
+    playerList.forEach(this::notifyBalanceUpdate);
+    notifyObservers();
   }
 
   /**
@@ -243,40 +244,27 @@ public class BoardGame {
 
   }
 
-  public void notifyOfferToBuyProperty(Player player, Property property) {
-    for (BoardGameObserver observer : observers) {
-      observer.onOfferToBuyProperty(player, property);
-    }
-  }
-  public void notifyOfferToSellProperty(Player player, int rent) {
-    for (BoardGameObserver observer : observers) {
-      observer.onOfferToSellProperty(player, rent);
-    }
-  }
-
-  public void notifyBalanceUpdate(Player player) {
-    for (BoardGameObserver observer : observers) {
-      observer.onBalanceUpdate(player);
-    }
-  }
-
   public void removePlayer(Player player) {
     player.setBalance(0);
-    notifyObservers();
+    notifyObservers(); // notify
     playerList.remove(player);
-      int amountOfTiles = getBoard().getNumberOfTiles();
-      for (int tileId = 1; tileId <= amountOfTiles; tileId++) {
-        Tile tile = getBoard().getTile(tileId);
+    removeAllOwnedMonopolyTile(player);
+    notifyObservers(); // Notify again?
+  }
 
-        MonopolyTile monopolyTile = tile.getMonopolyTile();
-        if (monopolyTile != null) {
-          Property property = monopolyTile.getProperty();
-          if (property.getOwner() == player) {
-               property.setOwner(null);
-          }
+  public void removeAllOwnedMonopolyTile(Player player) {
+    int amountOfTiles = getBoard().getNumberOfTiles();
+    for (int tileId = 1; tileId <= amountOfTiles; tileId++) {
+      Tile tile = getBoard().getTile(tileId);
+
+      MonopolyTile monopolyTile = tile.getMonopolyTile();
+      if (monopolyTile != null) {
+        Property property = monopolyTile.getProperty();
+        if (property.getOwner() == player) {
+          property.setOwner(null);
         }
       }
-    notifyObservers();
+    }
   }
 
   /**
@@ -302,15 +290,32 @@ public class BoardGame {
           .orElse(null);
   }
 
-  private void notifyObservers() {
+  public void notifyObservers() {
     for (BoardGameObserver observer : observers) {
-      observer.updatePosition();
+      observer.updateView();
     }
   }
 
   public void notifyTileActionPerformed(String name, String description) {
     for (BoardGameObserver observer : observers) {
       observer.onTileAction(name, description);
+    }
+  }
+
+  public void notifyOfferToBuyProperty(Player player, Property property) {
+    for (BoardGameObserver observer : observers) {
+      observer.onOfferToBuyProperty(player, property);
+    }
+  }
+  public void notifyOfferToSellProperty(Player player, int rent) {
+    for (BoardGameObserver observer : observers) {
+      observer.onOfferToSellProperty(player, rent);
+    }
+  }
+
+  public void notifyBalanceUpdate(Player player) {
+    for (BoardGameObserver observer : observers) {
+      observer.onBalanceUpdate(player);
     }
   }
 

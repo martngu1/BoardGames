@@ -2,19 +2,13 @@ package no.ntnu.idatg2003.mappe10.ui.controller;
 
 import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
-import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
 import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
 import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
-import no.ntnu.idatg2003.mappe10.model.filehandler.CSVFileHandler;
-import no.ntnu.idatg2003.mappe10.model.filehandler.gson.BoardFileWriterGson;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
 import no.ntnu.idatg2003.mappe10.model.tile.Property;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
@@ -29,7 +23,6 @@ import no.ntnu.idatg2003.mappe10.ui.view.renderer.MonopolyGameRenderer;
 import no.ntnu.idatg2003.mappe10.ui.view.renderer.Renderer;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.*;
 
 public class BoardGameController {
@@ -234,9 +227,9 @@ public class BoardGameController {
   boardGameView.viewSellProperty(player, onSell, onFailure);
   }
 
-    private boolean playerNeedsToSellProperties(Player player) {
-      return player.getBalance() < 0;
-    }
+  private boolean playerNeedsToSellProperties(Player player) {
+    return player.getBalance() < 0;
+  }
 
 
   private void animatePlayerMove(int diceRoll, Runnable onFinished) {
@@ -343,9 +336,11 @@ public class BoardGameController {
         boardGameView.setBalanceLabelVisible(false);
       }
     }
+
     public void setStarterBalance(Player player) {
         player.setBalance(START_BALANCE);
       }
+
     public void savePlayersToCSV() {
       FileChooser fileChooser = new FileChooser();
       fileChooser.setTitle("Save Players");
@@ -371,11 +366,11 @@ public class BoardGameController {
   }
 
   public void restartGame() {
-    boardGame.restartGame();
+    boardGame.getPlayerListIterator().forEachRemaining(this::setStarterBalance);
     arrangePlayerTurns();
     placePlayerOnStartTile();
-    boardGameView.updatePosition();
     boardGameView.setLogTextArea("");
+    boardGame.restartGame();
   }
 
   /**

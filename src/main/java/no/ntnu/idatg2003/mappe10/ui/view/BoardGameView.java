@@ -373,7 +373,7 @@ public class BoardGameView implements BoardGameObserver {
   }
 
   @Override
-  public void updatePosition() {
+  public void updateView() {
     // Update the current position of the player in canvas.
     gameRenderer.drawBoard();
     // System.out.println("Canvas (Width, Height): (" + canvas.getWidth() + ", " + canvas.getHeight() + ")"); // Find width and height of canvas (default size window)
