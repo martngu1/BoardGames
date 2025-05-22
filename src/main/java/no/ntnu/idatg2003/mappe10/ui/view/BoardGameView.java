@@ -311,6 +311,11 @@ public class BoardGameView implements BoardGameObserver {
     // Update the current position of the player in canvas.
     gameRenderer.drawBoard();
   }
+  @Override
+  public void onBalanceUpdate(Player player) {
+
+    updatePlayerBalance(player.getName(), player.getBalance());
+  }
   public void updatePlayerBalance(String playerName, int newBalance) {
     playerBalanceLabels.get(playerName).setText("Balance: " + newBalance);
   }
@@ -348,9 +353,17 @@ public class BoardGameView implements BoardGameObserver {
   public void onOfferToBuyProperty(Player player, Property property) {
     controller.onOfferToBuy(player, property);
   }
+  @Override
+  public void onOfferToSellProperty(Player player, int rent) {
+  controller.onOfferToSell(player, rent);
+  }
 
   public void viewOfferProperty(Player player, Property property, Runnable onAccept, Runnable onDecline) {
     BuyPropertyDialog dialog = new BuyPropertyDialog(player, property, onAccept, onDecline);
+    dialog.showDialog();
+  }
+  public void viewSellProperty(Player player, Runnable onSell, Runnable onFailure) {
+    SellPropertyDialog dialog = new SellPropertyDialog(player, onSell, onFailure);
     dialog.showDialog();
   }
 

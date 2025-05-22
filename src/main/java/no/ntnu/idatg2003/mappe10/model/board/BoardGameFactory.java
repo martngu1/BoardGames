@@ -82,8 +82,6 @@ public class BoardGameFactory {
 
         CountryFactory countryFactory = new CountryFactory();
 
-
-
         boardGame.getBoard().getTile(2).setMonopolyTile(new MonopolyTile(2, countryFactory.getPropertyByCountryAndIndex("Mongolia", 0)));
         boardGame.getBoard().getTile(2).setLandAction(new PropertyAction("Property action for Philippines"));
         boardGame.getBoard().getTile(3).setMonopolyTile(new MonopolyTile(3, countryFactory.getPropertyByCountryAndIndex("Mongolia", 1)));

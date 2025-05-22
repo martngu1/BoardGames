@@ -8,9 +8,11 @@ import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileWriter;
 import no.ntnu.idatg2003.mappe10.model.filehandler.CSVFileHandler;
 import no.ntnu.idatg2003.mappe10.model.filehandler.gson.BoardFileWriterGson;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
+import no.ntnu.idatg2003.mappe10.model.tile.MonopolyTile;
 import no.ntnu.idatg2003.mappe10.model.tile.Property;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
+import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
 import no.ntnu.idatg2003.mappe10.ui.view.BoardGameView;
 
 import java.util.ArrayList;
@@ -231,7 +233,36 @@ public class BoardGame {
       observer.onOfferToBuyProperty(player, property);
     }
   }
+  public void notifyOfferToSellProperty(Player player, int rent) {
+    for (BoardGameObserver observer : observers) {
+      observer.onOfferToSellProperty(player, rent);
+    }
+  }
 
+  public void notifyBalanceUpdate(Player player) {
+    for (BoardGameObserver observer : observers) {
+      observer.onBalanceUpdate(player);
+    }
+  }
+
+  public void removePlayer(Player player) {
+    player.setBalance(0);
+    notifyObservers();
+    playerList.remove(player);
+      int amountOfTiles = getBoard().getNumberOfTiles();
+      for (int tileId = 1; tileId <= amountOfTiles; tileId++) {
+        Tile tile = getBoard().getTile(tileId);
+
+        MonopolyTile monopolyTile = tile.getMonopolyTile();
+        if (monopolyTile != null) {
+          Property property = monopolyTile.getProperty();
+          if (property.getOwner() == player) {
+               property.setOwner(null);
+          }
+        }
+      }
+    notifyObservers();
+  }
 
   /**
    * Return the iterator for the player list.
