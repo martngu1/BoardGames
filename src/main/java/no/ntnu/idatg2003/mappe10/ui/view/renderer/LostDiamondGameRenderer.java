@@ -31,6 +31,7 @@ public class LostDiamondGameRenderer extends Renderer {
 
   @Override
   public void drawBackground() {
+    gc.clearRect(0, 0, getCanvasWidth(), getCanvasHeight());
     InputStream io = getClass().getResourceAsStream("/board/lostDiamondBackground.png");
     Image background = new Image(io, getCanvasWidth(), getCanvasHeight(), true, true);
     gc.drawImage(background, 0, 0, getCanvasWidth(), getCanvasHeight());
@@ -59,7 +60,7 @@ public class LostDiamondGameRenderer extends Renderer {
         return;
       }
 
-      Image image = new Image(inputStream);
+      Image image = new Image(inputStream, 70, 70, true, true);
       double scale = 0.67 * Math.min(diameter / image.getWidth(), diameter / image.getHeight());
       double scaledWidth = image.getWidth() * scale;
       double scaledHeight = image.getHeight() * scale;
@@ -72,9 +73,6 @@ public class LostDiamondGameRenderer extends Renderer {
 
       double centeredX = x - scaledWidth / 2;
       double centeredY = y - scaledHeight / 2;
-
-      gc.setFill(Color.YELLOW);
-      gc.fillOval(x - radius, y - radius, diameter, diameter);
 
       gc.drawImage(image, centeredX, centeredY, scaledWidth, scaledHeight);
     });
