@@ -37,6 +37,24 @@ public class MonopolyGame extends BoardGame {
         }
         return count;
     }
+    public int getTotalSellValue(Player player){
+        int totalValue = 0;
+        int amountOfTiles = getBoard().getNumberOfTiles();
+        for (int tileId = 1; tileId <= amountOfTiles; tileId++) {
+            Tile tile = getBoard().getTile(tileId);
+
+            MonopolyTile monopolyTile = tile.getMonopolyTile();
+            if (monopolyTile != null) {
+                Property property = monopolyTile.getProperty();
+                if (property.getOwner() == player) {
+                    // Sell value of property is the property price divided by 2
+                    totalValue += property.getPrice() / 2;
+                }
+            }
+        }
+        return totalValue;
+    }
+
 
 
 }

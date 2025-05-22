@@ -8,10 +8,10 @@ import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileWriter;
 import no.ntnu.idatg2003.mappe10.model.filehandler.CSVFileHandler;
 import no.ntnu.idatg2003.mappe10.model.filehandler.gson.BoardFileWriterGson;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
+import no.ntnu.idatg2003.mappe10.model.tile.MonopolyTile;
 import no.ntnu.idatg2003.mappe10.model.tile.Property;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
-import no.ntnu.idatg2003.mappe10.ui.view.BoardGameView;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -208,6 +208,9 @@ public class BoardGame {
   public void restartGame() {
     winner = null;
     currentPlayer = null;
+    playerList.forEach(this::removeAllOwnedMonopolyTile);
+    playerList.forEach(this::notifyBalanceUpdate);
+    notifyObservers();
   }
 
   /**
@@ -222,16 +225,47 @@ public class BoardGame {
           canvasMax.getX1() - canvasMax.getX1() / boardMax.getX0() * rc.getX0()
     );
   }
+
+  /**
+   * Returns the transformed coordinates from the canvas (x, y) to the board (r, c).
+   *
+   * @param xy        the (x, y) coordinates to transform to (r, c)
+   * @param canvasMax the maximum (x, y) coordinates of the canvas
+   * @return the (r, c) coordinates corresponding to the given (x, y) coordinates
+   */
+  public Coordinate transformCanvasToBoard(Coordinate xy, Coordinate canvasMax) {
+    return new Coordinate(
+          boardMax.getX1() / canvasMax.getX0() * xy.getX0(),
+          boardMax.getX0() - boardMax.getX0() / canvasMax.getX1() * xy.getX1()
+    );
+  }
+
   public void onPassStartTile(Player player){
 
   }
 
-  public void notifyOfferToBuyProperty(Player player, Property property) {
-    for (BoardGameObserver observer : observers) {
-      observer.onOfferToBuyProperty(player, property);
-    }
+  public void removePlayer(Player player) {
+    player.setBalance(0);
+    notifyObservers(); // notify
+    playerList.remove(player);
+    removeAllOwnedMonopolyTile(player);
+    notifyObservers(); // Notify again?
   }
 
+  public void removeAllOwnedMonopolyTile(Player player) {
+    int amountOfTiles = getBoard().getNumberOfTiles();
+    for (int tileId = 1; tileId <= amountOfTiles; tileId++) {
+      Tile tile = getBoard().getTile(tileId);
+
+      MonopolyTile monopolyTile = tile.getMonopolyTile();
+      if (monopolyTile != null) {
+        Property property = monopolyTile.getProperty();
+        if (property.getOwner() == player) {
+          property.setOwner(null);
+        }
+      }
+    }
+  }
 
   /**
    * Return the iterator for the player list.
@@ -256,15 +290,32 @@ public class BoardGame {
           .orElse(null);
   }
 
-  private void notifyObservers() {
+  public void notifyObservers() {
     for (BoardGameObserver observer : observers) {
-      observer.updatePosition();
+      observer.updateView();
     }
   }
 
   public void notifyTileActionPerformed(String name, String description) {
     for (BoardGameObserver observer : observers) {
       observer.onTileAction(name, description);
+    }
+  }
+
+  public void notifyOfferToBuyProperty(Player player, Property property) {
+    for (BoardGameObserver observer : observers) {
+      observer.onOfferToBuyProperty(player, property);
+    }
+  }
+  public void notifyOfferToSellProperty(Player player, int rent) {
+    for (BoardGameObserver observer : observers) {
+      observer.onOfferToSellProperty(player, rent);
+    }
+  }
+
+  public void notifyBalanceUpdate(Player player) {
+    for (BoardGameObserver observer : observers) {
+      observer.onBalanceUpdate(player);
     }
   }
 

@@ -1,7 +1,10 @@
 package no.ntnu.idatg2003.mappe10.model.player;
 
 import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
+import no.ntnu.idatg2003.mappe10.model.tile.Property;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
+
+import java.util.Iterator;
 
 /**
  * Represents a player in a board game. A player has a name and a current tile.
@@ -96,7 +99,12 @@ public class Player {
     return turnsToSkip > 0;
   }
   public void setTurnsToSkip(int count) {
-    this.turnsToSkip = count;
+    for (int i = 0; i < count; i++) {
+      turnsToSkip++;
+    }
+  }
+  public void skipPrisonTurn(int count) {
+    turnsToSkip = count;
   }
   public void decrementSkipTurns() {
     if (turnsToSkip > 0) {
@@ -117,6 +125,9 @@ public class Player {
   }
   public boolean canAfford(int amount) {
     return balance >= amount;
+  }
+  public BoardGame getGame() {
+    return game;
   }
 }
 
