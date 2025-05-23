@@ -8,16 +8,25 @@ import java.util.Map;
 /**
  * Represents a map with all the tiles used for the board.
  */
-public class Board {
+public class Board{
     private Map<Integer, Tile> tilesList;
     private int numberOfRows;
     private int numberOfColumns;
+    private int numberOfTiles;
 
+    /**
+     * Constructor for the Board class.
+     *
+     * @param numberOfTiles
+     * @param numberOfRows
+     * @param numberOfColumns
+     */
     public Board(int numberOfTiles, int numberOfRows, int numberOfColumns) {
         this.tilesList = new HashMap<>();
         initBoard(numberOfTiles);
         this.numberOfRows = numberOfRows;
         this.numberOfColumns = numberOfColumns;
+        this.numberOfTiles = numberOfTiles;
     }
 
     /**
@@ -38,9 +47,12 @@ public class Board {
         }
     }
 
+
     /**
      * Adds tiles to the Map tilesList with their own distinct tileID.
      * tileID : Tile
+     *
+     * @param tile the tile to add
      */
     public void addTile(Tile tile) {
         tilesList.put(tile.getTileId(), tile);
@@ -54,6 +66,15 @@ public class Board {
      */
     public Tile getTile(int tileId) {
         return tilesList.get(tileId);
+    }
+
+    /**
+     * Returns the number of tiles in the board.
+     *
+     * @return the number of tiles in the board
+     */
+    public int getNumberOfTiles() {
+        return numberOfTiles;
     }
 
     /**
