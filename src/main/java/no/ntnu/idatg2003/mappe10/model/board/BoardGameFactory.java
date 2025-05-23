@@ -87,7 +87,7 @@ public class BoardGameFactory {
   }
 
   public BoardGame createMonopolyGame() {
-    BoardGame boardGame = new MonopolyGame();
+    MonopolyGame boardGame = new MonopolyGame();
     boardGame.createDice(2);
     boardGame.createBoard(40, 11, 11);
 
@@ -195,6 +195,10 @@ public class BoardGameFactory {
     setMonopolyTileCoordinates(boardGame);
 
     boardGame.getBoard().getLastTile().setNextTile(boardGame.getBoard().getFirstTile());
+
+    countryFactory.getTotalAddedCountries().forEachRemaining(boardGame::addCountry);
+    countryFactory.getTotalAddedCruiseDocks().forEachRemaining(boardGame::addCruiseDock);
+
     return boardGame;
   }
 

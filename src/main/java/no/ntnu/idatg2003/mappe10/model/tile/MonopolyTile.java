@@ -14,6 +14,7 @@ public class MonopolyTile extends Tile{
     public MonopolyTile(int tileId, Property property) {
         super(tileId);
         this.property = property;
+        this.property.setTileId(tileId);
     }
 
     public Property getProperty() {

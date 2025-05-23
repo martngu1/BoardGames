@@ -7,6 +7,7 @@ public class PrisonAction implements TileAction {
 
     private String description;
     private Player currentPrisoner;
+
     public PrisonAction(String description) {
         this.description = description;
     }
@@ -17,7 +18,7 @@ public class PrisonAction implements TileAction {
     @Override
     public void performAction(Player player, BoardGame game) {
         // Only imprison if no one is currently in prison
-        if (currentPrisoner == null || currentPrisoner.shouldSkipTurn() == false) {
+        if (currentPrisoner == null || !currentPrisoner.shouldSkipTurn()) {
             currentPrisoner = player;
             player.setTurnsToSkip(1);
             System.out.println(player.getName() + " has been sent to prison and will skip their next turn.");

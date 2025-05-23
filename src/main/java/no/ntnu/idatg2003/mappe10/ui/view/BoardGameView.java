@@ -11,7 +11,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import no.ntnu.idatg2003.mappe10.exceptions.BoardGameInitException;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
+import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
+import no.ntnu.idatg2003.mappe10.model.engine.GameType;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
 import no.ntnu.idatg2003.mappe10.model.tile.Property;
 import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
@@ -56,16 +59,26 @@ public class BoardGameView implements BoardGameObserver {
    * @param selectedBoard    the name of the selected board
    * @param playersAndPieces a map of player names and their corresponding pieces
    */
-  public void initBoardGame(String selectedBoard, Map<String, String> playersAndPieces) {
+  public void initBoardGame(GameType selectedBoard, Map<String, String> playersAndPieces, String loadedBoardGame) {
     // Initialize the board game with the selected board and players
-    gameRenderer = controller.initBoardGame(selectedBoard, canvas);
+    if (loadedBoardGame != null || GameType.FROMFILE.name().equalsIgnoreCase(selectedBoard.name())) {
+
+      try {
+        gameRenderer = controller.initBoardGameFromFile(loadedBoardGame, canvas);
+      } catch (Exception e) {
+        throw new BoardGameInitException("Failed to Initialize BoardGame from file: " + loadedBoardGame, e);
+      }
+
+    } else {
+      gameRenderer = controller.initBoardGame(selectedBoard, canvas);
+    }
 
     playersAndPieces.keySet().forEach(playerName -> {
       String playingPiece = playersAndPieces.get(playerName);
       createPlayerBalanceLabel(playerName);
       controller.addPlayer(playerName, playingPiece);
       controller.addPlayerToQueue(playerName);
-      controller.initBalanceView(playerName, selectedBoard);
+      controller.initBalanceView(playerName, controller.getGameType());
 
     });
     controller.placePlayerOnStartTile();
@@ -82,8 +95,8 @@ public class BoardGameView implements BoardGameObserver {
   /**
    * Draws the board.
    */
-  public void start(String selectedBoard, Map<String, String> playersAndPieces) {
-    initBoardGame(selectedBoard, playersAndPieces);
+  public void start(GameType selectedBoard, Map<String, String> playersAndPieces, String boardLoadPath) {
+    initBoardGame(selectedBoard, playersAndPieces, boardLoadPath);
     controller.registerObserver(this);
 
     BorderPane root = new BorderPane();

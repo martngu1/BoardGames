@@ -6,9 +6,12 @@ import javafx.animation.Timeline;
 import javafx.scene.canvas.Canvas;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
+import no.ntnu.idatg2003.mappe10.exceptions.BoardGameInitException;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
 import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
 import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
+import no.ntnu.idatg2003.mappe10.model.engine.GameType;
+import no.ntnu.idatg2003.mappe10.model.filehandler.BoardType;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
 import no.ntnu.idatg2003.mappe10.model.tile.Property;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
@@ -34,6 +37,7 @@ public class BoardGameController {
   private final int START_BALANCE = 1800;
 
 
+
   /**
    * Creates a new BoardGameController with the given BoardGameView.
    *
@@ -43,17 +47,53 @@ public class BoardGameController {
     this.boardGameView = view;
   }
 
-  public Renderer initBoardGame(String selectedBoard, Canvas canvas) {
+  public GameType getGameType() {
+    return boardGame.getGameType();
+  }
+
+  public Renderer initBoardGameFromFile(String filePath, Canvas canvas) {
+    roller = new Roller();
+
+    try {
+      BoardType boardType = boardGame.loadBoardFromFile(filePath);
+      System.out.println("Board type: " + boardType.getGameType());
+      boardGame.setBoard(boardType.getBoard());
+      boardGame.createDice(2);
+
+      if (boardType.getBoard() == null) {
+        throw new BoardGameInitException("Failed to initialize board. Board is null");
+      }
+
+      switch (boardType.getGameType()) {
+        case GameType.MONOPOLY:
+          boardGame.setGameType(GameType.MONOPOLY);
+          return new MonopolyGameRenderer(this, canvas);
+        case GameType.LADDERGAME:
+          boardGame.setGameType(GameType.LADDERGAME);
+          return new LadderGameRenderer(this, canvas);
+        case GameType.LOSTDIAMOND:
+          boardGame.setGameType(GameType.LOSTDIAMOND);
+          return new LostDiamondGameRenderer(this, canvas);
+        default:
+          throw new BoardGameInitException("Invalid board game type: " + boardType.getGameType());
+      }
+    } catch (Exception e) {
+      boardGameView.addToLog("Error loading board from file: " + e.getMessage());
+      throw new BoardGameInitException("Failed to initialize board game from file: " + e.getMessage());
+    }
+  }
+
+  public Renderer initBoardGame(GameType selectedBoard, Canvas canvas) {
     roller = new Roller();
 
     switch (selectedBoard) {
-      case "Monopoly Game":
+      case GameType.MONOPOLY:
         initMonopolyGame();
         return new MonopolyGameRenderer(this, canvas);
-      case "Ladder Game":
+      case GameType.LADDERGAME:
         initLadderGame();
         return new LadderGameRenderer(this, canvas);
-      case "The Lost Diamond":
+      case GameType.LOSTDIAMOND:
         initLostDiamondGame();
         return new LostDiamondGameRenderer(this, canvas);
       default:
@@ -137,21 +177,21 @@ public class BoardGameController {
     return diceResults.stream().distinct().count() == 1;
   }
 
-    private void play(Player currentPlayer, int diceValue) {
-      animatePlayerMove(diceValue, () -> {
-        boardGameView.setRollButtonEnabled(true);
+  private void play(Player currentPlayer, int diceValue) {
+    animatePlayerMove(diceValue, () -> {
+      boardGameView.setRollButtonEnabled(true);
 
-        boardGame.performLandAction();
-        updateAllPlayerBalances();
+      boardGame.performLandAction();
+      updateAllPlayerBalances();
 
-        playerQueue.add(currentPlayer.getName());
-        boardGameView.setCurrentPlayerLabel(playerQueue.peek());
-      });
-    }
+      playerQueue.add(currentPlayer.getName());
+      boardGameView.setCurrentPlayerLabel(playerQueue.peek());
+    });
+  }
 
-    public void playerWantsToBuyProperty(String playerName, String propertyName) {
-      Player player = boardGame.getPlayerByName(playerName);
-      Property property = player.getCurrentTile().getMonopolyTile().getPropertyByName(propertyName);
+  public void playerWantsToBuyProperty(String playerName, String propertyName) {
+    Player player = boardGame.getPlayerByName(playerName);
+    Property property = player.getCurrentTile().getMonopolyTile().getPropertyByName(propertyName);
 
     player.subtractFromBalance(property.getPrice());
     property.setOwner(player);
@@ -162,7 +202,7 @@ public class BoardGameController {
 
   private void updateAllPlayerBalances() {
     boardGame.getPlayerListIterator().forEachRemaining(player ->
-      boardGameView.updatePlayerBalance(player.getName(), player.getBalance())
+          boardGameView.updatePlayerBalance(player.getName(), player.getBalance())
     );
   }
 
@@ -176,44 +216,44 @@ public class BoardGameController {
       boardGameView.addToLog(player.getName() + " declined to buy " + property.getName());
     };
 
-      boardGameView.viewOfferProperty(player, property, onAccept, onDecline);
+    boardGameView.viewOfferProperty(player, property, onAccept, onDecline);
+  }
+
+  public void onOfferToSell(Player player, int rentAmount) {
+    List<Property> ownedProperties = new ArrayList<>();
+    int amountOfTiles = boardGame.getBoard().getNumberOfTiles();
+
+    for (int tileId = 1; tileId <= amountOfTiles; tileId++) {
+      Tile tile = boardGame.getTileById(tileId);
+      if (tile.getMonopolyTile() != null) {
+        Property property = tile.getMonopolyTile().getProperty();
+        if (property != null && property.getOwner() == player) {
+          ownedProperties.add(property);
+        }
+      }
     }
+    if (ownedProperties.isEmpty()) {
+      boardGameView.addToLog(player.getName() + " has no properties to sell.");
+      return;
+    }
+    Runnable onSell = () -> {
+      System.out.println(player.getName() + " chose to sell properties");
+      boardGameView.updatePlayerBalance(player.getName(), player.getBalance());
+      boardGameView.addToLog(player.getName() + " sold a property");
 
-    public void onOfferToSell(Player player, int rentAmount) {
-      List<Property> ownedProperties = new ArrayList<>();
-      int amountOfTiles = boardGame.getBoard().getNumberOfTiles();
-
-      for (int tileId = 1; tileId <= amountOfTiles; tileId++) {
-        Tile tile = boardGame.getTileById(tileId);
-        if (tile.getMonopolyTile() != null) {
-          Property property = tile.getMonopolyTile().getProperty();
-          if (property != null && property.getOwner() == player) {
-            ownedProperties.add(property);
-          }
-        }
+      if (player.getBalance() >= rentAmount) {
+        boardGameView.addToLog(player.getName() + " can now afford the rent.");
+        player.setBalance(player.getBalance() - rentAmount);
+        // Get owner of the tile and pay him
+        Player owner = boardGame.getCurrentPlayer().getCurrentTile().
+              getMonopolyTile().getProperty().getOwner();
+        owner.setBalance(owner.getBalance() + rentAmount);
+        boardGameView.updatePlayerBalance(owner.getName(), owner.getBalance());
+      } else {
+        boardGameView.addToLog(player.getName() + " still cannot afford the rent. Selling more properties...");
+        onOfferToSell(player, rentAmount); // Show the dialog again
       }
-      if (ownedProperties.isEmpty()) {
-        boardGameView.addToLog(player.getName() + " has no properties to sell.");
-        return;
-      }
-      Runnable onSell = () -> {
-        System.out.println(player.getName() + " chose to sell properties");
-        boardGameView.updatePlayerBalance(player.getName(), player.getBalance());
-        boardGameView.addToLog(player.getName() + " sold a property");
-
-        if (player.getBalance() >= rentAmount) {
-          boardGameView.addToLog(player.getName() + " can now afford the rent.");
-          player.setBalance(player.getBalance() - rentAmount);
-          // Get owner of the tile and pay him
-            Player owner = boardGame.getCurrentPlayer().getCurrentTile().
-                    getMonopolyTile().getProperty().getOwner();
-            owner.setBalance(owner.getBalance() + rentAmount);
-            boardGameView.updatePlayerBalance(owner.getName(), owner.getBalance());
-        } else {
-          boardGameView.addToLog(player.getName() + " still cannot afford the rent. Selling more properties...");
-          onOfferToSell(player, rentAmount); // Show the dialog again
-        }
-      };
+    };
 
     Runnable onFailure = () -> {
 
@@ -222,7 +262,7 @@ public class BoardGameController {
 
     };
 
-  boardGameView.viewSellProperty(player, onSell, onFailure);
+    boardGameView.viewSellProperty(player, onSell, onFailure);
   }
 
   private boolean playerNeedsToSellProperties(Player player) {
@@ -310,40 +350,45 @@ public class BoardGameController {
     return boardGame.getPlayerListIterator();
   }
 
-    /**
-     * Adds a new player to the game with the given name.
-     *
-     * @param playerName the name of the player
-     */
-    public void addPlayer(String playerName, String playingPiece) {
-      new Player(playerName, playingPiece, boardGame);
+  /**
+   * Adds a new player to the game with the given name.
+   *
+   * @param playerName the name of the player
+   */
+  public void addPlayer(String playerName, String playingPiece) {
+    new Player(playerName, playingPiece, boardGame);
+  }
+
+  public void initBalanceView(String playerName, GameType selectedGame) {
+    Player player = boardGame.getPlayerByName(playerName);
+    if (player == null) {
+      System.out.println("Player not found: " + playerName);
+      boardGameView.addToLog("Player not found: " + playerName);
+      return;
     }
-
-    public void initBalanceView(String playerName, String selectedGame) {
-      Player player = boardGame.getPlayerByName(playerName);
-      if (player == null) {
-        System.out.println("Player not found: " + playerName);
-          boardGameView.addToLog("Player not found: " + playerName);
-        return;
-      }
-      setStarterBalance(player);
-      boardGameView.updatePlayerBalance(player.getName(), player.getBalance());
-      if (selectedGame.equals("Monopoly")) {
-        boardGameView.setBalanceLabelVisible(true);
-      } else if (selectedGame.equals("Ladder Game")) {
-        boardGameView.setBalanceLabelVisible(false);
-      }
+    setStarterBalance(player);
+    boardGameView.updatePlayerBalance(player.getName(), player.getBalance());
+    if (selectedGame.equals(GameType.MONOPOLY)) {
+      System.out.println("Monopoly game selected");
+      boardGameView.setBalanceLabelVisible(true);
+    } else if (selectedGame.equals(GameType.LADDERGAME)) {
+      System.out.println("Ladder game selected");
+      boardGameView.setBalanceLabelVisible(false);
+    } else if (selectedGame.equals(GameType.LOSTDIAMOND)) {
+      System.out.println("Lost Diamond game selected");
+      boardGameView.setBalanceLabelVisible(true);
     }
+  }
 
-    public void setStarterBalance(Player player) {
-        player.setBalance(START_BALANCE);
-      }
+  public void setStarterBalance(Player player) {
+    player.setBalance(START_BALANCE);
+  }
 
-    public void savePlayersToCSV() {
-      FileChooser fileChooser = new FileChooser();
-      fileChooser.setTitle("Save Players");
-      fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
-      File file = fileChooser.showSaveDialog(null);
+  public void savePlayersToCSV() {
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Save Players");
+    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+    File file = fileChooser.showSaveDialog(null);
 
     if (file != null) {
       boardGame.savePlayers(file.getAbsolutePath());

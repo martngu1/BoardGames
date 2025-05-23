@@ -23,6 +23,9 @@ public class TaxAction implements TileAction{
         return description;
     }
 
+    public int getTaxAmount() {
+        return taxAmount;
+    }
 
 
 }

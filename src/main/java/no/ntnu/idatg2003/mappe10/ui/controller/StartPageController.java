@@ -14,7 +14,7 @@ public class StartPageController {
 
   public void doStartGame(Stage primaryStage) {
     GameSetupView setupView = new GameSetupView();
-    setupView.getPlayerSetupScene(primaryStage);
+    setupView.getGameSetupView(primaryStage);
   }
   public void doOptions(Stage primaryStage) {
     OptionsView optionsView = new OptionsView();

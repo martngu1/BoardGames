@@ -2,15 +2,36 @@ package no.ntnu.idatg2003.mappe10.model.engine;
 
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
-import no.ntnu.idatg2003.mappe10.model.tile.CruiseDock;
-import no.ntnu.idatg2003.mappe10.model.tile.MonopolyTile;
-import no.ntnu.idatg2003.mappe10.model.tile.Property;
-import no.ntnu.idatg2003.mappe10.model.tile.Tile;
+import no.ntnu.idatg2003.mappe10.model.tile.*;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class MonopolyGame extends BoardGame {
 
+    private ArrayList<Country> countries;
+    private ArrayList<CruiseDock> cruiseDocks;
+
     public MonopolyGame() {
         super();
+        this.countries = new ArrayList<>();
+        this.cruiseDocks = new ArrayList<>();
+    }
+
+    public void addCountry(Country country) {
+        countries.add(country);
+    }
+
+    public void addCruiseDock(CruiseDock cruiseDock) {
+        cruiseDocks.add(cruiseDock);
+    }
+
+    public Iterator<Country> getCountries() {
+        return countries.iterator();
+    }
+
+    public Iterator<CruiseDock> getCruiseDocks() {
+        return cruiseDocks.iterator();
     }
 
 

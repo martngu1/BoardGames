@@ -5,17 +5,28 @@ import no.ntnu.idatg2003.mappe10.model.tile.CruiseDock;
 import no.ntnu.idatg2003.mappe10.model.tile.Property;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class CountryFactory {
     private final List<Country> countries = new ArrayList<>();
     private final List<CruiseDock> cruiseDocks = new ArrayList<>();
 
+    private final List<Country> totalAddedCountries = new ArrayList<>();
+    private final List<CruiseDock> totalAddedCruiseDocks = new ArrayList<>();
+
     public CountryFactory(){
         createCountries();
         createCruiseDocks();
     }
 
+    public Iterator<Country> getTotalAddedCountries() {
+        return totalAddedCountries.stream().distinct().iterator();
+    }
+
+    public Iterator<CruiseDock> getTotalAddedCruiseDocks() {
+        return totalAddedCruiseDocks.stream().distinct().iterator();
+    }
 
     public void createCountries() {
         countries.add(createCountry("Mongolia", 100, 25, List.of("Ulaanbaatar", "Erdenet", "Darkhan")));
@@ -36,6 +47,7 @@ public class CountryFactory {
     public CruiseDock getCruiseDockByName(String name) {
         for (CruiseDock cruiseDock : cruiseDocks) {
             if (cruiseDock.getName().equals(name)) {
+                totalAddedCruiseDocks.add(cruiseDock);
                 return cruiseDock;
             }
         }
@@ -53,17 +65,19 @@ public class CountryFactory {
     public Country getCountryByName(String name) {
         for (Country country : countries) {
             if (country.getName().equals(name)) {
+                totalAddedCountries.add(country);
                 return country;
             }
         }
         return null;
     }
+
     public Property getPropertyByCountryAndIndex(String countryName, int cityIndex) {
         Country country = getCountryByName(countryName);
         if (country == null) {
             throw new IllegalArgumentException("Country not found: " + countryName);
         }
-        return new Property(country.getProperty(cityIndex).getName(), country);
+        return country.getProperty(cityIndex);
     }
 
 

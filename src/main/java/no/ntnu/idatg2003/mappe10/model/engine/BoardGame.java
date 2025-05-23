@@ -4,8 +4,11 @@ import no.ntnu.idatg2003.mappe10.model.board.Board;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameFactory;
 import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
 import no.ntnu.idatg2003.mappe10.model.dice.Dice;
+import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileReader;
 import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileWriter;
+import no.ntnu.idatg2003.mappe10.model.filehandler.BoardType;
 import no.ntnu.idatg2003.mappe10.model.filehandler.CSVFileHandler;
+import no.ntnu.idatg2003.mappe10.model.filehandler.gson.BoardFileReaderGson;
 import no.ntnu.idatg2003.mappe10.model.filehandler.gson.BoardFileWriterGson;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
 import no.ntnu.idatg2003.mappe10.model.tile.MonopolyTile;
@@ -19,13 +22,13 @@ import java.util.List;
 
 public class BoardGame {
   private Board board;
-  private Coordinate boardMax;
   private Player currentPlayer;
   private Player winner;
   private List<Player> playerList;
   private Dice dice;
   private List<BoardGameObserver> observers;
   private BoardGameFactory boardGameFactory;
+  private GameType gameType;
 
   /**
    * Creates a new BoardGame object.
@@ -35,6 +38,14 @@ public class BoardGame {
     this.observers = new ArrayList<>();
     this.boardGameFactory = new BoardGameFactory();
     this.playerList = new ArrayList<>();
+  }
+
+  public void setGameType(GameType gameType) {
+    this.gameType = gameType;
+  }
+
+  public GameType getGameType() {
+    return gameType;
   }
 
   /**
@@ -61,7 +72,6 @@ public class BoardGame {
    */
   public void createBoard(int numberOfTiles, int numberOfRows, int numberOfColumns) {
     board = new Board(numberOfTiles, numberOfRows, numberOfColumns);
-    boardMax = new Coordinate(numberOfRows - 1.0, numberOfColumns - 1.0);
   }
 
   /**
@@ -170,15 +180,6 @@ public class BoardGame {
   }
 
   /**
-   * Set the board of the BoardGame to a given Board object.
-   *
-   * @param board the Board object to load
-   */
-  public void loadBoard(Board board) {
-    this.board = board;
-  }
-
-  /**
    * Returns the board of the board game.
    *
    * @return the board
@@ -191,13 +192,27 @@ public class BoardGame {
     return boardGameFactory;
   }
 
+  public void setBoard(Board board) {
+    this.board = board;
+  }
+
+  /**
+   * Set the board of the BoardGame to a given Board object.
+   *
+   * @param filePath the Board object to load
+   */
+  public BoardType loadBoardFromFile(String filePath) {
+    BoardFileReader reader = new BoardFileReaderGson();
+    return reader.readBoard(filePath);
+  }
+
   public void saveBoard(String filePath, String formatType) {
     BoardFileWriter writer;
     switch (formatType.toLowerCase()) {
       case "json" -> writer = new BoardFileWriterGson();
       default -> throw new IllegalArgumentException("Unsupported format type: " + formatType);
     }
-    writer.writeBoard(filePath, this.board);
+    writer.writeBoard(filePath,this);
   }
 
   public void savePlayers(String filePath) {
@@ -221,8 +236,8 @@ public class BoardGame {
    */
   public Coordinate transformBoardToCanvas(Coordinate rc, Coordinate canvasMax) {
     return new Coordinate(
-          canvasMax.getX0() / boardMax.getX1() * rc.getX1(),
-          canvasMax.getX1() - canvasMax.getX1() / boardMax.getX0() * rc.getX0()
+          canvasMax.getX0() / board.getBoardMax().getX1() * rc.getX1(),
+          canvasMax.getX1() - canvasMax.getX1() / board.getBoardMax().getX0() * rc.getX0()
     );
   }
 
@@ -235,8 +250,8 @@ public class BoardGame {
    */
   public Coordinate transformCanvasToBoard(Coordinate xy, Coordinate canvasMax) {
     return new Coordinate(
-          boardMax.getX1() / canvasMax.getX0() * xy.getX0(),
-          boardMax.getX0() - boardMax.getX0() / canvasMax.getX1() * xy.getX1()
+          board.getBoardMax().getX1() / canvasMax.getX0() * xy.getX0(),
+          board.getBoardMax().getX0() - board.getBoardMax().getX0() / canvasMax.getX1() * xy.getX1()
     );
   }
 

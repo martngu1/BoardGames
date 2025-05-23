@@ -6,6 +6,8 @@ public class Property {
     private final String name;
     private final Country country;
     private Player owner;
+    private int tileId;
+
     public Property(String name, Country country) {
         this.name = name;
         this.country = country;
@@ -13,6 +15,14 @@ public class Property {
         if (country != null) {
             country.addProperty(this);
         }
+    }
+
+    public void setTileId(int tileId) {
+        this.tileId = tileId;
+    }
+
+    public int getTileId() {
+        return tileId;
     }
 
     public String getName() {
