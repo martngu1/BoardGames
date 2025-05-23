@@ -2,7 +2,7 @@ package no.ntnu.idatg2003.mappe10.model.filehandler.gson;
 
 import com.google.gson.*;
 import no.ntnu.idatg2003.mappe10.model.board.Board;
-import no.ntnu.idatg2003.mappe10.model.tile.LadderAction;
+import no.ntnu.idatg2003.mappe10.model.tile.tileaction.LadderAction;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 import no.ntnu.idatg2003.mappe10.model.filehandler.BoardFileWriter;
 
@@ -64,8 +64,13 @@ public class BoardFileWriterGson implements BoardFileWriter {
             tileJson.addProperty("nextTile", tile.getNextTile().getTileId());
         }
 
-        tileJson.addProperty("row", tile.getBoardCoords().getX0());
-        tileJson.addProperty("column", tile.getBoardCoords().getX1());
+        if (tile.getBoardCoords() != null) {
+            tileJson.addProperty("row", tile.getBoardCoords().getX0());
+            tileJson.addProperty("column", tile.getBoardCoords().getX1());
+        } else {
+            tileJson.addProperty("row", "null");
+            tileJson.addProperty("column", "null");
+        }
 
         if (tile.getLandAction() != null){
             JsonObject actionJson = new JsonObject();

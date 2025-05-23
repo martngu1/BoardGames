@@ -1,8 +1,11 @@
 package no.ntnu.idatg2003.mappe10.model.coordinate;
 
+/**
+ * Represents a coordinate in a 2D space with x and y values.
+ */
 public class Coordinate {
-  private int x0;
-  private int x1;
+  private double x0;
+  private double x1;
 
   /**
    * Creates a new coordinate with the given x and y values.
@@ -10,7 +13,7 @@ public class Coordinate {
    * @param x0 the x0 value of the coordinate
    * @param x1 the x1 value of the coordinate
    */
-  public Coordinate(int x0, int x1) {
+  public Coordinate(double x0, double x1) {
     this.x0 = x0;
     this.x1 = x1;
   }
@@ -20,7 +23,7 @@ public class Coordinate {
    *
    * @return the x value of the coordinate
    */
-  public int getX0() {
+  public double getX0() {
     return x0;
   }
 
@@ -29,7 +32,7 @@ public class Coordinate {
    *
    * @return the y value of the coordinate
    */
-  public int getX1() {
+  public double getX1() {
     return x1;
   }
 }

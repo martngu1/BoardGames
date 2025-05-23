@@ -1,6 +1,7 @@
 package no.ntnu.idatg2003.mappe10.model.tile;
 
 import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
+import no.ntnu.idatg2003.mappe10.model.tile.tileaction.TileAction;
 
 /**
  * Represents a tile on the board. Each tile has a unique id and a reference to the next tile. The
@@ -12,6 +13,7 @@ public class Tile {
     private final int tileId;
     private TileAction landAction;
     private Coordinate boardCoords;
+    private MonopolyTile monopolyTile;
 
     /**
      * Creates a new tile with the given id.
@@ -47,14 +49,13 @@ public class Tile {
     }
 
     /**
-     * Returns the x coordinates of the tile.
+     * Returns the coordinates of the tile.
      *
-     * @return the int x coordinates of the tile
+     * @return the Coordinate object of the tile
      */
     public Coordinate getBoardCoords() {
         return this.boardCoords;
     }
-
 
     /**
      * Sets the action of the tile when a player lands on it.
@@ -91,5 +92,22 @@ public class Tile {
     public TileAction getLandAction() {
         return landAction;
     }
+    /**
+     * Sets the monopoly tile of the tile.
+     *
+     */
+    public void setMonopolyTile(MonopolyTile monopolyTile) {
+        this.monopolyTile = monopolyTile;
+    }
+
+    /**
+     * Returns the monopoly tile of the tile.
+     *
+     * @return the monopoly tile of the tile
+     */
+    public MonopolyTile getMonopolyTile() {
+        return monopolyTile;
+    }
+
 }
 

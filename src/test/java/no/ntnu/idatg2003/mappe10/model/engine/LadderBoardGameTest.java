@@ -10,7 +10,7 @@ import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class BoardGameTest {
+class LadderBoardGameTest {
 
   private BoardGame boardGame;
 
@@ -22,10 +22,9 @@ class BoardGameTest {
   @Test
   void placeAllPlayersOnTilePositiveTest() {
     Tile tile = new Tile(0);
-    boardGame.createPlayerList();
-    new Player("TestPlayer1", boardGame);
-    new Player("TestPlayer2", boardGame);
-    new Player("TestPlayer3", boardGame);
+    new Player("TestPlayer1","1", boardGame);
+    new Player("TestPlayer2","2", boardGame);
+    new Player("TestPlayer3","3", boardGame);
 
     boardGame.placeAllPlayersOnTile(tile);
 
@@ -44,8 +43,8 @@ class BoardGameTest {
 
     Coordinate canvasCoords = boardGame.transformBoardToCanvas(boardCoords, canvasMaxCoords);
 
-    assertEquals(2, canvasCoords.getX0()); // Expected x = 6/4*1 = 1.5 -> rounds to 2
-    assertEquals(5, canvasCoords.getX1()); // Expected y = 6-(6/4)*1 = 4.5 -> rounds to 5
+    assertEquals(1.5, canvasCoords.getX0()); // Expected x = 6/4*1 = 1.5
+    assertEquals(4.5, canvasCoords.getX1()); // Expected y = 6-(6/4)*1 = 4.5
 
   }
 }
