@@ -8,7 +8,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -28,7 +27,7 @@ public class GameSetupView {
   private TableView<PlayerPiece> playerTable;
 
   private final VBox playerVbox = new VBox();
-  private Button backBtn;
+
   private Button continueBtn;
   private String selectedBoard;
 
@@ -46,6 +45,7 @@ public class GameSetupView {
     Label titleLabel = new Label("Choose Game and Players");
     titleLabel.setAlignment(Pos.CENTER);
     titleLabel.setPadding(new Insets(20));
+    Button backBtn;
     root.setTop(titleLabel);
 
     playerVbox.setSpacing(10);

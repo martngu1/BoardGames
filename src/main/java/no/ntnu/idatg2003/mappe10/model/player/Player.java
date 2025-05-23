@@ -1,10 +1,9 @@
 package no.ntnu.idatg2003.mappe10.model.player;
 
 import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
-import no.ntnu.idatg2003.mappe10.model.tile.Property;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 
-import java.util.Iterator;
+
 
 /**
  * Represents a player in a board game. A player has a name and a current tile.
@@ -95,37 +94,86 @@ public class Player {
     this.playingPiece = playingPiece;
   }
 
+    /**
+     * Returns if the player should skip their turn.
+     *
+     * @return true if the player should skip their turn, false otherwise
+     */
   public boolean shouldSkipTurn() {
     return turnsToSkip > 0;
   }
+    /**
+     * Adds the given number of turns to skip to the player.
+     *
+     */
   public void setTurnsToSkip(int count) {
     for (int i = 0; i < count; i++) {
       turnsToSkip++;
     }
   }
+    /**
+     * Sets the number of turns to skip for the player.
+     *
+     * @param count the number of turns to skip
+     */
   public void skipPrisonTurn(int count) {
     turnsToSkip = count;
   }
+    /**
+     * Decrements the number of turns to skip for the player.
+     *
+     */
   public void decrementSkipTurns() {
     if (turnsToSkip > 0) {
       turnsToSkip--;
     }
   }
+    /**
+     * Gets the balance of the player.
+     *
+     * @return the balance of the player as an int
+     */
   public int getBalance() {
     return balance;
   }
+    /**
+     * Sets the balance of the player.
+     *
+     * @param balance the new balance of the player
+     */
   public void setBalance(int balance) {
       this.balance = balance;
   }
+    /**
+     * Adds the given amount to the player's balance.
+     *
+     * @param amount the amount to add to the balance
+     */
   public void addToBalance(int amount) {
       this.balance += amount;
   }
+    /**
+     * Subtracts the given amount from the player's balance.
+     *
+     * @param amount the amount to subtract from the balance
+     */
   public void subtractFromBalance(int amount) {
       this.balance -= amount;
   }
+    /**
+     * Checks if the player can afford the given amount.
+     *
+     * @param amount the amount to check
+     * @return true if the player can afford the amount, false otherwise
+     */
   public boolean canAfford(int amount) {
     return balance >= amount;
   }
+    /**
+     * Returns the game the player is playing.
+     *
+     * @return the game the player is playing
+     */
   public BoardGame getGame() {
     return game;
   }

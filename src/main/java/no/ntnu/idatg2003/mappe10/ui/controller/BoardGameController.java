@@ -2,35 +2,23 @@
 
   import javafx.animation.AnimationTimer;
   import javafx.animation.KeyFrame;
-  import javafx.animation.PauseTransition;
   import javafx.animation.Timeline;
   import javafx.scene.canvas.Canvas;
-  import javafx.scene.canvas.GraphicsContext;
-  import javafx.scene.image.Image;
-  import javafx.scene.paint.Color;
   import javafx.stage.FileChooser;
   import javafx.util.Duration;
   import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
   import no.ntnu.idatg2003.mappe10.model.coordinate.Coordinate;
   import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
-  import no.ntnu.idatg2003.mappe10.model.engine.MonopolyGame;
-  import no.ntnu.idatg2003.mappe10.model.filehandler.CSVFileHandler;
-  import no.ntnu.idatg2003.mappe10.model.filehandler.gson.BoardFileWriterGson;
   import no.ntnu.idatg2003.mappe10.model.player.Player;
-  import no.ntnu.idatg2003.mappe10.model.tile.Property;
+  import no.ntnu.idatg2003.mappe10.model.property.Property;
   import no.ntnu.idatg2003.mappe10.model.tile.Tile;
-  import no.ntnu.idatg2003.mappe10.model.tile.tileaction.LadderAction;
-  import no.ntnu.idatg2003.mappe10.model.tile.tileaction.PrisonAction;
-  import no.ntnu.idatg2003.mappe10.model.tile.tileaction.TileAction;
-  import no.ntnu.idatg2003.mappe10.model.tile.tileaction.WinAction;
+  import no.ntnu.idatg2003.mappe10.model.tile.tileaction.*;
   import no.ntnu.idatg2003.mappe10.ui.view.BoardGameView;
-  import no.ntnu.idatg2003.mappe10.ui.view.BuyPropertyDialog;
   import no.ntnu.idatg2003.mappe10.ui.view.renderer.LadderGameRenderer;
   import no.ntnu.idatg2003.mappe10.ui.view.renderer.MonopolyGameRenderer;
   import no.ntnu.idatg2003.mappe10.ui.view.renderer.Renderer;
 
   import java.io.File;
-  import java.io.InputStream;
   import java.util.*;
 
   public class BoardGameController{
@@ -159,9 +147,8 @@
       boardGameView.addToLog(player.getName() + " bought " + property.getName() + " for " + property.getPrice());
     }
     private void updateAllPlayerBalances() {
-      boardGame.getPlayerListIterator().forEachRemaining(player -> {
-        boardGameView.updatePlayerBalance(player.getName(), player.getBalance());
-      });
+      boardGame.getPlayerListIterator().forEachRemaining(player ->
+        boardGameView.updatePlayerBalance(player.getName(), player.getBalance()));
     }
 
     public void onOfferToBuy(Player player, Property property) {
@@ -176,7 +163,7 @@
 
       boardGameView.viewOfferProperty(player, property, onAccept, onDecline);
     }
-    public void onOfferToSell(Player player, int rentAmount) {
+    public void onOfferToSell(Player player, int amount) {
       List<Property> ownedProperties = new ArrayList<>();
       int amountOfTiles = boardGame.getBoard().getNumberOfTiles();
 
@@ -196,23 +183,36 @@
       Runnable onSell = () -> {
         System.out.println(player.getName() + " chose to sell properties");
         boardGameView.updatePlayerBalance(player.getName(), player.getBalance());
-        boardGameView.addToLog(player.getName() + " sold a property");
 
-        if (player.getBalance() >= rentAmount) {
+        if (player.getBalance() >= amount) {
           boardGameView.addToLog(player.getName() + " can now afford the rent.");
-          player.setBalance(player.getBalance() - rentAmount);
-          // Get owner of the tile and pay him
-            Player owner = boardGame.getCurrentPlayer().getCurrentTile().
-                    getMonopolyTile().getProperty().getOwner();
-            owner.setBalance(owner.getBalance() + rentAmount);
-            boardGameView.updatePlayerBalance(owner.getName(), owner.getBalance());
+          player.setBalance(player.getBalance() - amount);
+
+          // Check if on a MonopolyTile with a property
+          Tile currentTile = player.getCurrentTile();
+          if (currentTile.getMonopolyTile() != null) {
+            Property property = currentTile.getMonopolyTile().getProperty();
+            if (property != null) {
+              Player owner = property.getOwner();
+              if (owner != null && owner != player) {
+                owner.setBalance(owner.getBalance() + amount);
+                boardGameView.updatePlayerBalance(owner.getName(), owner.getBalance());
+                boardGameView.addToLog(player.getName() + " paid " + amount + " to " + owner.getName());
+              }
+            }
+          } else {
+            boardGameView.addToLog(player.getName() + " paid " + amount + " as a penalty.");
+          }
+
         } else {
           boardGameView.addToLog(player.getName() + " still cannot afford the rent. Selling more properties...");
-          onOfferToSell(player, rentAmount); // Show the dialog again
+          onOfferToSell(player, amount); // Try again
+          boardGameView.updatePlayerBalance(player.getName(), player.getBalance());
         }
       };
 
-    Runnable onFailure = () -> {
+
+      Runnable onFailure = () -> {
 
       boardGameView.addToLog(player.getName() + " failed to sell properties.");
       boardGame.removePlayer(player);
@@ -222,9 +222,6 @@
   boardGameView.viewSellProperty(player, onSell, onFailure);
   }
 
-    private boolean playerNeedsToSellProperties(Player player) {
-      return player.getBalance() < 0;
-    }
 
 
     private void animatePlayerMove(int diceRoll, Runnable onFinished) {
@@ -253,7 +250,6 @@
 
     public void placePlayerOnStartTile() {
       boardGame.placeAllPlayersOnTile(boardGame.getBoard().getFirstTile());
-      //boardGame.placeAllPlayersOnTile(boardGame.getTileById(80));
     }
     public Tile getTileById(int tileId) {
       return boardGame.getTileById(tileId);
@@ -284,7 +280,7 @@
 
     public String checkIfTileAction(int tileId) {
       TileAction action = boardGame.getTileById(tileId).getLandAction();
-      if (action == null){
+      if (action == null) {
         return "";
       }
       if (action instanceof LadderAction) {
@@ -293,8 +289,8 @@
         return "Prison";
       } else if (action instanceof WinAction) {
         return "Winner";
-      }
-
+      } else if (action instanceof BackToStartAction)
+        return "BackToStart";
       return "null";
     }
 

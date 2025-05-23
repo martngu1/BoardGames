@@ -1,5 +1,4 @@
 package no.ntnu.idatg2003.mappe10.ui.controller;
-import javafx.scene.control.Slider;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 

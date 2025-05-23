@@ -11,7 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
-import no.ntnu.idatg2003.mappe10.model.tile.Property;
+import no.ntnu.idatg2003.mappe10.model.property.Property;
 import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
 import no.ntnu.idatg2003.mappe10.ui.controller.SoundController;
 import no.ntnu.idatg2003.mappe10.ui.view.renderer.Renderer;
@@ -262,17 +262,14 @@ public class BoardGameView implements BoardGameObserver {
     MenuItem loadBoard = new MenuItem("New Board");
     MenuItem loadPlayers = new MenuItem("Players");
     MenuItem saveBoard = new MenuItem("Board");
-    saveBoard.setOnAction(e -> {
-      controller.saveBoardToJson();
-    });
+    saveBoard.setOnAction(e ->
+      controller.saveBoardToJson());
     MenuItem savePlayers = new MenuItem("Players");
-    savePlayers.setOnAction(e -> {
-      controller.savePlayersToCSV();
-    });
+    savePlayers.setOnAction(e ->
+      controller.savePlayersToCSV());
     MenuItem restartGame = new MenuItem("Restart Game");
-    restartGame.setOnAction(e -> {
-      controller.restartGame();
-    });
+    restartGame.setOnAction(e ->
+      controller.restartGame());
 
     MenuItem exitGame = new MenuItem("Exit Game");
     exitGame.setOnAction(e -> {
@@ -354,8 +351,8 @@ public class BoardGameView implements BoardGameObserver {
     controller.onOfferToBuy(player, property);
   }
   @Override
-  public void onOfferToSellProperty(Player player, int rent) {
-  controller.onOfferToSell(player, rent);
+  public void onOfferToSellProperty(Player player, int amount) {
+  controller.onOfferToSell(player, amount);
   }
 
   public void viewOfferProperty(Player player, Property property, Runnable onAccept, Runnable onDecline) {

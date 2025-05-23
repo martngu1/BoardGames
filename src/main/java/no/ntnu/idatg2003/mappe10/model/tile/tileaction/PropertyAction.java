@@ -1,18 +1,17 @@
 package no.ntnu.idatg2003.mappe10.model.tile.tileaction;
 
-import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
 import no.ntnu.idatg2003.mappe10.model.engine.BoardGame;
 import no.ntnu.idatg2003.mappe10.model.engine.MonopolyGame;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
-import no.ntnu.idatg2003.mappe10.model.tile.CruiseDock;
+import no.ntnu.idatg2003.mappe10.model.property.CruiseDock;
 import no.ntnu.idatg2003.mappe10.model.tile.MonopolyTile;
-import no.ntnu.idatg2003.mappe10.model.tile.Property;
+import no.ntnu.idatg2003.mappe10.model.property.Property;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
-import no.ntnu.idatg2003.mappe10.ui.view.BoardGameView;
-import no.ntnu.idatg2003.mappe10.ui.view.renderer.MonopolyGameRenderer;
 
-import java.awt.*;
-
+/**
+ * Represents an action that involves properties in the game.
+ * The action can be buying a property or paying rent.
+ */
 public class PropertyAction implements TileAction {
     private String description;
 
@@ -20,11 +19,22 @@ public class PropertyAction implements TileAction {
         this.description = description;
     }
 
+    /**
+     * Gets the description of the action.
+     *
+     * @return the description of the action
+     */
     @Override
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Performs the action of buying a property or paying rent.
+     *
+     * @param player the player who is performing the action
+     * @param game   the game instance
+     */
     @Override
     public void performAction(Player player, BoardGame game) {
 
@@ -65,6 +75,14 @@ public class PropertyAction implements TileAction {
             System.out.println("This tile is not a property.");
         }
     }
+    /**
+     * Handles the rent payment process for the player.
+     *
+     * @param player the player who is paying rent
+     * @param owner  the owner of the property
+     * @param rent   the amount of rent to be paid
+     * @param game   the game instance
+     */
     private void handleRentPayment(Player player, Player owner, int rent, MonopolyGame game){
         if (player.canAfford(rent)) {
             player.subtractFromBalance(rent);
@@ -78,7 +96,7 @@ public class PropertyAction implements TileAction {
             if (player.getBalance() + totalSellValue < rent) {
                 System.out.println(player.getName() + " cannot afford the rent and is bankrupt.");
                 int restBalance = player.getBalance();
-                player.subtractFromBalance(restBalance);
+                player.subtractFromBalance(restBalance + 1); // Set balance to -1 to indicate bankruptcy
                 owner.addToBalance(restBalance);
                 game.notifyBalanceUpdate(player);
                 game.removePlayer(player);

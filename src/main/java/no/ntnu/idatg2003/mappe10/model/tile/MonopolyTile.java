@@ -1,5 +1,7 @@
 package no.ntnu.idatg2003.mappe10.model.tile;
 
+import no.ntnu.idatg2003.mappe10.model.property.Property;
+
 public class MonopolyTile extends Tile{
     private Property property;
 
@@ -16,9 +18,20 @@ public class MonopolyTile extends Tile{
         this.property = property;
     }
 
+    /**
+     * Returns the property of the tile.
+     *
+     * @return the property of the tile
+     */
     public Property getProperty() {
         return property;
     }
+    /**
+     * Gets the property of the tile by name.
+     *
+     * @param name the name of the property
+     * @return the property of the tile
+     */
     public Property getPropertyByName(String name) {
         if (property.getName().equals(name)) {
             return property;

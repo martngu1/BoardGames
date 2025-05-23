@@ -80,6 +80,8 @@ public class LadderGameRenderer implements Renderer {
                         , endY + tileHeight * (3.0/8.0));
             } else if (controller.checkIfTileAction(id).equals("Prison")) {
                 drawPrison(id, canvasWidth, canvasHeight, tileWidth, tileHeight);
+            } else if (controller.checkIfTileAction(id).equals("BackToStart")) {
+                drawBackToStart(id, canvasWidth, canvasHeight, tileWidth, tileHeight);
             }
         }
     }
@@ -118,9 +120,6 @@ public class LadderGameRenderer implements Renderer {
             gc.setFill(Color.LIGHTGREEN);
             gc.fillRect(endX, endY, tileWidth, tileHeight);
 
-            //gc.setLineWidth(1);
-            //gc.fillText(String.valueOf(tileId), startX + tileWidth / 4 + tileWidth / 8, startY + tileHeight / 4 + tileHeight / 8);
-            //gc.fillText(String.valueOf(destTileId),endX + tileWidth / 4 + tileWidth / 8, endY + tileHeight / 4 + tileHeight / 8);
         } else {
             gc.setFill(Color.RED);
             gc.fillRect(startX, startY, tileWidth, tileHeight);
@@ -128,9 +127,6 @@ public class LadderGameRenderer implements Renderer {
             gc.setFill(Color.DARKRED);
             gc.fillRect(endX, endY, tileWidth, tileHeight);
 
-            //gc.setLineWidth(1);
-            //gc.fillText(String.valueOf(tileId), startX + tileWidth / 4 + tileWidth / 8, startY + tileHeight / 4 + tileHeight / 8);
-            //gc.fillText(String.valueOf(destTileId), endX + tileWidth / 4 + tileWidth / 8, endY + tileHeight / 4 + tileHeight / 8);
         }
     }
     private void colorPrisonTiles(int tileId, double canvasWidth, double canvasHeight, double tileWidth, double tileHeight) {
@@ -214,6 +210,21 @@ public class LadderGameRenderer implements Renderer {
         Image prisonImage = new Image(stream);
         // Draw the image scaled to fit the tile size
         gc.drawImage(prisonImage, x, y, tileWidth, tileHeight);
+    }
+    private void drawBackToStart(int tileId, double canvasWidth, double canvasHeight,
+                                 double tileWidth, double tileHeight) {
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        Coordinate rectCoords = controller.getCanvasCoords(tileId, canvasWidth, canvasHeight);
+        double x = rectCoords.getX0();
+        double y = rectCoords.getX1();
+        InputStream stream = getClass().getResourceAsStream("/tileIcons/backToStart.png");
+        if (stream == null) {
+            System.err.println("Image resource not found!");
+            return;
+        }
+        Image backToStartImage = new Image(stream);
+        // Draw the image scaled to fit the tile size
+        gc.drawImage(backToStartImage, x, y, tileWidth, tileHeight);
     }
 
 

@@ -14,7 +14,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
-import no.ntnu.idatg2003.mappe10.model.tile.Property;
+import no.ntnu.idatg2003.mappe10.model.property.Property;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
 
 public class BuyPropertyDialog extends Stage {

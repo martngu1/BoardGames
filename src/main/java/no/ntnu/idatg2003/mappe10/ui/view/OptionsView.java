@@ -2,7 +2,6 @@ package no.ntnu.idatg2003.mappe10.ui.view;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.VBox;
@@ -30,9 +29,8 @@ public class OptionsView{
         volumeSlider.setMinorTickCount(2);
 
         volumeSlider.setValue(soundController.getVolume() * 100); // Set initial volume from SoundController
-        volumeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-            soundController.setVolume(newVal.doubleValue() / 100);
-        });
+        volumeSlider.valueProperty().addListener((obs, oldVal, newVal) ->
+            soundController.setVolume(newVal.doubleValue() / 100));
 
         ToggleButton musicToggle = new ToggleButton("🔊 Music On");
         musicToggle.setSelected(true); // Music starts ON

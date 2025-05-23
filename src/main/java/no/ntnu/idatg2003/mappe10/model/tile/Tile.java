@@ -92,10 +92,19 @@ public class Tile {
     public TileAction getLandAction() {
         return landAction;
     }
+    /**
+     * Sets the monopoly tile of the tile.
+     *
+     */
     public void setMonopolyTile(MonopolyTile monopolyTile) {
         this.monopolyTile = monopolyTile;
     }
 
+    /**
+     * Returns the monopoly tile of the tile.
+     *
+     * @return the monopoly tile of the tile
+     */
     public MonopolyTile getMonopolyTile() {
         return monopolyTile;
     }

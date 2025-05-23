@@ -17,12 +17,11 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
 import no.ntnu.idatg2003.mappe10.model.tile.MonopolyTile;
-import no.ntnu.idatg2003.mappe10.model.tile.Property;
+import no.ntnu.idatg2003.mappe10.model.property.Property;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class SellPropertyDialog extends Stage {
 

@@ -9,11 +9,9 @@ import no.ntnu.idatg2003.mappe10.model.filehandler.CSVFileHandler;
 import no.ntnu.idatg2003.mappe10.model.filehandler.gson.BoardFileWriterGson;
 import no.ntnu.idatg2003.mappe10.model.player.Player;
 import no.ntnu.idatg2003.mappe10.model.tile.MonopolyTile;
-import no.ntnu.idatg2003.mappe10.model.tile.Property;
+import no.ntnu.idatg2003.mappe10.model.property.Property;
 import no.ntnu.idatg2003.mappe10.model.tile.Tile;
 import no.ntnu.idatg2003.mappe10.model.board.BoardGameObserver;
-import no.ntnu.idatg2003.mappe10.ui.controller.BoardGameController;
-import no.ntnu.idatg2003.mappe10.ui.view.BoardGameView;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -83,18 +81,38 @@ public class BoardGame {
     notifyObservers();
   }
 
+    /**
+     * Returns the sum of the values of all the rolled dice.
+     *
+     * @return the sum of the values of the rolled dice as an int
+     */
   public int rollDice() {
     return dice.roll();
   }
 
+    /**
+     * Returns the value of a specific die.
+     *
+     * @param dieNumber the number of the die to get the value of
+     * @return the value of the die as an int
+     */
   public int getDieValue(int dieNumber) {
     return dice.getDie(dieNumber);
   }
 
+    /**
+     * Returns the number of dice in the game.
+     *
+     * @return the number of dice in the game as an int
+     */
   public int getDiceAmount() {
     return dice.getNumberOfDice();
   }
 
+    /**
+     * Sets the current player to the player with the given name.
+     *
+     */
   public void setCurrentPlayer(String playerName) {
     playerList.stream()
           .filter(player -> player.getName().equals(playerName))
@@ -189,24 +207,42 @@ public class BoardGame {
     return board;
   }
 
+  /**
+   * Return the factory for the board game.
+   *
+   * @return the factory for the board game
+   */
   public BoardGameFactory getFactory() {
     return boardGameFactory;
   }
 
+    /**
+     * Saves the board to a file in the specified format.
+     *
+     */
   public void saveBoard(String filePath, String formatType) {
     BoardFileWriter writer;
-    switch (formatType.toLowerCase()) {
-      case "json" -> writer = new BoardFileWriterGson();
-      default -> throw new IllegalArgumentException("Unsupported format type: " + formatType);
-    }
+      if (formatType.equalsIgnoreCase("json")) {
+          writer = new BoardFileWriterGson();
+      } else {
+          throw new IllegalArgumentException("Unsupported format type: " + formatType);
+      }
     writer.writeBoard(filePath, this.board);
   }
 
+    /**
+     * Saves the players to a file in CSV format.
+     *
+     */
   public void savePlayers(String filePath) {
     CSVFileHandler csvFileHandler = new CSVFileHandler();
     csvFileHandler.savePlayers(filePath, playerList);
   }
 
+    /**
+     * Restarts the game by resetting the winner and current player.
+     *
+     */
   public void restartGame() {
     winner = null;
     currentPlayer = null;
@@ -224,44 +260,94 @@ public class BoardGame {
           canvasMax.getX1() - canvasMax.getX1() / boardMax.getX0() * rc.getX0()
     );
   }
+  /**
+   * Starts the pass tile action for the given player.
+   *
+   */
   public void onPassStartTile(Player player){
-
+    // Empty implementation. Override in subclasses if needed.
   }
 
+    /**
+     * Returns the total sell value of all properties owned by the given player.
+     *
+     * @param player the player to calculate the total sell value for
+     * @return the total sell value of all properties owned by the player
+     */
+  public int getTotalSellValue(Player player){
+    int totalValue = 0;
+    int amountOfTiles = getBoard().getNumberOfTiles();
+    for (int tileId = 1; tileId <= amountOfTiles; tileId++) {
+      Tile tile = getBoard().getTile(tileId);
+
+      MonopolyTile monopolyTile = tile.getMonopolyTile();
+      if (monopolyTile != null) {
+        Property property = monopolyTile.getProperty();
+        if (property.getOwner() == player) {
+          // Sell value of property is the property price divided by 2
+          totalValue += property.getPrice() / 2;
+        }
+      }
+    }
+    return totalValue;
+  }
+
+  /**
+   * Notifies all observers about the offer to buy a property.
+   *
+   */
   public void notifyOfferToBuyProperty(Player player, Property property) {
     for (BoardGameObserver observer : observers) {
       observer.onOfferToBuyProperty(player, property);
     }
   }
-  public void notifyOfferToSellProperty(Player player, int rent) {
+    /**
+     * Notifies all observers about the offer to sell a property.
+     *
+     */
+  public void notifyOfferToSellProperty(Player player, int amount) {
     for (BoardGameObserver observer : observers) {
-      observer.onOfferToSellProperty(player, rent);
+      observer.onOfferToSellProperty(player, amount);
     }
   }
 
+    /**
+     * Notifies all observers about the balance update for a player.
+     *
+     */
   public void notifyBalanceUpdate(Player player) {
     for (BoardGameObserver observer : observers) {
       observer.onBalanceUpdate(player);
     }
   }
 
+  /**
+   * Removes a player from the game.
+   *
+   */
   public void removePlayer(Player player) {
     player.setBalance(0);
-    notifyObservers();
     playerList.remove(player);
-      int amountOfTiles = getBoard().getNumberOfTiles();
-      for (int tileId = 1; tileId <= amountOfTiles; tileId++) {
-        Tile tile = getBoard().getTile(tileId);
 
-        MonopolyTile monopolyTile = tile.getMonopolyTile();
-        if (monopolyTile != null) {
-          Property property = monopolyTile.getProperty();
-          if (property.getOwner() == player) {
-               property.setOwner(null);
-          }
+    // Remove ownership of properties
+    int amountOfTiles = getBoard().getNumberOfTiles();
+    for (int tileId = 1; tileId <= amountOfTiles; tileId++) {
+      Tile tile = getBoard().getTile(tileId);
+      MonopolyTile monopolyTile = tile.getMonopolyTile();
+      if (monopolyTile != null) {
+        Property property = monopolyTile.getProperty();
+        if (property.getOwner() == player) {
+          property.setOwner(null);
         }
       }
+    }
+
     notifyObservers();
+
+    if (playerList.size() == 1) {
+      Player lastPlayer = playerList.get(0);
+      setWinner(lastPlayer); // Triggers notifyGameOver
+    }
   }
 
   /**
@@ -272,6 +358,10 @@ public class BoardGame {
   public Iterator<Player> getPlayerListIterator() {
     return playerList.iterator();
   }
+  /**
+   * Registers an observer to receive updates.
+   *
+   */
 
   public void registerObserver(BoardGameObserver observer) {
     observers.add(observer);
@@ -280,6 +370,12 @@ public class BoardGame {
   public void removeObserver(BoardGameObserver observer) {
     observers.remove(observer);
   }
+    /**
+     * Returns the player with the given name.
+     *
+     * @param playerName the name of the player to find
+     * @return the player with the given name, or null if not found
+     */
   public Player getPlayerByName(String playerName) {
     return playerList.stream()
           .filter(player -> player.getName().equals(playerName))
@@ -287,18 +383,32 @@ public class BoardGame {
           .orElse(null);
   }
 
+  /**
+   * Notifies all observers about a change to the game
+   *
+   */
   private void notifyObservers() {
     for (BoardGameObserver observer : observers) {
       observer.updatePosition();
     }
   }
 
+    /**
+     * Notifies all observers about a tile action performed by the current player.
+     *
+     * @param name the name of the player who performed the action
+     * @param description a description of the action
+     */
   public void notifyTileActionPerformed(String name, String description) {
     for (BoardGameObserver observer : observers) {
       observer.onTileAction(name, description);
     }
   }
 
+    /**
+     * Notifies all observers about the game over event.
+     *
+     */
   public void notifyGameOver() {
     for (BoardGameObserver observer : observers) {
       observer.onGameOver(winner.getName());
